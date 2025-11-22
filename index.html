@@ -1,39 +1,55 @@
 <!DOCTYPE HTML>
 <html lang="en">
 <head>
+    <!-- Page Title - Shows in browser tab -->
     <title>Ferroserver</title>
+    
+    <!-- Meta Tags for Character Encoding and Responsive Design -->
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
     
-    <!-- Google Fonts -->
+    <!-- Google Fonts Import Section -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=JetBrains+Mono:wght@300;400&display=swap" rel="stylesheet">
     
+    <!-- Internal Stylesheet -->
     <style>
+        /* === RESET STYLES === */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
 
+        /* === CSS VARIABLES (Color Scheme & Theme) === */
         :root {
+            /* Primary Colors */
             --primary: #64B5F6;
             --primary-dark: #2196F3;
             --accent: #4FC3F7;
+            
+            /* Status Colors */
             --success: #4CAF50;
             --warning: #FFA726;
+            
+            /* Background Colors */
             --bg-main: #0a0e1a;
             --bg-card: #111827;
             --bg-hover: #1a2332;
+            
+            /* Border & Effects */
             --border: rgba(100, 181, 246, 0.2);
+            --shadow: rgba(0, 0, 0, 0.3);
+            --glow: rgba(100, 181, 246, 0.4);
+            
+            /* Text Colors */
             --text-primary: #f0f4f8;
             --text-secondary: #94a3b8;
             --text-muted: #64748b;
-            --shadow: rgba(0, 0, 0, 0.3);
-            --glow: rgba(100, 181, 246, 0.4);
         }
 
+        /* === CUSTOM SCROLLBAR === */
         * {
             scrollbar-width: thin;
             scrollbar-color: var(--primary) var(--bg-card);
@@ -52,6 +68,7 @@
             border-radius: 4px;
         }
 
+        /* === BASE BODY STYLES === */
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
             background: var(--bg-main);
@@ -62,7 +79,8 @@
             position: relative;
         }
 
-        /* Subtle animated background */
+        /* === ANIMATED BACKGROUND SECTION === */
+        /* Container for background effects */
         .bg-container {
             position: fixed;
             top: 0;
@@ -73,6 +91,7 @@
             overflow: hidden;
         }
 
+        /* Gradient animation background */
         .bg-gradient {
             position: absolute;
             width: 150%;
@@ -83,11 +102,13 @@
             animation: gradientShift 30s ease-in-out infinite;
         }
 
+        /* Gradient rotation animation */
         @keyframes gradientShift {
             0%, 100% { transform: rotate(0deg) scale(1); }
             50% { transform: rotate(180deg) scale(1.1); }
         }
 
+        /* Grid overlay pattern */
         .grid-overlay {
             position: absolute;
             width: 100%;
@@ -100,12 +121,13 @@
             opacity: 0.5;
         }
 
+        /* Grid movement animation */
         @keyframes gridMove {
             0% { transform: translate(0, 0); }
             100% { transform: translate(100px, 100px); }
         }
 
-        /* Container */
+        /* === MAIN CONTAINER === */
         .container {
             max-width: 1200px;
             margin: 0 auto;
@@ -114,13 +136,14 @@
             z-index: 1;
         }
 
-        /* Header */
+        /* === HEADER SECTION === */
         header {
             text-align: center;
             padding: 4rem 2rem;
             animation: fadeIn 0.8s ease-out;
         }
 
+        /* Fade in animation for header */
         @keyframes fadeIn {
             from {
                 opacity: 0;
@@ -132,6 +155,7 @@
             }
         }
 
+        /* Main logo/title styling */
         .logo {
             font-size: 3.5rem;
             font-weight: 700;
@@ -144,11 +168,13 @@
             animation: subtleGlow 4s ease-in-out infinite;
         }
 
+        /* Logo glow effect */
         @keyframes subtleGlow {
             0%, 100% { filter: brightness(1); }
             50% { filter: brightness(1.1); }
         }
 
+        /* Tagline under logo */
         .tagline {
             font-size: 1.1rem;
             color: var(--text-secondary);
@@ -157,13 +183,14 @@
             margin-bottom: 3rem;
         }
 
-        /* Navigation */
+        /* === NAVIGATION MENU === */
         nav {
             display: flex;
             justify-content: center;
             margin-bottom: 3rem;
         }
 
+        /* Navigation grid layout */
         .nav-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
@@ -172,6 +199,7 @@
             max-width: 600px;
         }
 
+        /* Individual nav button styling */
         .nav-item {
             position: relative;
             background: var(--bg-card);
@@ -182,6 +210,7 @@
             cursor: pointer;
         }
 
+        /* Nav item hover line animation */
         .nav-item::before {
             content: '';
             position: absolute;
@@ -198,12 +227,14 @@
             transform: translateX(100%);
         }
 
+        /* Nav item hover effects */
         .nav-item:hover {
             transform: translateY(-2px);
             border-color: var(--primary);
             box-shadow: 0 10px 30px var(--shadow), 0 0 30px var(--glow);
         }
 
+        /* Nav link text */
         .nav-link {
             display: block;
             padding: 1rem;
@@ -211,52 +242,40 @@
             text-decoration: none;
             text-align: center;
             font-weight: 500;
-            font-size: 0.95rem;
-            letter-spacing: 0.03em;
             transition: color 0.3s;
         }
 
-        .nav-item:hover .nav-link {
+        .nav-link:hover {
             color: var(--primary);
         }
 
-        .nav-icon {
-            display: block;
-            font-size: 1.5rem;
-            margin-bottom: 0.5rem;
-            opacity: 0.7;
-            transition: opacity 0.3s;
-        }
-
-        .nav-item:hover .nav-icon {
-            opacity: 1;
-        }
-
-        /* Main Content */
+        /* === MAIN CONTENT AREA === */
         main {
-            animation: fadeIn 1s ease-out 0.2s both;
+            min-height: 400px;
+            position: relative;
         }
 
+        /* === CONTENT SECTIONS (Hidden by default) === */
         .content-section {
             display: none;
             background: var(--bg-card);
             border: 1px solid var(--border);
             border-radius: 12px;
-            padding: 2.5rem;
+            padding: 2rem;
             margin-bottom: 2rem;
-            position: relative;
-            overflow: hidden;
+            animation: slideIn 0.5s ease-out;
         }
 
+        /* Active section display */
         .content-section.active {
             display: block;
-            animation: slideIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
+        /* Section slide-in animation */
         @keyframes slideIn {
             from {
                 opacity: 0;
-                transform: translateY(20px);
+                transform: translateY(30px);
             }
             to {
                 opacity: 1;
@@ -264,22 +283,7 @@
             }
         }
 
-        .content-section::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 1px;
-            background: linear-gradient(90deg, transparent, var(--primary), transparent);
-            animation: shimmer 3s infinite;
-        }
-
-        @keyframes shimmer {
-            0% { transform: translateX(-100%); }
-            100% { transform: translateX(100%); }
-        }
-
+        /* Section header with title and close button */
         .section-header {
             display: flex;
             justify-content: space-between;
@@ -289,125 +293,40 @@
             border-bottom: 1px solid var(--border);
         }
 
+        /* Section heading styles */
         h2 {
-            font-size: 1.8rem;
-            font-weight: 600;
-            color: var(--primary);
-            letter-spacing: -0.01em;
-        }
-
-        .close-btn {
-            background: transparent;
-            border: 1px solid var(--border);
-            color: var(--text-secondary);
-            padding: 0.5rem 1rem;
-            border-radius: 6px;
-            cursor: pointer;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.85rem;
-            transition: all 0.3s;
-        }
-
-        .close-btn:hover {
-            background: var(--bg-hover);
-            border-color: var(--primary);
-            color: var(--primary);
-        }
-
-        /* Typography */
-        p {
-            color: var(--text-secondary);
-            margin-bottom: 1.5rem;
-            line-height: 1.7;
+            font-size: 2rem;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
 
         h3 {
-            font-size: 1.2rem;
-            font-weight: 600;
-            color: var(--text-primary);
-            margin-bottom: 1rem;
-            margin-top: 2rem;
+            font-size: 1.4rem;
+            color: var(--primary);
+            margin: 1.5rem 0 1rem;
         }
 
-        /* Form Styling */
-        form {
-            margin-top: 2rem;
-        }
-
-        .form-grid {
-            display: grid;
-            gap: 1.5rem;
-            margin-bottom: 2rem;
-        }
-
-        .form-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1.5rem;
-        }
-
-        .form-group {
-            position: relative;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 0.5rem;
+        /* Paragraph spacing */
+        p {
+            margin-bottom: 1.5rem;
             color: var(--text-secondary);
-            font-size: 0.9rem;
-            font-weight: 500;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
         }
 
-        input[type="text"],
-        input[type="email"],
-        textarea,
-        select {
-            width: 100%;
-            padding: 0.75rem 1rem;
-            background: var(--bg-main);
-            border: 1px solid var(--border);
-            border-radius: 6px;
-            color: var(--text-primary);
-            font-family: 'Inter', sans-serif;
-            font-size: 0.95rem;
-            transition: all 0.3s;
-        }
-
-        input:focus,
-        textarea:focus,
-        select:focus {
-            outline: none;
-            border-color: var(--primary);
-            background: var(--bg-hover);
-            box-shadow: 0 0 0 3px rgba(100, 181, 246, 0.1);
-        }
-
-        textarea {
-            resize: vertical;
-            min-height: 120px;
-        }
-
-        /* Buttons */
-        .btn-group {
-            display: flex;
-            gap: 1rem;
-            flex-wrap: wrap;
-        }
-
+        /* === BUTTON STYLES === */
         .btn {
             padding: 0.75rem 1.5rem;
             border: none;
             border-radius: 6px;
-            font-weight: 500;
-            font-size: 0.95rem;
+            font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            position: relative;
-            overflow: hidden;
+            transition: all 0.3s;
+            font-size: 0.95rem;
+            letter-spacing: 0.02em;
         }
 
+        /* Primary button (blue) */
         .btn-primary {
             background: linear-gradient(135deg, var(--primary), var(--primary-dark));
             color: white;
@@ -415,37 +334,93 @@
 
         .btn-primary:hover {
             transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(33, 150, 243, 0.3);
+            box-shadow: 0 10px 25px var(--shadow), 0 0 20px var(--glow);
         }
 
+        /* Secondary button (outlined) */
         .btn-secondary {
             background: transparent;
-            color: var(--text-secondary);
-            border: 1px solid var(--border);
+            color: var(--primary);
+            border: 1px solid var(--primary);
         }
 
         .btn-secondary:hover {
-            background: var(--bg-hover);
-            border-color: var(--primary);
-            color: var(--primary);
+            background: var(--primary);
+            color: var(--bg-main);
         }
 
-        /* Status indicators */
-        .status-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1rem;
-            margin: 2rem 0;
-        }
-
-        .status-card {
-            background: var(--bg-main);
+        /* Close button for sections */
+        .close-btn {
+            background: transparent;
+            color: var(--text-muted);
             border: 1px solid var(--border);
-            border-radius: 8px;
-            padding: 1.25rem;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .close-btn:hover {
+            color: var(--primary);
+            border-color: var(--primary);
+        }
+
+        /* Button group container */
+        .btn-group {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        /* === LIST STYLES === */
+        .feature-list {
+            list-style: none;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+
+        .feature-list li {
+            color: var(--text-secondary);
+            padding: 0.5rem 0;
+            padding-left: 1.5rem;
             position: relative;
         }
 
+        /* List item bullet point */
+        .feature-list li::before {
+            content: '▸';
+            color: var(--primary);
+            position: absolute;
+            left: 0;
+            font-size: 1.2rem;
+        }
+
+        /* === STATUS CARDS GRID === */
+        .status-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        /* Individual status card */
+        .status-card {
+            background: var(--bg-hover);
+            padding: 1.5rem;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            position: relative;
+            transition: all 0.3s;
+        }
+
+        .status-card:hover {
+            border-color: var(--primary);
+            transform: translateY(-2px);
+        }
+
+        /* Status card labels and values */
         .status-label {
             font-size: 0.85rem;
             color: var(--text-muted);
@@ -455,227 +430,262 @@
         }
 
         .status-value {
-            font-size: 1.1rem;
+            font-size: 1.5rem;
             font-weight: 600;
-            color: var(--text-primary);
-            font-family: 'JetBrains Mono', monospace;
+            color: var(--primary);
         }
 
+        /* Status indicator dot */
         .status-indicator {
             position: absolute;
             top: 1rem;
             right: 1rem;
-            width: 8px;
-            height: 8px;
+            width: 10px;
+            height: 10px;
             border-radius: 50%;
             animation: pulse 2s infinite;
         }
 
+        /* Online status (green) */
         .status-online {
             background: var(--success);
             box-shadow: 0 0 10px var(--success);
         }
 
+        /* Status indicator pulse animation */
         @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
+            0%, 100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+            50% {
+                opacity: 0.7;
+                transform: scale(1.1);
+            }
         }
 
-        /* Social Links */
+        /* === CONTACT FORM === */
+        .form-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        /* Two-column form row */
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+
+        /* Form input group */
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Form labels */
+        label {
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        /* Text inputs and textareas */
+        input[type="text"],
+        input[type="email"],
+        textarea {
+            padding: 0.75rem;
+            background: var(--bg-hover);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            color: var(--text-primary);
+            font-family: inherit;
+            transition: all 0.3s;
+        }
+
+        /* Focus state for form inputs */
+        input[type="text"]:focus,
+        input[type="email"]:focus,
+        textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(100, 181, 246, 0.1);
+        }
+
+        /* Textarea specific styling */
+        textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        /* === SOCIAL LINKS === */
         .social-links {
             display: flex;
+            justify-content: center;
             gap: 1rem;
             margin-top: 2rem;
-        }
-
-        .social-link {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 40px;
-            height: 40px;
-            background: var(--bg-main);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            color: var(--text-secondary);
-            text-decoration: none;
-            transition: all 0.3s;
-        }
-
-        .social-link:hover {
-            background: var(--bg-hover);
-            border-color: var(--primary);
-            color: var(--primary);
-            transform: translateY(-2px);
-        }
-
-        /* Skills/Features List */
-        .feature-list {
-            list-style: none;
-            padding: 0;
-            margin: 1.5rem 0;
-        }
-
-        .feature-list li {
-            padding: 0.75rem 0;
-            color: var(--text-secondary);
-            display: flex;
-            align-items: center;
-            border-bottom: 1px solid var(--border);
-            transition: all 0.3s;
-        }
-
-        .feature-list li:last-child {
-            border-bottom: none;
-        }
-
-        .feature-list li::before {
-            content: '▸';
-            color: var(--primary);
-            margin-right: 1rem;
-            font-size: 1.2rem;
-            transition: transform 0.3s;
-        }
-
-        .feature-list li:hover {
-            color: var(--text-primary);
-            padding-left: 0.5rem;
-        }
-
-        .feature-list li:hover::before {
-            transform: translateX(5px);
-        }
-
-        /* Footer */
-        footer {
-            text-align: center;
-            padding: 3rem 2rem;
-            color: var(--text-muted);
-            margin-top: 4rem;
+            padding-top: 2rem;
             border-top: 1px solid var(--border);
         }
 
-        footer a {
-            color: var(--primary);
+        /* Individual social link button */
+        .social-link {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--bg-hover);
+            border: 1px solid var(--border);
+            border-radius: 50%;
+            color: var(--text-secondary);
             text-decoration: none;
             transition: all 0.3s;
+            font-weight: 600;
         }
 
-        footer a:hover {
-            color: var(--accent);
-            text-decoration: underline;
+        .social-link:hover {
+            color: var(--primary);
+            border-color: var(--primary);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px var(--shadow);
         }
 
-        /* Responsive Design */
-        @media (max-width: 768px) {
-            .logo {
-                font-size: 2.5rem;
-            }
-
-            .nav-grid {
-                grid-template-columns: 1fr;
-                max-width: 300px;
-            }
-
-            .form-row {
-                grid-template-columns: 1fr;
-            }
-
-            .status-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .content-section {
-                padding: 1.5rem;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .container {
-                padding: 1rem;
-            }
-
-            header {
-                padding: 2rem 1rem;
-            }
-
-            .btn-group {
-                flex-direction: column;
-            }
-
-            .btn {
-                width: 100%;
-            }
-        }
-
-        /* Loading animation */
+        /* === LOADING ANIMATION === */
         .loader {
             display: inline-block;
-            width: 20px;
-            height: 20px;
-            border: 2px solid var(--border);
-            border-top-color: var(--primary);
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top-color: white;
             border-radius: 50%;
-            animation: spin 1s linear infinite;
+            animation: spin 0.6s linear infinite;
         }
 
         @keyframes spin {
             to { transform: rotate(360deg); }
         }
 
-        /* Smooth transitions */
-        * {
-            transition: background-color 0.3s, border-color 0.3s, color 0.3s;
+        /* === FOOTER === */
+        footer {
+            text-align: center;
+            padding: 3rem 2rem 2rem;
+            color: var(--text-muted);
+            border-top: 1px solid var(--border);
+            margin-top: 4rem;
+        }
+
+        footer a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        footer a:hover {
+            color: var(--primary);
+        }
+
+        /* === RESPONSIVE DESIGN === */
+        @media (max-width: 768px) {
+            /* Adjust logo size on mobile */
+            .logo {
+                font-size: 2.5rem;
+            }
+            
+            /* Stack form rows on mobile */
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            
+            /* Adjust button group on mobile */
+            .btn-group {
+                flex-direction: column;
+            }
+            
+            /* Smaller padding on mobile */
+            .container {
+                padding: 1rem;
+            }
+            
+            .content-section {
+                padding: 1.5rem;
+            }
         }
     </style>
 </head>
 <body>
-    <!-- Background Elements -->
+    <!-- Animated Background Effects -->
     <div class="bg-container">
         <div class="bg-gradient"></div>
         <div class="grid-overlay"></div>
     </div>
 
-    <!-- Main Container -->
+    <!-- Main Content Container -->
     <div class="container">
-        <!-- Header -->
+        <!-- Site Header -->
         <header>
-            <h1 class="logo">Ferroserver</h1>
-            <p class="tagline">Professional Infrastructure Solutions</p>
+            <div class="logo">Ferroserver</div>
+            <p class="tagline">Infrastructure • Development • Innovation</p>
         </header>
 
-        <!-- Navigation -->
+        <!-- Navigation Menu -->
         <nav>
             <div class="nav-grid">
+                <!-- Home Navigation -->
+                <div class="nav-item" onclick="showSection('home')">
+                    <a href="#home" class="nav-link">Home</a>
+                </div>
+                <!-- Admin Navigation -->
                 <div class="nav-item" onclick="showSection('admin')">
-                    <a href="#admin" class="nav-link">
-                        <span class="nav-icon">⚙</span>
-                        Admin
-                    </a>
+                    <a href="#admin" class="nav-link">Admin</a>
                 </div>
+                <!-- Resume Navigation -->
                 <div class="nav-item" onclick="showSection('resume')">
-                    <a href="#resume" class="nav-link">
-                        <span class="nav-icon">📄</span>
-                        Resume
-                    </a>
+                    <a href="#resume" class="nav-link">Resume</a>
                 </div>
+                <!-- About Navigation -->
                 <div class="nav-item" onclick="showSection('about')">
-                    <a href="#about" class="nav-link">
-                        <span class="nav-icon">ℹ</span>
-                        About
-                    </a>
+                    <a href="#about" class="nav-link">About</a>
                 </div>
+                <!-- Contact Navigation -->
                 <div class="nav-item" onclick="showSection('contact')">
-                    <a href="#contact" class="nav-link">
-                        <span class="nav-icon">✉</span>
-                        Contact
-                    </a>
+                    <a href="#contact" class="nav-link">Contact</a>
                 </div>
             </div>
         </nav>
 
-        <!-- Main Content -->
+        <!-- Main Content Area -->
         <main>
+            <!-- Home Section (Default) -->
+            <section id="home" class="content-section active">
+                <div class="section-header">
+                    <h2>Welcome to Ferroserver</h2>
+                    <button class="close-btn" onclick="hideSection()">Close</button>
+                </div>
+                
+                <p>Your trusted partner for cutting-edge infrastructure solutions and innovative development services. We specialize in building robust, scalable systems that drive digital transformation.</p>
+                
+                <h3>Featured Services</h3>
+                <ul class="feature-list">
+                    <li>Cloud Architecture Design</li>
+                    <li>DevOps Implementation</li>
+                    <li>Application Development</li>
+                    <li>Infrastructure Monitoring</li>
+                    <li>Security Hardening</li>
+                    <li>Performance Optimization</li>
+                </ul>
+                
+                <p>Explore our services and discover how we can help transform your digital infrastructure into a competitive advantage.</p>
+                
+                <!-- Action Buttons -->
+                <div class="btn-group">
+                    <button class="btn btn-primary" onclick="showSection('about')">Learn More</button>
+                    <button class="btn btn-secondary" onclick="showSection('contact')">Get Started</button>
+                </div>
+            </section>
+
             <!-- Admin Section -->
             <section id="admin" class="content-section">
                 <div class="section-header">
@@ -685,6 +695,7 @@
                 
                 <p>Welcome to the administrative dashboard. Access system controls and management tools through secure authentication.</p>
                 
+                <!-- Status Dashboard -->
                 <div class="status-grid">
                     <div class="status-card">
                         <div class="status-label">System Status</div>
@@ -707,6 +718,7 @@
                 
                 <p>Enhanced security protocols are actively monitoring all system access. Authentication required for administrative functions.</p>
                 
+                <!-- Admin Action Buttons -->
                 <div class="btn-group">
                     <button class="btn btn-primary" onclick="alert('Authentication Required')">Access Dashboard</button>
                     <button class="btn btn-secondary">View Logs</button>
@@ -735,6 +747,7 @@
                 <h3>Technical Stack</h3>
                 <p>Proficient in modern technologies including cloud platforms (AWS, Azure, GCP), containerization (Docker, Kubernetes), and various programming languages and frameworks.</p>
                 
+                <!-- Resume Action Buttons -->
                 <div class="btn-group">
                     <button class="btn btn-primary" onclick="alert('Resume download initiated')">Download PDF</button>
                     <button class="btn btn-secondary">View Portfolio</button>
@@ -775,8 +788,10 @@
                 
                 <p>Get in touch to discuss your project requirements or learn more about our services.</p>
                 
+                <!-- Contact Form -->
                 <form onsubmit="handleSubmit(event)">
                     <div class="form-grid">
+                        <!-- Name and Email Row -->
                         <div class="form-row">
                             <div class="form-group">
                                 <label for="name">Name</label>
@@ -787,22 +802,26 @@
                                 <input type="email" id="email" name="email" required placeholder="john@example.com">
                             </div>
                         </div>
+                        <!-- Subject Field -->
                         <div class="form-group">
                             <label for="subject">Subject</label>
                             <input type="text" id="subject" name="subject" placeholder="Project Inquiry">
                         </div>
+                        <!-- Message Field -->
                         <div class="form-group">
                             <label for="message">Message</label>
                             <textarea id="message" name="message" required placeholder="Tell us about your project..."></textarea>
                         </div>
                     </div>
                     
+                    <!-- Form Action Buttons -->
                     <div class="btn-group">
                         <button type="submit" class="btn btn-primary">Send Message</button>
                         <button type="reset" class="btn btn-secondary">Clear Form</button>
                     </div>
                 </form>
                 
+                <!-- Social Media Links -->
                 <div class="social-links">
                     <a href="#" class="social-link" title="GitHub">G</a>
                     <a href="#" class="social-link" title="LinkedIn">L</a>
@@ -812,27 +831,33 @@
             </section>
         </main>
 
-        <!-- Footer -->
+        <!-- Site Footer -->
         <footer>
             <p>&copy; 2024 Ferroserver. All rights reserved. | <a href="#">Privacy Policy</a> | <a href="#">Terms of Service</a></p>
         </footer>
     </div>
 
+    <!-- JavaScript Section -->
     <script>
-        // Section Management
+        // === SECTION MANAGEMENT === 
+        // Function to show a specific content section
         function showSection(sectionId) {
+            // Hide all sections first
             const sections = document.querySelectorAll('.content-section');
             sections.forEach(section => {
                 section.classList.remove('active');
             });
             
+            // Show the selected section
             const targetSection = document.getElementById(sectionId);
             if (targetSection) {
                 targetSection.classList.add('active');
+                // Smooth scroll to section
                 targetSection.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
             }
         }
 
+        // Function to hide all sections
         function hideSection() {
             const sections = document.querySelectorAll('.content-section');
             sections.forEach(section => {
@@ -840,44 +865,50 @@
             });
         }
 
-        // Form Handler
+        // === FORM SUBMISSION HANDLER ===
         function handleSubmit(event) {
+            // Prevent default form submission
             event.preventDefault();
             
-            // Show loading state
+            // Get submit button and show loading state
             const submitBtn = event.target.querySelector('button[type="submit"]');
             const originalText = submitBtn.textContent;
             submitBtn.innerHTML = '<span class="loader"></span>';
             submitBtn.disabled = true;
             
-            // Simulate form submission
+            // Simulate form submission (replace with actual submission logic)
             setTimeout(() => {
+                // Show success message
                 alert('Thank you for your message. We will respond within 24 hours.');
+                // Reset form
                 event.target.reset();
+                // Restore button state
                 submitBtn.textContent = originalText;
                 submitBtn.disabled = false;
             }, 1500);
         }
 
-        // Smooth scroll for anchor links
+        // === SMOOTH SCROLL FOR ANCHOR LINKS ===
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
                 e.preventDefault();
+                // Navigation is handled by showSection function
             });
         });
 
-        // Add subtle parallax effect on scroll
+        // === PARALLAX EFFECT ON SCROLL ===
         window.addEventListener('scroll', () => {
             const scrolled = window.pageYOffset;
             const parallax = document.querySelector('.bg-gradient');
             if (parallax) {
+                // Move background slower than scroll
                 parallax.style.transform = `translateY(${scrolled * 0.5}px)`;
             }
         });
 
-        // Initialize
+        // === PAGE LOAD INITIALIZATION ===
         document.addEventListener('DOMContentLoaded', () => {
-            // Add loading animation removal
+            // Add fade-in effect on page load
             document.body.style.opacity = '0';
             setTimeout(() => {
                 document.body.style.transition = 'opacity 0.5s';
