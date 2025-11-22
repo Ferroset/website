@@ -3,16 +3,16 @@
 <head>
     <!-- Page Title - Shows in browser tab -->
     <title>Ferroserver</title>
-    
+
     <!-- Meta Tags for Character Encoding and Responsive Design -->
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
-    
+
     <!-- Google Fonts Import Section -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=JetBrains+Mono:wght@300;400&display=swap" rel="stylesheet">
-    
+
     <!-- Internal Stylesheet -->
     <style>
         /* === RESET STYLES === */
@@ -28,21 +28,21 @@
             --primary: #64B5F6;
             --primary-dark: #2196F3;
             --accent: #4FC3F7;
-            
+
             /* Status Colors */
             --success: #4CAF50;
             --warning: #FFA726;
-            
+
             /* Background Colors */
             --bg-main: #0a0e1a;
             --bg-card: #111827;
             --bg-hover: #1a2332;
-            
+
             /* Border & Effects */
             --border: rgba(100, 181, 246, 0.2);
             --shadow: rgba(0, 0, 0, 0.3);
             --glow: rgba(100, 181, 246, 0.4);
-            
+
             /* Text Colors */
             --text-primary: #f0f4f8;
             --text-secondary: #94a3b8;
@@ -113,7 +113,7 @@
             position: absolute;
             width: 100%;
             height: 100%;
-            background-image: 
+            background-image:
                 linear-gradient(rgba(100, 181, 246, 0.03) 1px, transparent 1px),
                 linear-gradient(90deg, rgba(100, 181, 246, 0.03) 1px, transparent 1px);
             background-size: 100px 100px;
@@ -789,33 +789,33 @@
             .logo {
                 font-size: 2.5rem;
             }
-            
+
             /* Stack form rows on mobile */
             .form-row {
                 grid-template-columns: 1fr;
             }
-            
+
             /* Adjust button group on mobile */
             .btn-group {
                 flex-direction: column;
             }
-            
+
             /* Smaller padding on mobile */
             .container {
                 padding: 1rem;
             }
-            
+
             .content-section {
                 padding: 1.5rem;
             }
-            
+
             /* Contact info layout for mobile */
             .contact-item {
                 flex-direction: column;
                 align-items: flex-start;
                 gap: 0.5rem;
             }
-            
+
             .contact-label {
                 min-width: auto;
             }
@@ -868,15 +868,15 @@
             <!-- Home Section (Default) -->
             <section id="home" class="content-section active">
                 <div class="section-header">
-                    <h2>Welcome to Ferroserver</h2>
+                    <h2>Ferroserver Homepage</h2>
                     <button class="close-btn" onclick="hideSection()">Close</button>
                 </div>
-                
-                <p>The personal technology hub of John Desautels - an experienced IT professional specializing in infrastructure, computer repair, and innovative home lab solutions.</p>
-                
-                <h3>Professional IT Expertise Meets Creative Homelab Tinkering</h3>
-                <p>My dual-server home lab infrastructure demonstrates that powerful, versatile systems don't require the latest hardware; just thoughtful design and careful implementation.</p>
-                
+
+                <p>The personal technology hub of John Desautels - an experienced field technician & hobbyist specializing in infrastructure, computer repair, and homelab solutions.</p>
+
+                <h3>Professional IT Experience Meets Creative Homelab Tinkering</h3>
+                <p>The Ferroserver dual-server homelab system demonstrates that powerful, versatile systems don't require the latest/greatest hardware; just thoughtful design and careful implementation.</p>
+
                 <div class="card-grid">
                     <div class="card">
                         <h4>IT Operations & Computer Repair Experience</h4>
@@ -891,7 +891,7 @@
                         <p>Custom-trained language models built exclusively on public domain and FOSS datasets, running on local infrastructure.</p>
                     </div>
                 </div>
-                
+
                 <h3>Current Capabilities & Services</h3>
                 <ul class="feature-list">
                     <li><strong>24/7 Plex Media Server</strong> - Streaming up to 5TB of content across multiple devices</li>
@@ -900,13 +900,13 @@
                     <li><strong>Video Processing</strong> - Upscaling and enhancement through Handbrake</li>
                     <li><strong>Professional IT Services</strong> - Hardware repair, OS installation, network setup</li>
                 </ul>
-                
+
                 <p>Explore how my professional IT experience combined with creative home lab infrastructure can deliver reliable, easy, sometimes unconventional solutions for your technology needs.</p>
-                
+
                 <!-- Action Buttons -->
                 <div class="btn-group">
                     <button class="btn btn-primary" onclick="showSection('resume')">View Resume</button>
-                    <button class="btn btn-secondary" onclick="showSection('about')">Explore Infrastructure</button>
+                    <button class="btn btn-secondary" onclick="showSection('about')">About The Ferroserver System</button>
                 </div>
             </section>
 
@@ -916,9 +916,9 @@
                     <h2>Music</h2>
                     <button class="close-btn" onclick="hideSection()">Close</button>
                 </div>
-                
+
                 <p>Explore my music across different platforms. Follow me on Spotify and YouTube to stay updated with the latest releases and content.</p>
-                
+
                 <!-- Music Platform Cards -->
                 <div class="music-platforms">
                     <!-- Spotify Card -->
@@ -934,7 +934,7 @@
                             <span class="music-btn">Open Spotify ?</span>
                         </div>
                     </a>
-                    
+
                     <!-- YouTube Card -->
                     <a href="https://www.youtube.com/channel/UCUwDawKuiOhaEPIhYVcp_DA" target="_blank" rel="noopener noreferrer" class="music-card youtube-card">
                         <div class="music-icon">
@@ -949,41 +949,38 @@
                         </div>
                     </a>
                 </div>
-                
+
                 <p class="music-cta">Follow me on these platforms to get notified about new releases, behind-the-scenes content, and exclusive updates!</p>
             </section>
 
             <!-- Resume Section -->
             <section id="resume" class="content-section">
                 <div class="section-header">
-                    <h2>John Desautels</h2>
+                    <h2>John Desautels - Resume</h2>
                     <button class="close-btn" onclick="hideSection()">Close</button>
                 </div>
-                
+
                 <p>Self-driven service specialist & IT technician who is knowledgeable & proficient in computer hardware, software, & troubleshooting.</p>
-                
+
                 <div class="status-grid">
                     <div class="status-card">
                         <div class="status-label">IT Experience</div>
                         <div class="status-value">2+ Years</div>
-                        <div class="status-indicator status-online"></div>
                     </div>
-                    
+
                     <div class="status-card">
                         <div class="status-label">Computer Repair</div>
                         <div class="status-value">8+ Years</div>
-                        <div class="status-indicator status-online"></div>
                     </div>
-                    
+
                     <div class="status-card">
                         <div class="status-label">Education</div>
-                        <div class="status-value">BS IT</div>
-                        <div class="status-indicator status-online"></div>
+                        <div class="status-value">BS IT (Partial)</div>
                     </div>
                 </div>
-                
+
                 <h3>Professional Experience</h3>
-                
+
                 <div class="timeline">
                     <div class="timeline-item">
                         <div class="timeline-date">May 2024 - Present</div>
@@ -993,7 +990,7 @@
                             Banner Elk, North Carolina, United States
                         </div>
                     </div>
-                    
+
                     <div class="timeline-item">
                         <div class="timeline-date">Oct 2023 - Jul 2024</div>
                         <div class="timeline-title">Founder</div>
@@ -1002,7 +999,7 @@
                             Boone, North Carolina, United States
                         </div>
                     </div>
-                    
+
                     <div class="timeline-item">
                         <div class="timeline-date">Aug 2023 - Oct 2023</div>
                         <div class="timeline-title">Computer Technician</div>
@@ -1011,7 +1008,7 @@
                             Successfully fixed hundreds of computers for customers, issues ranging from screen damage, bad power supply/DC jack, bad motherboard, bad graphics card, to destroyed hard drives, water damage, battery replacements, and more. Collaborated with a fantastic team to diagnose, address, and fix PCs/laptops by utilizing teamwork, professionalism, and synergy.
                         </div>
                     </div>
-                    
+
                     <div class="timeline-item">
                         <div class="timeline-date">Jun 2023 - Aug 2023</div>
                         <div class="timeline-title">Internship Trainee</div>
@@ -1020,7 +1017,7 @@
                             Actively learned how to utilize networking equipment more effectively due to strong leadership & informative teaching.
                         </div>
                     </div>
-                    
+
                     <div class="timeline-item">
                         <div class="timeline-date">Aug 2022 - Jan 2023</div>
                         <div class="timeline-title">Inventory Specialist</div>
@@ -1029,7 +1026,7 @@
                             Boone, North Carolina, United States
                         </div>
                     </div>
-                    
+
                     <div class="timeline-item">
                         <div class="timeline-date">May 2022 - Aug 2022</div>
                         <div class="timeline-title">Technology Associate</div>
@@ -1038,7 +1035,7 @@
                             Received printed document of recognition for satisfactory customer service & sales skills after a customer mentioned me by name via a letter to the company president.
                         </div>
                     </div>
-                    
+
                     <div class="timeline-item">
                         <div class="timeline-date">Jan 2022 - May 2022</div>
                         <div class="timeline-title">Sales Associate</div>
@@ -1047,7 +1044,7 @@
                             Boone, North Carolina, United States
                         </div>
                     </div>
-                    
+
                     <div class="timeline-item">
                         <div class="timeline-date">Jun 2021 - Dec 2021</div>
                         <div class="timeline-title">Sandwich Maker</div>
@@ -1056,7 +1053,7 @@
                             Boone, North Carolina, United States
                         </div>
                     </div>
-                    
+
                     <div class="timeline-item">
                         <div class="timeline-date">Jun 2018 - Aug 2018</div>
                         <div class="timeline-title">Sandwich Maker</div>
@@ -1066,7 +1063,7 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <h3>Education</h3>
                 <div class="timeline">
                     <div class="timeline-item">
@@ -1074,11 +1071,11 @@
                         <div class="timeline-title">Information Technology Studies</div>
                         <div class="timeline-company">Liberty University Online</div>
                         <div class="timeline-description">
-                            Completed coursework toward Bachelor's degree in Information Technology
+                            Completed coursework toward Bachelor's degree in Information Technology, did not complete.
                         </div>
                     </div>
                 </div>
-                
+
                 <h3>Key Skills & Accomplishments</h3>
                 <ul class="feature-list">
                     <li>IT Operations & Computer Repair</li>
@@ -1088,9 +1085,9 @@
                     <li>Networking Equipment Installation</li>
                     <li>Customer Service & Professionalism</li>
                 </ul>
-                
+
                 <p><strong>Notable Accomplishments:</strong> Successfully repaired and restored many desktop PCs, business computers, laptops, and MacBooks. Worked with major businesses & retailers to install networking equipment, test the equipment, and troubleshoot. Serviced clients one-on-one, focusing on their computer/networking needs while maintaining a professional, kind, and patient demeanor.</p>
-                
+
                 <!-- Resume Action Buttons -->
                 <div class="btn-group">
                     <button class="btn btn-primary" onclick="alert('Resume download initiated')">Download Resume</button>
@@ -1104,15 +1101,15 @@
                     <h2>SysInfo</h2>
                     <button class="close-btn" onclick="hideSection()">Close</button>
                 </div>
-                
+
                 <p>The Ferroserver infrastructure consists of two dedicated home lab systems, each optimized for specific tasks and running on reliable, enterprise-grade hardware repurposed for personal and creative projects.</p>
-                
+
                 <h3>Ferroserver 1 - Media & Gaming Hub</h3>
                 <p>Built on an HP EliteDesk HTPC platform, this server leverages an Intel Core i5-6500T vPro processor with 16GB of RAM. Its primary role is managing a comprehensive Plex media library with up to 5TB of films and shows, ensuring smooth streaming across multiple devices. Additionally, it hosts a Minecraft server accessible through Playit, providing a stable gaming experience for friends and family.</p>
-                
+
                 <h3>Ferroserver 2 - AI & Processing Powerhouse</h3>
                 <p>Running on a ThinkCentre HTPC with ZimaOS (the evolved successor to CasaOS), this system harnesses an AMD Ryzen 5 PRO 2400GE processor paired with integrated Vega 11 Graphics and 16GB of RAM. This server specializes in running custom-trained Large Language Models built exclusively on ethical AI foundations using public domain and FOSS datasets. It also handles video upscaling tasks through Handbrake, preprocessing content for the Plex library on Ferroserver 1.</p>
-                
+
                 <h3>Capabilities & Services</h3>
                 <ul class="feature-list">
                     <li>24/7 Plex Media Streaming (up to 5TB library)</li>
@@ -1122,7 +1119,7 @@
                     <li>Efficient Power Consumption with Enterprise Components</li>
                     <li>Reliable Home Lab Infrastructure</li>
                 </ul>
-                
+
                 <p>Both servers demonstrate that powerful, versatile infrastructure doesn't require the latest hardware. By thoughtfully combining proven enterprise components with modern software solutions, the Ferroserver systems deliver reliable performance for media streaming, gaming, AI experimentation, and content processing—all while maintaining reasonable power consumption suitable for continuous home operation.</p>
             </section>
 
@@ -1132,9 +1129,9 @@
                     <h2>Contact</h2>
                     <button class="close-btn" onclick="hideSection()">Close</button>
                 </div>
-                
+
                 <p>Get in touch with John Desautels for inquiries about IT services, computer repair, or other professional opportunities.</p>
-                
+
                 <!-- Contact Information List -->
                 <div class="contact-info">
                     <div class="contact-item">
@@ -1157,7 +1154,7 @@
 
     <!-- JavaScript Section -->
     <script>
-        // === SECTION MANAGEMENT === 
+        // === SECTION MANAGEMENT ===
         // Function to show a specific content section
         function showSection(sectionId) {
             // Hide all sections first
@@ -1165,7 +1162,7 @@
             sections.forEach(section => {
                 section.classList.remove('active');
             });
-            
+
             // Show the selected section
             const targetSection = document.getElementById(sectionId);
             if (targetSection) {
@@ -1187,13 +1184,13 @@
         function handleSubmit(event) {
             // Prevent default form submission
             event.preventDefault();
-            
+
             // Get submit button and show loading state
             const submitBtn = event.target.querySelector('button[type="submit"]');
             const originalText = submitBtn.textContent;
             submitBtn.innerHTML = '<span class="loader"></span>';
             submitBtn.disabled = true;
-            
+
             // Simulate form submission (replace with actual submission logic)
             setTimeout(() => {
                 // Show success message
