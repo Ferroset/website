@@ -308,6 +308,12 @@
             margin: 1.5rem 0 1rem;
         }
 
+        h4 {
+            font-size: 1.1rem;
+            color: var(--text-primary);
+            margin: 1rem 0 0.5rem;
+        }
+
         /* Paragraph spacing */
         p {
             margin-bottom: 1.5rem;
@@ -462,6 +468,62 @@
                 opacity: 0.7;
                 transform: scale(1.1);
             }
+        }
+
+        /* === EXPERIENCE TIMELINE === */
+        .timeline {
+            position: relative;
+            margin: 2rem 0;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: var(--border);
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: 2rem;
+            padding-left: 2rem;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -6px;
+            top: 0.5rem;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--primary);
+        }
+
+        .timeline-date {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .timeline-title {
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.25rem;
+        }
+
+        .timeline-company {
+            color: var(--primary);
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+        }
+
+        .timeline-description {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
         }
 
         /* === CONTACT FORM === */
@@ -837,29 +899,145 @@
             <!-- Resume Section -->
             <section id="resume" class="content-section">
                 <div class="section-header">
-                    <h2>Professional Resume</h2>
+                    <h2>John Desautels</h2>
                     <button class="close-btn" onclick="hideSection()">Close</button>
                 </div>
                 
-                <p>Comprehensive professional profile highlighting expertise in modern infrastructure and development.</p>
+                <p>Self-driven service specialist & IT technician who is knowledgeable & proficient in computer hardware, software, & troubleshooting.</p>
                 
-                <h3>Core Competencies</h3>
+                <div class="status-grid">
+                    <div class="status-card">
+                        <div class="status-label">IT Experience</div>
+                        <div class="status-value">2+ Years</div>
+                        <div class="status-indicator status-online"></div>
+                    </div>
+                    
+                    <div class="status-card">
+                        <div class="status-label">Computer Repair</div>
+                        <div class="status-value">8+ Years</div>
+                        <div class="status-indicator status-online"></div>
+                    </div>
+                    
+                    <div class="status-card">
+                        <div class="status-label">Education</div>
+                        <div class="status-value">BS IT</div>
+                        <div class="status-indicator status-online"></div>
+                    </div>
+                </div>
+                
+                <h3>Professional Experience</h3>
+                
+                <div class="timeline">
+                    <div class="timeline-item">
+                        <div class="timeline-date">May 2024 - Present</div>
+                        <div class="timeline-title">Food Specialist</div>
+                        <div class="timeline-company">Mountain Grounds Coffee & Tea Co</div>
+                        <div class="timeline-description">
+                            Banner Elk, North Carolina, United States
+                        </div>
+                    </div>
+                    
+                    <div class="timeline-item">
+                        <div class="timeline-date">Oct 2023 - Jul 2024</div>
+                        <div class="timeline-title">Founder</div>
+                        <div class="timeline-company">Desautels Computer Repair</div>
+                        <div class="timeline-description">
+                            Boone, North Carolina, United States
+                        </div>
+                    </div>
+                    
+                    <div class="timeline-item">
+                        <div class="timeline-date">Aug 2023 - Oct 2023</div>
+                        <div class="timeline-title">Computer Technician</div>
+                        <div class="timeline-company">Computer Tamers / Geeks at Work</div>
+                        <div class="timeline-description">
+                            Successfully fixed hundreds of computers for customers, issues ranging from screen damage, bad power supply/DC jack, bad motherboard, bad graphics card, to destroyed hard drives, water damage, battery replacements, and more. Collaborated with a fantastic team to diagnose, address, and fix PCs/laptops by utilizing teamwork, professionalism, and synergy.
+                        </div>
+                    </div>
+                    
+                    <div class="timeline-item">
+                        <div class="timeline-date">Jun 2023 - Aug 2023</div>
+                        <div class="timeline-title">Internship Trainee</div>
+                        <div class="timeline-company">Computer Tamers / Geeks at Work</div>
+                        <div class="timeline-description">
+                            Actively learned how to utilize networking equipment more effectively due to strong leadership & informative teaching.
+                        </div>
+                    </div>
+                    
+                    <div class="timeline-item">
+                        <div class="timeline-date">Aug 2022 - Jan 2023</div>
+                        <div class="timeline-title">Inventory Specialist</div>
+                        <div class="timeline-company">Staples</div>
+                        <div class="timeline-description">
+                            Boone, North Carolina, United States
+                        </div>
+                    </div>
+                    
+                    <div class="timeline-item">
+                        <div class="timeline-date">May 2022 - Aug 2022</div>
+                        <div class="timeline-title">Technology Associate</div>
+                        <div class="timeline-company">Staples</div>
+                        <div class="timeline-description">
+                            Received printed document of recognition for satisfactory customer service & sales skills after a customer mentioned me by name via a letter to the company president.
+                        </div>
+                    </div>
+                    
+                    <div class="timeline-item">
+                        <div class="timeline-date">Jan 2022 - May 2022</div>
+                        <div class="timeline-title">Sales Associate</div>
+                        <div class="timeline-company">Staples</div>
+                        <div class="timeline-description">
+                            Boone, North Carolina, United States
+                        </div>
+                    </div>
+                    
+                    <div class="timeline-item">
+                        <div class="timeline-date">Jun 2021 - Dec 2021</div>
+                        <div class="timeline-title">Sandwich Maker</div>
+                        <div class="timeline-company">Subway</div>
+                        <div class="timeline-description">
+                            Boone, North Carolina, United States
+                        </div>
+                    </div>
+                    
+                    <div class="timeline-item">
+                        <div class="timeline-date">Jun 2018 - Aug 2018</div>
+                        <div class="timeline-title">Sandwich Maker</div>
+                        <div class="timeline-company">Jersey Mike's Subs</div>
+                        <div class="timeline-description">
+                            Boone, North Carolina, United States
+                        </div>
+                    </div>
+                </div>
+                
+                <h3>Education</h3>
+                <div class="timeline">
+                    <div class="timeline-item">
+                        <div class="timeline-date">Aug 2019 - May 2023</div>
+                        <div class="timeline-title">Information Technology Studies</div>
+                        <div class="timeline-company">Liberty University Online</div>
+                        <div class="timeline-description">
+                            Completed coursework toward Bachelor's degree in Information Technology
+                        </div>
+                    </div>
+                </div>
+                
+                <h3>Key Skills & Accomplishments</h3>
                 <ul class="feature-list">
-                    <li>Cloud Architecture & DevOps</li>
-                    <li>Full-Stack Development</li>
-                    <li>System Design & Optimization</li>
-                    <li>Database Management</li>
-                    <li>Security Implementation</li>
-                    <li>Agile Project Management</li>
+                    <li>IT Operations & Computer Repair</li>
+                    <li>Computer Diagnostics & Restoration</li>
+                    <li>Software/OS Installation & Reloads</li>
+                    <li>Hardware Integrity Repairs</li>
+                    <li>Networking Equipment Installation</li>
+                    <li>Customer Service & Professionalism</li>
                 </ul>
                 
-                <h3>Technical Stack</h3>
-                <p>Proficient in modern technologies including cloud platforms (AWS, Azure, GCP), containerization (Docker, Kubernetes), and various programming languages and frameworks.</p>
+                <p><strong>Notable Accomplishments:</strong> Successfully repaired and restored many desktop PCs, business computers, laptops, and MacBooks. Worked with major businesses & retailers to install networking equipment, test the equipment, and troubleshoot. Serviced clients one-on-one, focusing on their computer/networking needs while maintaining a professional, kind, and patient demeanor.</p>
                 
                 <!-- Resume Action Buttons -->
                 <div class="btn-group">
-                    <button class="btn btn-primary" onclick="alert('Resume download initiated')">Download PDF</button>
-                    <button class="btn btn-secondary">View Portfolio</button>
+                    <button class="btn btn-primary" onclick="alert('Resume download initiated')">Download Resume</button>
+                    <button class="btn btn-secondary" onclick="showSection('contact')">Contact John</button>
                 </div>
             </section>
 
