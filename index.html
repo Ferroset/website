@@ -1239,36 +1239,47 @@
                 <div class="contact-info">
                     <div class="contact-item">
                         <div class="contact-label">E-Mail:</div>
-                        <div class="contact-value">johnedesautels@gmail.com</div>
+                        <div class="contact-value"><a href="mailto:johnedesautels@gmail.com">johnedesautels@gmail.com</a></div>
                     </div>
-                    <div class="contact-item">
-                        <div class="contact-label">Phone:</div>
-                        <div class="contact-value">1-434-426-4536</div>
-                    </div>
+
                 </div>
             </section>
         </main>
 
         <!-- Site Footer -->
         <footer>
-            <p>&copy; 2024 Ferroserver. All rights reserved. | <a href="#">Privacy Policy</a> | <a href="#">Terms of Service</a></p>
+            <p>&copy; 2025 Desautels Computer & Design. All rights reserved. | <a href="#">Privacy Policy</a> | <a href="#">Terms of Service</a></p>
         </footer>
     </div>
 
     <!-- JavaScript Section -->
+    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
     <script>
+        // ===================================
+        // FERROSERVER INTERACTIVE JAVASCRIPT
+        // ===================================
+        
+        // === GLOBAL VARIABLES ===
+        let currentSection = null;
+        let splashShown = false;
+        
         // === SPLASH SCREEN HANDLING ===
         function showSplashScreen() {
+            if (splashShown) return; // Prevent multiple calls
+            splashShown = true;
+            
             const splashScreen = document.getElementById('splash-screen');
-
+            
             // Show splash screen initially - it's already visible by default
             // After 2 seconds, fade out splash screen
             setTimeout(() => {
                 splashScreen.classList.add('fade-out');
-
-                // After fade out completes, remove splash screen
+                
+                // After fade out completes, remove splash screen from DOM
                 setTimeout(() => {
                     splashScreen.style.display = 'none';
+                    // Optional: Remove from DOM entirely to free memory
+                    splashScreen.remove();
                 }, 800);
             }, 2000);
         }
@@ -1281,10 +1292,11 @@
             sections.forEach(section => {
                 section.classList.remove('active');
             });
-
+            
             // Show the selected section
             const targetSection = document.getElementById(sectionId);
             if (targetSection) {
+                currentSection = sectionId; // Track current section
                 targetSection.classList.add('active');
                 // Smooth scroll to section
                 targetSection.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
@@ -1297,19 +1309,20 @@
             sections.forEach(section => {
                 section.classList.remove('active');
             });
+            currentSection = null; // Clear current section tracking
         }
 
         // === FORM SUBMISSION HANDLER ===
         function handleSubmit(event) {
             // Prevent default form submission
             event.preventDefault();
-
+            
             // Get submit button and show loading state
             const submitBtn = event.target.querySelector('button[type="submit"]');
             const originalText = submitBtn.textContent;
             submitBtn.innerHTML = '<span class="loader"></span>';
             submitBtn.disabled = true;
-
+            
             // Simulate form submission (replace with actual submission logic)
             setTimeout(() => {
                 // Show success message
@@ -1340,10 +1353,61 @@
             }
         });
 
-        // === PAGE LOAD INITIALIZATION ===
+        // === INITIALIZE ON PAGE LOAD ===
         document.addEventListener('DOMContentLoaded', () => {
-            // Show splash screen on page load
+            // Initialize splash screen animation
             showSplashScreen();
+            
+            // Add hover effects to cards
+            const cards = document.querySelectorAll('.card');
+            cards.forEach(card => {
+                card.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-5px)';
+                });
+                card.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0)';
+                });
+            });
+            
+            // Console welcome message
+            console.log('%c Welcome to Ferroserver! ', 'background: #64B5F6; color: #0a0e1a; font-size: 16px; font-weight: bold; padding: 10px;');
+            console.log('%c Built with passion by Desautels Computer & Design ', 'color: #64B5F6; font-size: 12px;');
+        });
+
+        // === KEYBOARD SHORTCUTS ===
+        document.addEventListener('keydown', (e) => {
+            // ESC key closes any open section
+            if (e.key === 'Escape') {
+                hideSection();
+            }
+            
+            // Quick navigation with number keys
+            if (e.altKey) {
+                switch(e.key) {
+                    case '1':
+                        showSection('services');
+                        break;
+                    case '2':
+                        showSection('resume');
+                        break;
+                    case '3':
+                        showSection('about');
+                        break;
+                    case '4':
+                        showSection('contact');
+                        break;
+                }
+            }
+        });
+
+        // === PERFORMANCE MONITORING ===
+        window.addEventListener('load', () => {
+            // Log page load performance
+            if (window.performance) {
+                const perfData = window.performance.timing;
+                const pageLoadTime = perfData.loadEventEnd - perfData.navigationStart;
+                console.log(`Page Load Time: ${pageLoadTime}ms`);
+            }
         });
     </script>
 </body>
