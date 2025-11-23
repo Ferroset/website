@@ -744,7 +744,17 @@
                 SCORE_INCREMENT: 5,
                 MAX_LIVES: 3,
                 EXPLOSION_PARTICLES: 15,
-                DEBRIS_PARTICLES: 4
+                DEBRIS_PARTICLES: 4,
+                // NEW: Powerup constants
+                POWERUP_SIZE: 12, // Diamond size
+                POWERUP_SPAWN_RATE: 0.003, // Lower chance than particles
+                POWERUP_DURATION: 5, // seconds
+                POWERUP_TYPES: {
+                    SLOW_TIME: { color: '#00FF00', name: 'SLOW TIME' },
+                    EXTRA_LIFE: { color: '#FFD700', name: 'EXTRA LIFE' },
+                    INVULNERABILITY: { color: '#00FFFF', name: 'INVULNERABILITY' },
+                    DOUBLE_SCORE: { color: '#FF00FF', name: 'DOUBLE SCORE' }
+                }
             };
 
             // Game state
@@ -752,6 +762,7 @@
                 player: { x: 0, y: 0, radius: CONSTANTS.PLAYER_RADIUS },
                 particles: [],
                 debris: [],
+                powerups: [], // NEW: Powerups array
                 score: 0,
                 gameTime: 0,
                 gameRunning: false,
@@ -761,7 +772,15 @@
                 isInvulnerable: false,
                 invulnerabilityTimer: 0,
                 isGameOver: false,
-                gameOverTime: 0
+                gameOverTime: 0,
+                // NEW: Active powerup states
+                activePowerups: {
+                    slowTime: { active: false, timer: 0 },
+                    doubleScore: { active: false, timer: 0 }
+                },
+                scoreMultiplier: 1,
+                // FIX: Track animation frame ID to prevent multiple loops
+                animationId: null
             };
 
             // Canvas context
@@ -776,6 +795,7 @@
                 state.player.y = canvas.height / 2;
                 state.particles = [];
                 state.debris = [];
+                state.powerups = []; // NEW: Reset powerups
                 state.score = 0;
                 state.gameTime = 0;
                 state.lives = CONSTANTS.MAX_LIVES;
@@ -783,6 +803,17 @@
                 state.invulnerabilityTimer = 0;
                 state.isGameOver = false;
                 state.gameOverTime = 0;
+                // NEW: Reset powerup states
+                state.activePowerups = {
+                    slowTime: { active: false, timer: 0 },
+                    doubleScore: { active: false, timer: 0 }
+                };
+                state.scoreMultiplier = 1;
+                // FIX: Clear any existing animation
+                if (state.animationId) {
+                    cancelAnimationFrame(state.animationId);
+                    state.animationId = null;
+                }
 
                 DOM.particleScore.textContent = state.score;
                 DOM.particleTimer.textContent = state.gameTime.toFixed(1);
@@ -852,10 +883,52 @@
             }
 
             /**
-             * Create debris particles when a gray particle hits the player
+             * Create a new powerup
              */
-            function createDebris(x, y) {
-                for (let i = 0; i < CONSTANTS.DEBRIS_PARTICLES; i++) {
+            function createPowerup() {
+                const powerupTypes = Object.keys(CONSTANTS.POWERUP_TYPES);
+                const randomType = powerupTypes[Math.floor(Math.random() * powerupTypes.length)];
+                const powerup = CONSTANTS.POWERUP_TYPES[randomType];
+                
+                // Spawn powerup at random position (not too close to edges)
+                const x = Math.random() * (canvas.width - 40) + 20;
+                const y = Math.random() * (canvas.height - 40) + 20;
+                
+                state.powerups.push({
+                    x,
+                    y,
+                    size: CONSTANTS.POWERUP_SIZE,
+                    type: randomType,
+                    color: powerup.color,
+                    name: powerup.name
+                });
+            }
+
+            /**
+             * Draw a diamond shape for powerups
+             */
+            function drawDiamond(x, y, size, color) {
+                ctx.fillStyle = color;
+                ctx.beginPath();
+                ctx.moveTo(x, y - size); // Top
+                ctx.lineTo(x + size, y); // Right
+                ctx.lineTo(x, y + size); // Bottom
+                ctx.lineTo(x - size, y); // Left
+                ctx.closePath();
+                ctx.fill();
+                
+                // Add glow effect
+                ctx.shadowColor = color;
+                ctx.shadowBlur = 10;
+                ctx.fill();
+                ctx.shadowBlur = 0;
+            }
+
+            /**
+             * Create debris particles when a gray particle hits the player or is destroyed
+             */
+            function createDebris(x, y, count = CONSTANTS.DEBRIS_PARTICLES, color = CONSTANTS.PARTICLE_COLOR) {
+                for (let i = 0; i < count; i++) {
                     const angle = Math.random() * Math.PI * 2;
                     const speed = Math.random() * 2 + 1;
                     state.debris.push({
@@ -865,7 +938,8 @@
                         vy: Math.sin(angle) * speed,
                         radius: CONSTANTS.PARTICLE_RADIUS / 2,
                         alpha: 1,
-                        decay: 0.02
+                        decay: 0.02,
+                        color: color
                     });
                 }
             }
@@ -919,6 +993,11 @@
                     ctx.fill();
                 });
 
+                // NEW: Draw powerups as diamonds
+                state.powerups.forEach(powerup => {
+                    drawDiamond(powerup.x, powerup.y, powerup.size, powerup.color);
+                });
+
                 // Draw debris particles
                 state.debris.forEach(debris => {
                     ctx.save();
@@ -941,12 +1020,34 @@
                 ctx.fillStyle = 'white';
                 ctx.font = 'bold 16px Arial';
                 ctx.textAlign = 'left';
-                ctx.fillText(`SCORE: ${state.score}`, 10, 25);
+                
+                // Show score with multiplier if active
+                let scoreText = `SCORE: ${state.score}`;
+                if (state.scoreMultiplier > 1) {
+                    scoreText += ` (x${state.scoreMultiplier})`;
+                }
+                ctx.fillText(scoreText, 10, 25);
+                
                 ctx.textAlign = 'right';
                 ctx.fillText(`TIME: ${state.gameTime.toFixed(1)}S`, canvas.width - 10, 25);
                 ctx.textAlign = 'left';
 
+                // NEW: Draw active powerup indicators
+                let powerupY = 50;
+                Object.keys(state.activePowerups).forEach(powerupKey => {
+                    const powerup = state.activePowerups[powerupKey];
+                    if (powerup.active) {
+                        const powerupType = CONSTANTS.POWERUP_TYPES[powerupKey.toUpperCase()];
+                        if (powerupType) {
+                            ctx.fillStyle = powerupType.color;
+                            ctx.fillText(`${powerupType.name}: ${powerup.timer.toFixed(1)}s`, 10, powerupY);
+                            powerupY += 20;
+                        }
+                    }
+                });
+
                 // Draw instructions
+                ctx.fillStyle = 'white';
                 ctx.font = '14px Arial';
                 ctx.textAlign = 'center';
                 const instruction = state.gameRunning ? 'USE ARROW KEYS TO MOVE' : 'CLICK "START GAME" TO BEGIN!';
@@ -961,24 +1062,30 @@
                 if (!state.gameRunning && !state.isGameOver) return;
 
                 // Calculate delta time for smooth animation
-                const deltaTime = state.lastTime ? (timestamp - state.lastTime) / 1000 : 0;
+                const deltaTime = state.lastTime ? (timestamp - state.lastTime) / 1000 : 0.016; // Cap at 60fps
                 state.lastTime = timestamp;
 
+                // Apply slow time effect if active
+                const effectiveDeltaTime = state.activePowerups.slowTime.active ? deltaTime * 0.5 : deltaTime;
+
                 // Update game time
-                state.gameTime += deltaTime;
+                state.gameTime += deltaTime; // Real time for display
                 DOM.particleTimer.textContent = state.gameTime.toFixed(1);
 
                 // Update invulnerability timer
                 if (state.isInvulnerable) {
-                    state.invulnerabilityTimer -= deltaTime;
+                    state.invulnerabilityTimer -= effectiveDeltaTime;
                     if (state.invulnerabilityTimer <= 0) {
                         state.isInvulnerable = false;
                     }
                 }
 
+                // NEW: Update active powerups
+                updatePowerups(effectiveDeltaTime);
+
                 // Handle game over state
                 if (state.isGameOver) {
-                    state.gameOverTime += deltaTime;
+                    state.gameOverTime += effectiveDeltaTime;
                     
                     // Continue animation for 2 seconds after game over
                     if (state.gameOverTime >= 2) {
@@ -993,17 +1100,25 @@
 
                     // Update particles
                     updateParticles();
+
+                    // NEW: Update powerups and check collisions
+                    updatePowerupsAndCollisions();
                 }
 
                 // Update debris
                 updateDebris();
 
+                // NEW: Spawn powerups occasionally
+                if (Math.random() < CONSTANTS.POWERUP_SPAWN_RATE) {
+                    createPowerup();
+                }
+
                 // Draw frame
                 draw();
 
-                // Continue animation loop
-                const animationId = requestAnimationFrame(update);
-                GameState.animationIds.add(animationId);
+                // FIX: Use single animation frame ID to prevent multiple loops
+                state.animationId = requestAnimationFrame(update);
+                GameState.animationIds.add(state.animationId);
             }
 
             /**
@@ -1018,6 +1133,85 @@
             }
 
             /**
+             * Update active powerups and their timers
+             */
+            function updatePowerups(deltaTime) {
+                Object.keys(state.activePowerups).forEach(powerupKey => {
+                    const powerup = state.activePowerups[powerupKey];
+                    if (powerup.active) {
+                        powerup.timer -= deltaTime;
+                        if (powerup.timer <= 0) {
+                            powerup.active = false;
+                            // Reset effects
+                            if (powerupKey === 'doubleScore') {
+                                state.scoreMultiplier = 1;
+                            }
+                            showGameMessage(DOM.particleMessage, `${CONSTANTS.POWERUP_TYPES[powerupKey.toUpperCase()].name} ENDED!`, 'warning', 1000);
+                        }
+                    }
+                });
+            }
+
+            /**
+             * Update powerups and check for collisions with player
+             */
+            function updatePowerupsAndCollisions() {
+                for (let i = state.powerups.length - 1; i >= 0; i--) {
+                    const powerup = state.powerups[i];
+                    
+                    // Check collision with player (using diamond bounds approximation)
+                    const dx = powerup.x - state.player.x;
+                    const dy = powerup.y - state.player.y;
+                    const distanceSquared = dx * dx + dy * dy;
+                    const minDistance = powerup.size + state.player.radius;
+
+                    if (distanceSquared < minDistance * minDistance) {
+                        // Collect powerup
+                        collectPowerup(powerup.type);
+                        state.powerups.splice(i, 1);
+                    }
+                }
+            }
+
+            /**
+             * Handle powerup collection
+             */
+            function collectPowerup(type) {
+                showGameMessage(DOM.particleMessage, `${CONSTANTS.POWERUP_TYPES[type].name}!`,
+                               'success', 1500);
+
+                switch(type) {
+                    case 'SLOW_TIME':
+                        state.activePowerups.slowTime.active = true;
+                        state.activePowerups.slowTime.timer = CONSTANTS.POWERUP_DURATION;
+                        break;
+                        
+                    case 'EXTRA_LIFE':
+                        if (state.lives < CONSTANTS.MAX_LIVES) {
+                            state.lives++;
+                            DOM.particleLives.textContent = state.lives;
+                            updateLivesDisplay();
+                        } else {
+                            // If at max lives, give bonus points instead
+                            state.score += 100;
+                            DOM.particleScore.textContent = state.score;
+                        }
+                        break;
+                        
+                    case 'INVULNERABILITY':
+                        state.isInvulnerable = true;
+                        state.invulnerabilityTimer = CONSTANTS.POWERUP_DURATION;
+                        break;
+                        
+                    case 'DOUBLE_SCORE':
+                        state.activePowerups.doubleScore.active = true;
+                        state.activePowerups.doubleScore.timer = CONSTANTS.POWERUP_DURATION;
+                        state.scoreMultiplier = 2;
+                        break;
+                }
+            }
+
+            /**
              * Update all particles and check collisions
              */
             function updateParticles() {
@@ -1025,9 +1219,12 @@
                 for (let i = state.particles.length - 1; i >= 0; i--) {
                     const particle = state.particles[i];
 
+                    // Apply slow time effect to particles if active
+                    const speedMultiplier = state.activePowerups.slowTime.active ? 0.5 : 1;
+
                     // Move particle
-                    particle.x += particle.vx;
-                    particle.y += particle.vy;
+                    particle.x += particle.vx * speedMultiplier;
+                    particle.y += particle.vy * speedMultiplier;
 
                     // Check bounds and respawn
                     if (particle.x < -20 || particle.x > canvas.width + 20 ||
@@ -1039,20 +1236,26 @@
                     }
 
                     // Check collision with player (optimized distance check)
-                    if (!state.isInvulnerable && !state.isGameOver) {
-                        const dx = particle.x - state.player.x;
-                        const dy = particle.y - state.player.y;
-                        const distanceSquared = dx * dx + dy * dy;
-                        const minDistance = particle.radius + state.player.radius - 3;
+                    const dx = particle.x - state.player.x;
+                    const dy = particle.y - state.player.y;
+                    const distanceSquared = dx * dx + dy * dy;
+                    const minDistance = particle.radius + state.player.radius - 3;
 
-                        if (distanceSquared < minDistance * minDistance) {
-                            // Remove the particle and create debris
+                    if (distanceSquared < minDistance * minDistance) {
+                        if (!state.isInvulnerable && !state.isGameOver) {
+                            // Player gets hit - remove the particle and create debris
                             state.particles.splice(i, 1);
                             createDebris(particle.x, particle.y);
                             
                             // Handle player hit
                             playerHit();
                             return;
+                        } else if (state.isInvulnerable) {
+                            // During invulnerability - particle gets destroyed but player doesn't get hurt
+                            state.particles.splice(i, 1);
+                            createDebris(particle.x, particle.y, 8, '#FF0000'); // Red debris for destroyed particles
+                            state.score += 2; // Bonus score for destroying particles during invulnerability
+                            DOM.particleScore.textContent = state.score;
                         }
                     }
                 }
@@ -1114,14 +1317,19 @@
                 state.gameRunning = true;
                 state.lastTime = 0;
 
+                // FIX: Clear any existing animation before starting new one
+                if (state.animationId) {
+                    cancelAnimationFrame(state.animationId);
+                }
+
                 // Start game loop
-                const animationId = requestAnimationFrame(update);
-                GameState.animationIds.add(animationId);
+                state.animationId = requestAnimationFrame(update);
+                GameState.animationIds.add(state.animationId);
 
                 // Start score interval
                 state.scoreIntervalId = setInterval(() => {
                     if (state.gameRunning && !state.isGameOver) {
-                        state.score += CONSTANTS.SCORE_INCREMENT;
+                        state.score += CONSTANTS.SCORE_INCREMENT * state.scoreMultiplier;
                         DOM.particleScore.textContent = state.score;
                     }
                 }, CONSTANTS.SCORE_INTERVAL);
@@ -1136,6 +1344,11 @@
                 state.gameRunning = false;
                 state.isGameOver = false;
                 cleanupAnimations();
+                // FIX: Clear the animation ID
+                if (state.animationId) {
+                    cancelAnimationFrame(state.animationId);
+                    state.animationId = null;
+                }
                 init();
             }
 
