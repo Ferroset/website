@@ -709,6 +709,46 @@
             font-style: italic;
         }
 
+        /* === SERVER IMAGE DISPLAY STYLES === */
+        .server-image-container {
+            margin: 3rem 0;
+            text-align: center;
+        }
+
+        .server-image-wrapper {
+            max-width: 800px;
+            margin: 1.5rem auto;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+            box-shadow: 0 10px 30px var(--shadow);
+            transition: all 0.3s ease;
+        }
+
+        .server-image-wrapper:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px var(--shadow), 0 0 20px var(--glow);
+            border-color: var(--primary);
+        }
+
+        .server-image {
+            width: 100%;
+            height: auto;
+            display: block;
+            transition: transform 0.5s ease;
+        }
+
+        .server-image:hover {
+            transform: scale(1.02);
+        }
+
+        .image-caption {
+            color: var(--text-muted);
+            font-style: italic;
+            margin-top: 1rem;
+            font-size: 0.95rem;
+        }
+
         /* Two-column form row */
         .form-row {
             display: grid;
@@ -954,6 +994,17 @@
                     <li><strong>Video Processing</strong> - Upscaling and enhancement through Handbrake</li>
                     <li><strong>Professional IT Services</strong> - Hardware repair, OS installation, network setup</li>
                 </ul>
+
+                <!-- Server Image Display Section -->
+                <div class="server-image-container">
+                    <h3>Server System</h3>
+                    <div class="server-image-wrapper">
+                        <!-- EASILY EDITABLE IMAGE SOURCE -->
+                        <img src="images/pxl.jpg" alt="Ferroserver System" class="server-image">
+                        <!-- REPLACE "YOUR_IMAGE_SOURCE_HERE" with your actual image URL or path -->
+                    </div>
+                    <p class="image-caption">The Ferroserver dual-server homelab system</p>
+                </div>
 
                 <p>Explore how my professional IT experience combined with creative home lab infrastructure can deliver reliable, easy, sometimes unconventional solutions for your technology needs.</p>
 
@@ -1202,12 +1253,12 @@
         // === SPLASH SCREEN HANDLING ===
         function showSplashScreen() {
             const splashScreen = document.getElementById('splash-screen');
-            
+
             // Show splash screen initially - it's already visible by default
             // After 2 seconds, fade out splash screen
             setTimeout(() => {
                 splashScreen.classList.add('fade-out');
-                
+
                 // After fade out completes, remove splash screen
                 setTimeout(() => {
                     splashScreen.style.display = 'none';
