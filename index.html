@@ -291,6 +291,20 @@
             color: var(--primary);
         }
 
+        /* === GAMES NAVIGATION BUTTON STYLES === */
+        .nav-item.games-nav::before {
+            background: linear-gradient(90deg, transparent, #8B4513, transparent);
+        }
+
+        .nav-item.games-nav:hover {
+            border-color: #8B4513;
+            box-shadow: 0 10px 30px var(--shadow), 0 0 30px rgba(139, 69, 19, 0.4);
+        }
+
+        .nav-item.games-nav .nav-link:hover {
+            color: #8B4513;
+        }
+
         /* === MAIN CONTENT AREA === */
         main {
             min-height: 400px;
@@ -942,6 +956,10 @@
                 <div class="nav-item" onclick="showSection('music')">
                     <a href="#music" class="nav-link">Music</a>
                 </div>
+                <!-- Games Navigation -->
+                <div class="nav-item games-nav" onclick="window.location.href='/games.html'">
+                    <a href="/games.html" class="nav-link">Games</a>
+                </div>
                 <!-- Resume Navigation -->
                 <div class="nav-item" onclick="showSection('resume')">
                     <a href="#resume" class="nav-link">Resume</a>
@@ -1258,23 +1276,23 @@
         // ===================================
         // FERROSERVER INTERACTIVE JAVASCRIPT
         // ===================================
-        
+
         // === GLOBAL VARIABLES ===
         let currentSection = null;
         let splashShown = false;
-        
+
         // === SPLASH SCREEN HANDLING ===
         function showSplashScreen() {
             if (splashShown) return; // Prevent multiple calls
             splashShown = true;
-            
+
             const splashScreen = document.getElementById('splash-screen');
-            
+
             // Show splash screen initially - it's already visible by default
             // After 2 seconds, fade out splash screen
             setTimeout(() => {
                 splashScreen.classList.add('fade-out');
-                
+
                 // After fade out completes, remove splash screen from DOM
                 setTimeout(() => {
                     splashScreen.style.display = 'none';
@@ -1292,7 +1310,7 @@
             sections.forEach(section => {
                 section.classList.remove('active');
             });
-            
+
             // Show the selected section
             const targetSection = document.getElementById(sectionId);
             if (targetSection) {
@@ -1316,13 +1334,13 @@
         function handleSubmit(event) {
             // Prevent default form submission
             event.preventDefault();
-            
+
             // Get submit button and show loading state
             const submitBtn = event.target.querySelector('button[type="submit"]');
             const originalText = submitBtn.textContent;
             submitBtn.innerHTML = '<span class="loader"></span>';
             submitBtn.disabled = true;
-            
+
             // Simulate form submission (replace with actual submission logic)
             setTimeout(() => {
                 // Show success message
@@ -1357,7 +1375,7 @@
         document.addEventListener('DOMContentLoaded', () => {
             // Initialize splash screen animation
             showSplashScreen();
-            
+
             // Add hover effects to cards
             const cards = document.querySelectorAll('.card');
             cards.forEach(card => {
@@ -1368,7 +1386,7 @@
                     this.style.transform = 'translateY(0)';
                 });
             });
-            
+
             // Console welcome message
             console.log('%c Welcome to Ferroserver! ', 'background: #64B5F6; color: #0a0e1a; font-size: 16px; font-weight: bold; padding: 10px;');
             console.log('%c Built with passion by Desautels Computer & Design ', 'color: #64B5F6; font-size: 12px;');
@@ -1380,7 +1398,7 @@
             if (e.key === 'Escape') {
                 hideSection();
             }
-            
+
             // Quick navigation with number keys
             if (e.altKey) {
                 switch(e.key) {
@@ -1412,4 +1430,3 @@
     </script>
 </body>
 </html>
-
