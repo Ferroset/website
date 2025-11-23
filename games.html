@@ -55,18 +55,22 @@
         
         .splash-content {
             text-align: center;
-            transform: translateY(-20px);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
         
         .splash-logo {
-            max-width: 300px;
+            max-width: 500px;
+            width: 80vw;
             height: auto;
-            margin-bottom: 40px;
+            margin-bottom: 30px;
             filter: drop-shadow(4px 4px 0 rgba(0, 0, 0, 0.9));
         }
         
         .loading-container {
-            width: 300px;
+            width: 400px;
+            max-width: 80vw;
             margin: 0 auto;
         }
         
@@ -343,11 +347,11 @@
         
         @media (max-width: 768px) {
             .splash-logo {
-                max-width: 200px;
+                max-width: 350px;
             }
             
             .loading-container {
-                width: 250px;
+                width: 300px;
             }
             
             .game-card.expanded .game-canvas {
