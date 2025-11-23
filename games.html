@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ferroserver Games</title>
+    <style>
+        :root {
+            --dark-red: #5A0000;
+            --medium-red: #7A0000;
+            --light-red: #9A0000;
+            --white: #FFFFFF;
+            --light-gray: #F5F5F5;
+            --dark-gray: rgba(40, 40, 40, 0.85);
+            --darker-gray: #222222;
+            --success-color: #4CAF50;
+            --warning-color: #FF9800;
+            --error-color: #F44336;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, var(--dark-red), var(--darker-gray));
+            color: var(--white);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            overflow-x: hidden;
+            position: relative;
+        }
+        
+        /* Background Animation Elements */
+        .bg-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+        
+        .floating-shape {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.05);
+            animation: float 15s infinite linear;
+        }
+        
+        @keyframes float {
+            0% {
+                transform: translateY(0) rotate(0deg);
+                opacity: 0.5;
+            }
+            50% {
+                opacity: 0.8;
+            }
+            100% {
+                transform: translateY(-1000px) rotate(720deg);
+                opacity: 0;
+            }
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            width: 100%;
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 3px 3px 0 rgba(0, 0, 0, 0.9);
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+            opacity: 0.9;
+            text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.7);
+        }
+        
+        .games-container {
+            display: flex;
+            justify-content: center;
+            width: 100%;
+            max-width: 1100px;
+        }
+        
+        .game-card {
+            background-color: var(--dark-gray);
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 
+                0 6px 0 rgba(0, 0, 0, 0.4),
+                4px 4px 0 rgba(0, 0, 0, 0.6);
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            cursor: pointer;
+            position: relative;
+            z-index: 1;
+            overflow: hidden;
+            width: 100%;
+            max-width: 600px;
+        }
+        
+        .game-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 
+                0 10px 0 rgba(0, 0, 0, 0.5),
+                6px 6px 0 rgba(0, 0, 0, 0.7);
+        }
+        
+        .game-card.expanded {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 100;
+            border-radius: 0;
+            padding: 30px;
+            overflow-y: auto;
+            transition: all 0.3s ease;
+            max-width: none;
+        }
+        
+        .game-title {
+            font-size: 1.8rem;
+            margin-bottom: 15px;
+            text-align: center;
+            color: var(--white);
+            text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.9);
+        }
+        
+        .game-description {
+            text-align: center;
+            margin-bottom: 15px;
+            font-size: 1rem;
+            line-height: 1.4;
+            color: rgba(255, 255, 255, 0.8);
+        }
+        
+        .expand-message {
+            text-align: center;
+            margin-bottom: 15px;
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.6);
+            font-style: italic;
+        }
+        
+        .canvas-container {
+            position: relative;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .game-canvas {
+            background-color: var(--darker-gray);
+            border-radius: 8px;
+            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5);
+            transition: all 0.3s ease;
+            display: block;
+        }
+        
+        .game-card.expanded .game-canvas {
+            width: 90vw;
+            max-width: 800px;
+            height: 60vh;
+            max-height: 500px;
+        }
+        
+        .game-controls {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        
+        button {
+            background-color: var(--light-red);
+            color: var(--white);
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.3s, transform 0.2s;
+            font-size: 1rem;
+            box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.3);
+        }
+        
+        button:hover {
+            background-color: var(--medium-red);
+            transform: scale(1.05);
+        }
+        
+        button:active {
+            transform: scale(0.98);
+        }
+        
+        .close-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background-color: rgba(0, 0, 0, 0.5);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            z-index: 101;
+            box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.3);
+        }
+        
+        .game-stats {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            margin-top: 10px;
+            font-size: 1rem;
+        }
+        
+        .score, .timer {
+            font-weight: bold;
+            color: var(--white);
+            text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.5);
+        }
+        
+        /* Game Message Overlay */
+        .game-message {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(0, 0, 0, 0.85);
+            color: white;
+            padding: 20px 30px;
+            border-radius: 10px;
+            font-size: 1.5rem;
+            font-weight: bold;
+            text-align: center;
+            z-index: 10;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+            box-shadow: 0 5px 0 rgba(0, 0, 0, 0.5);
+            max-width: 80%;
+        }
+        
+        .game-message.show {
+            opacity: 1;
+        }
+        
+        .game-message.success {
+            background-color: rgba(76, 175, 80, 0.9);
+        }
+        
+        .game-message.warning {
+            background-color: rgba(255, 152, 0, 0.9);
+        }
+        
+        .game-message.error {
+            background-color: rgba(244, 67, 54, 0.9);
+        }
+        
+        @media (max-width: 768px) {
+            .game-card.expanded .game-canvas {
+                width: 95vw;
+                height: 50vh;
+            }
+            
+            .game-message {
+                font-size: 1.2rem;
+                padding: 15px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Background Animation -->
+    <div class="bg-animation" id="bgAnimation"></div>
+    
+    <header>
+        <h1>Ferroserver Games</h1>
+        <p class="subtitle">More Stuff Coming Soon!</p>
+    </header>
+    
+    <div class="games-container">
+        <!-- Game: Dodge-Grays -->
+        <div class="game-card" id="particleCard">
+            <h2 class="game-title">Dodge-Grays</h2>
+            <p class="game-description">Control the dark red circle and avoid the gray particles. Your score increases over time and when particles go off-screen!</p>
+            <p class="expand-message">Click here to expand MiniGame window size!</p>
+            <div class="canvas-container">
+                <canvas id="particleGame" class="game-canvas" width="600" height="400"></canvas>
+                <div class="game-message" id="particleMessage"></div>
+            </div>
+            <div class="game-controls">
+                <button id="particleStart">Start Game</button>
+                <button id="particleReset">Reset</button>
+            </div>
+            <div class="game-stats">
+                <div class="score">Score: <span id="particleScore">0</span></div>
+                <div class="timer">Time: <span id="particleTimer">0.0</span>s</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // =============================================
+        // INITIALIZATION AND UTILITIES
+        // =============================================
+        
+        // Game state management
+        const GameState = {
+            currentExpandedGame: null,
+            keys: {},
+            animationIds: new Set(),
+            intervals: new Set()
+        };
+        
+        // Performance optimization - cache DOM elements
+        const DOM = {
+            particleCard: document.getElementById('particleCard'),
+            particleGame: document.getElementById('particleGame'),
+            particleStart: document.getElementById('particleStart'),
+            particleReset: document.getElementById('particleReset'),
+            particleScore: document.getElementById('particleScore'),
+            particleTimer: document.getElementById('particleTimer'),
+            particleMessage: document.getElementById('particleMessage')
+        };
+        
+        // =============================================
+        // UTILITY FUNCTIONS
+        // =============================================
+        
+        /**
+         * Prevent arrow key scrolling during gameplay
+         */
+        function preventArrowKeyScrolling(e) {
+            if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', ' '].includes(e.key)) {
+                e.preventDefault();
+            }
+        }
+        
+        /**
+         * Show game message overlay
+         */
+        function showGameMessage(element, message, type = '', duration = 2000) {
+            element.textContent = message;
+            element.className = `game-message ${type}`;
+            element.classList.add('show');
+            
+            setTimeout(() => {
+                element.classList.remove('show');
+            }, duration);
+        }
+        
+        /**
+         * Clean up animations and intervals
+         */
+        function cleanupAnimations() {
+            GameState.animationIds.forEach(id => cancelAnimationFrame(id));
+            GameState.intervals.forEach(id => clearInterval(id));
+            GameState.animationIds.clear();
+            GameState.intervals.clear();
+        }
+        
+        // =============================================
+        // BACKGROUND ANIMATION
+        // =============================================
+        
+        /**
+         * Create floating background shapes
+         */
+        function createBackgroundAnimation() {
+            const bgAnimation = document.getElementById('bgAnimation');
+            const shapesCount = 12; // Reduced for better performance
+            
+            for (let i = 0; i < shapesCount; i++) {
+                const shape = document.createElement('div');
+                shape.classList.add('floating-shape');
+                
+                // Optimized size and animation
+                const size = Math.random() * 60 + 20;
+                shape.style.width = `${size}px`;
+                shape.style.height = `${size}px`;
+                shape.style.left = `${Math.random() * 100}vw`;
+                shape.style.top = `${Math.random() * 100}vh`;
+                shape.style.animationDuration = `${Math.random() * 15 + 10}s`;
+                shape.style.animationDelay = `${Math.random() * 5}s`;
+                
+                bgAnimation.appendChild(shape);
+            }
+        }
+        
+        // Initialize background animation
+        createBackgroundAnimation();
+        
+        // =============================================
+        // CARD EXPANSION LOGIC
+        // =============================================
+        
+        /**
+         * Handle card expansion/collapse
+         */
+        function setupCardExpansion() {
+            DOM.particleCard.addEventListener('click', function(e) {
+                // Don't expand if clicking on a button
+                if (e.target.tagName === 'BUTTON') return;
+                
+                const isExpanded = this.classList.contains('expanded');
+                
+                if (isExpanded) {
+                    // Collapse card
+                    this.classList.remove('expanded');
+                    GameState.currentExpandedGame = null;
+                    document.removeEventListener('keydown', preventArrowKeyScrolling);
+                    
+                    // Remove close button
+                    const closeBtn = this.querySelector('.close-btn');
+                    if (closeBtn) closeBtn.remove();
+                } else {
+                    // Expand card
+                    this.classList.add('expanded');
+                    GameState.currentExpandedGame = this;
+                    
+                    // Add close button
+                    const closeBtn = document.createElement('button');
+                    closeBtn.className = 'close-btn';
+                    closeBtn.innerHTML = '×';
+                    closeBtn.addEventListener('click', function(e) {
+                        e.stopPropagation();
+                        DOM.particleCard.classList.remove('expanded');
+                        GameState.currentExpandedGame = null;
+                        document.removeEventListener('keydown', preventArrowKeyScrolling);
+                        closeBtn.remove();
+                    });
+                    this.appendChild(closeBtn);
+                    
+                    // Prevent arrow key scrolling
+                    document.addEventListener('keydown', preventArrowKeyScrolling);
+                }
+            });
+        }
+        
+        // Initialize card expansion
+        setupCardExpansion();
+        
+        // =============================================
+        // DODGE-GRAYS GAME IMPLEMENTATION
+        // =============================================
+        
+        const DodgeGame = (function() {
+            // Game constants
+            const CONSTANTS = {
+                PLAYER_RADIUS: 15,
+                PARTICLE_RADIUS: 5,
+                PARTICLE_COLOR: '#CCCCCC',
+                PLAYER_COLOR: '#5A0000',
+                PLAYER_SPEED: 6,
+                INITIAL_PARTICLES: 5,
+                PARTICLE_SPAWN_RATE: 0.02,
+                SCORE_INTERVAL: 1000,
+                SCORE_INCREMENT: 5
+            };
+            
+            // Game state
+            let state = {
+                player: { x: 0, y: 0, radius: CONSTANTS.PLAYER_RADIUS },
+                particles: [],
+                score: 0,
+                gameTime: 0,
+                gameRunning: false,
+                lastTime: 0,
+                scoreIntervalId: null
+            };
+            
+            // Canvas context
+            const ctx = DOM.particleGame.getContext('2d');
+            const canvas = DOM.particleGame;
+            
+            /**
+             * Initialize game state
+             */
+            function init() {
+                state.player.x = canvas.width / 2;
+                state.player.y = canvas.height / 2;
+                state.particles = [];
+                state.score = 0;
+                state.gameTime = 0;
+                
+                DOM.particleScore.textContent = state.score;
+                DOM.particleTimer.textContent = state.gameTime.toFixed(1);
+                
+                // Create initial particles
+                for (let i = 0; i < CONSTANTS.INITIAL_PARTICLES; i++) {
+                    createParticle();
+                }
+                
+                draw();
+            }
+            
+            /**
+             * Create a new particle with optimized properties
+             */
+            function createParticle() {
+                const side = Math.floor(Math.random() * 4);
+                let x, y, vx, vy;
+                
+                // Optimized particle creation with switch statement
+                switch(side) {
+                    case 0: // Top
+                        x = Math.random() * canvas.width;
+                        y = -10;
+                        vx = (Math.random() - 0.5) * 1.5;
+                        vy = Math.random() * 1.5 + 0.5;
+                        break;
+                    case 1: // Right
+                        x = canvas.width + 10;
+                        y = Math.random() * canvas.height;
+                        vx = -Math.random() * 1.5 - 0.5;
+                        vy = (Math.random() - 0.5) * 1.5;
+                        break;
+                    case 2: // Bottom
+                        x = Math.random() * canvas.width;
+                        y = canvas.height + 10;
+                        vx = (Math.random() - 0.5) * 1.5;
+                        vy = -Math.random() * 1.5 - 0.5;
+                        break;
+                    case 3: // Left
+                        x = -10;
+                        y = Math.random() * canvas.height;
+                        vx = Math.random() * 1.5 + 0.5;
+                        vy = (Math.random() - 0.5) * 1.5;
+                        break;
+                }
+                
+                state.particles.push({ x, y, vx, vy, radius: CONSTANTS.PARTICLE_RADIUS });
+            }
+            
+            /**
+             * Optimized drawing function with minimal operations
+             */
+            function draw() {
+                // Clear canvas efficiently
+                ctx.fillStyle = 'rgba(0, 0, 0, 0.85)';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                
+                // Draw player
+                ctx.fillStyle = CONSTANTS.PLAYER_COLOR;
+                ctx.beginPath();
+                ctx.arc(state.player.x, state.player.y, state.player.radius, 0, Math.PI * 2);
+                ctx.fill();
+                
+                // Draw particles in batch
+                ctx.fillStyle = CONSTANTS.PARTICLE_COLOR;
+                state.particles.forEach(particle => {
+                    ctx.beginPath();
+                    ctx.arc(particle.x, particle.y, particle.radius, 0, Math.PI * 2);
+                    ctx.fill();
+                });
+                
+                // Draw UI elements
+                drawUI();
+            }
+            
+            /**
+             * Draw UI elements separately for better performance
+             */
+            function drawUI() {
+                ctx.fillStyle = 'white';
+                ctx.font = 'bold 16px Arial';
+                ctx.textAlign = 'left';
+                ctx.fillText(`Score: ${state.score}`, 10, 25);
+                ctx.textAlign = 'right';
+                ctx.fillText(`Time: ${state.gameTime.toFixed(1)}s`, canvas.width - 10, 25);
+                ctx.textAlign = 'left';
+                
+                // Draw instructions
+                ctx.font = '14px Arial';
+                ctx.textAlign = 'center';
+                const instruction = state.gameRunning ? 'Use arrow keys to move' : 'Click "Start Game" to begin!';
+                ctx.fillText(instruction, canvas.width / 2, canvas.height - 15);
+                ctx.textAlign = 'left';
+            }
+            
+            /**
+             * Main game update loop with delta time
+             */
+            function update(timestamp) {
+                if (!state.gameRunning) return;
+                
+                // Calculate delta time for smooth animation
+                const deltaTime = state.lastTime ? (timestamp - state.lastTime) / 1000 : 0;
+                state.lastTime = timestamp;
+                
+                // Update game time
+                state.gameTime += deltaTime;
+                DOM.particleTimer.textContent = state.gameTime.toFixed(1);
+                
+                // Move player
+                movePlayer();
+                
+                // Update particles
+                updateParticles();
+                
+                // Draw frame
+                draw();
+                
+                // Continue animation loop
+                const animationId = requestAnimationFrame(update);
+                GameState.animationIds.add(animationId);
+            }
+            
+            /**
+             * Handle player movement with keyboard input
+             */
+            function movePlayer() {
+                const speed = CONSTANTS.PLAYER_SPEED;
+                if (GameState.keys['ArrowUp']) state.player.y = Math.max(state.player.radius, state.player.y - speed);
+                if (GameState.keys['ArrowDown']) state.player.y = Math.min(canvas.height - state.player.radius, state.player.y + speed);
+                if (GameState.keys['ArrowLeft']) state.player.x = Math.max(state.player.radius, state.player.x - speed);
+                if (GameState.keys['ArrowRight']) state.player.x = Math.min(canvas.width - state.player.radius, state.player.x + speed);
+            }
+            
+            /**
+             * Update all particles and check collisions
+             */
+            function updateParticles() {
+                // Process particles in reverse for safe removal
+                for (let i = state.particles.length - 1; i >= 0; i--) {
+                    const particle = state.particles[i];
+                    
+                    // Move particle
+                    particle.x += particle.vx;
+                    particle.y += particle.vy;
+                    
+                    // Check bounds and respawn
+                    if (particle.x < -20 || particle.x > canvas.width + 20 || 
+                        particle.y < -20 || particle.y > canvas.height + 20) {
+                        state.particles.splice(i, 1);
+                        createParticle();
+                        state.score++;
+                        DOM.particleScore.textContent = state.score;
+                    }
+                    
+                    // Check collision with player (optimized distance check)
+                    const dx = particle.x - state.player.x;
+                    const dy = particle.y - state.player.y;
+                    const distanceSquared = dx * dx + dy * dy;
+                    const minDistance = particle.radius + state.player.radius - 3;
+                    
+                    if (distanceSquared < minDistance * minDistance) {
+                        gameOver();
+                        return;
+                    }
+                }
+                
+                // Spawn new particles occasionally
+                if (Math.random() < CONSTANTS.PARTICLE_SPAWN_RATE) {
+                    createParticle();
+                }
+            }
+            
+            /**
+             * Start the game
+             */
+            function start() {
+                if (state.gameRunning) return;
+                
+                state.gameRunning = true;
+                state.lastTime = 0;
+                
+                // Start game loop
+                const animationId = requestAnimationFrame(update);
+                GameState.animationIds.add(animationId);
+                
+                // Start score interval
+                state.scoreIntervalId = setInterval(() => {
+                    if (state.gameRunning) {
+                        state.score += CONSTANTS.SCORE_INCREMENT;
+                        DOM.particleScore.textContent = state.score;
+                    }
+                }, CONSTANTS.SCORE_INTERVAL);
+                
+                GameState.intervals.add(state.scoreIntervalId);
+            }
+            
+            /**
+             * End the game
+             */
+            function gameOver() {
+                state.gameRunning = false;
+                cleanupAnimations();
+                showGameMessage(DOM.particleMessage, `Game Over! Final Score: ${state.score}`, 'error', 3000);
+                setTimeout(init, 3000);
+            }
+            
+            /**
+             * Reset the game
+             */
+            function reset() {
+                state.gameRunning = false;
+                cleanupAnimations();
+                init();
+            }
+            
+            // Initialize the game
+            init();
+            
+            // Public API
+            return {
+                start,
+                reset,
+                init
+            };
+        })();
+        
+        // =============================================
+        // EVENT LISTENERS AND INITIALIZATION
+        // =============================================
+        
+        /**
+         * Initialize all event listeners
+         */
+        function initEventListeners() {
+            // Keyboard input
+            window.addEventListener('keydown', (e) => {
+                GameState.keys[e.key] = true;
+            });
+            
+            window.addEventListener('keyup', (e) => {
+                GameState.keys[e.key] = false;
+            });
+            
+            // Game controls
+            DOM.particleStart.addEventListener('click', DodgeGame.start);
+            DOM.particleReset.addEventListener('click', DodgeGame.reset);
+        }
+        
+        // Initialize everything when DOM is ready
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initEventListeners);
+        } else {
+            initEventListeners();
+        }
+        
+        // Cleanup on page unload
+        window.addEventListener('beforeunload', cleanupAnimations);
+    </script>
+</body>
+</html>
