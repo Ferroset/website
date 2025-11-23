@@ -37,6 +37,67 @@
             position: relative;
         }
         
+        /* Splash Screen */
+        #splashScreen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, var(--dark-red), var(--darker-gray));
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.5s ease;
+        }
+        
+        .splash-content {
+            text-align: center;
+            transform: translateY(-20px);
+        }
+        
+        .splash-title {
+            font-size: 4rem;
+            font-weight: bold;
+            margin-bottom: 40px;
+            text-shadow: 4px 4px 0 rgba(0, 0, 0, 0.9);
+            letter-spacing: 2px;
+        }
+        
+        .loading-container {
+            width: 300px;
+            margin: 0 auto;
+        }
+        
+        .loading-bar {
+            width: 100%;
+            height: 25px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 5px;
+            overflow: hidden;
+            margin-bottom: 15px;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .loading-progress {
+            height: 100%;
+            width: 0%;
+            background-color: var(--white);
+            border-radius: 4px;
+            transition: width 0.3s ease;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+        }
+        
+        .loading-text {
+            font-size: 1.2rem;
+            font-weight: bold;
+            text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.7);
+            height: 24px;
+        }
+        
         /* Background Animation Elements */
         .bg-animation {
             position: fixed;
@@ -282,6 +343,14 @@
         }
         
         @media (max-width: 768px) {
+            .splash-title {
+                font-size: 3rem;
+            }
+            
+            .loading-container {
+                width: 250px;
+            }
+            
             .game-card.expanded .game-canvas {
                 width: 95vw;
                 height: 50vh;
@@ -295,6 +364,19 @@
     </style>
 </head>
 <body>
+    <!-- Splash Screen -->
+    <div id="splashScreen">
+        <div class="splash-content">
+            <div class="splash-title">FerrOS</div>
+            <div class="loading-container">
+                <div class="loading-bar">
+                    <div class="loading-progress" id="loadingProgress"></div>
+                </div>
+                <div class="loading-text" id="loadingText">Boot</div>
+            </div>
+        </div>
+    </div>
+    
     <!-- Background Animation -->
     <div class="bg-animation" id="bgAnimation"></div>
     
@@ -325,6 +407,57 @@
     </div>
 
     <script>
+        // =============================================
+        // SPLASH SCREEN AND LOADING ANIMATION
+        // =============================================
+        
+        // Splash screen elements
+        const splashScreen = document.getElementById('splashScreen');
+        const loadingProgress = document.getElementById('loadingProgress');
+        const loadingText = document.getElementById('loadingText');
+        
+        /**
+         * Initialize splash screen and loading animation
+         */
+        function initSplashScreen() {
+            let progress = 0;
+            let dots = 0;
+            const maxProgress = 100;
+            const duration = 2500; // 2.5 seconds total
+            const interval = 30; // Update every 30ms
+            const steps = duration / interval;
+            const increment = maxProgress / steps;
+            
+            // Text animation interval (slower - 800ms per cycle)
+            const textInterval = setInterval(() => {
+                dots = (dots + 1) % 4;
+                const dotString = '.'.repeat(dots);
+                loadingText.textContent = `Boot${dotString}`;
+            }, 800);
+            
+            // Start the loading animation
+            const loadingInterval = setInterval(() => {
+                // Update progress bar
+                progress += increment;
+                if (progress > maxProgress) progress = maxProgress;
+                loadingProgress.style.width = `${progress}%`;
+                
+                // Check if loading is complete
+                if (progress >= maxProgress) {
+                    clearInterval(loadingInterval);
+                    clearInterval(textInterval);
+                    
+                    // Fade out splash screen
+                    setTimeout(() => {
+                        splashScreen.style.opacity = '0';
+                        setTimeout(() => {
+                            splashScreen.style.display = 'none';
+                        }, 500);
+                    }, 300);
+                }
+            }, interval);
+        }
+        
         // =============================================
         // INITIALIZATION AND UTILITIES
         // =============================================
@@ -759,8 +892,14 @@
         
         // Initialize everything when DOM is ready
         if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', initEventListeners);
+            document.addEventListener('DOMContentLoaded', function() {
+                // Start with splash screen
+                initSplashScreen();
+                // Then initialize event listeners
+                initEventListeners();
+            });
         } else {
+            initSplashScreen();
             initEventListeners();
         }
         
