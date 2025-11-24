@@ -931,6 +931,11 @@
         </div>
     </div>
 
+    <!-- Background Music -->
+    <audio id="background-music" loop>
+        <source src="/audio/Ferroserver.mp3" type="audio/mpeg">
+    </audio>
+
     <!-- Animated Background Effects -->
     <div class="bg-container">
         <div class="bg-gradient"></div>
@@ -1257,7 +1262,7 @@
                 <div class="contact-info">
                     <div class="contact-item">
                         <div class="contact-label">E-Mail:</div>
-                        <div class="contact-value"><a href="mailto:johnedesautels@gmail.com">johnedesautels@gmail.com</a></div>
+                        <div class="contact-value"><a href="/cdn-cgi/l/email-protection#c4aeabacaaa1a0a1b7a5b1b0a1a8b784a3a9a5ada8eaa7aba9"><span class="__cf_email__" data-cfemail="9af0f5f2f4fffeffe9fbefeefff6e9dafdf7fbf3f6b4f9f5f7">[email&#160;protected]</span></a></div>
                     </div>
 
                 </div>
@@ -1271,7 +1276,7 @@
     </div>
 
     <!-- JavaScript Section -->
-    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
+    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
     <script>
         // ===================================
         // FERROSERVER INTERACTIVE JAVASCRIPT
@@ -1320,7 +1325,7 @@
                 targetSection.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
             }
         }
-
+    
         // Function to hide all sections
         function hideSection() {
             const sections = document.querySelectorAll('.content-section');
@@ -1427,6 +1432,15 @@
                 console.log(`Page Load Time: ${pageLoadTime}ms`);
             }
         });
+
+        // === BACKGROUND MUSIC ===
+        document.addEventListener('click', function startMusic() {
+            const audio = document.getElementById('background-music');
+            if (audio) {
+                audio.play().catch(() => {});
+                document.removeEventListener('click', startMusic);
+            }
+        }, { once: true });
     </script>
 </body>
 </html>
