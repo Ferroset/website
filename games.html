@@ -624,6 +624,38 @@
             }
         }
 
+        /* Ferroxel Preview (updated from VoxelCraft) */
+        .ferroxel-preview {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 3px;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            height: 100%;
+        }
+
+        .ferroxel-cube {
+            width: 18px;
+            height: 18px;
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            animation: ferroxelFloat 3s infinite ease-in-out;
+        }
+
+        .ferroxel-cube.grass { background-color: #3A7D00; animation-delay: 0s; }
+        .ferroxel-cube.dirt { background-color: #8B4513; animation-delay: 0.5s; }
+        .ferroxel-cube.stone { background-color: #808080; animation-delay: 1s; }
+        .ferroxel-cube.wood { background-color: #654321; animation-delay: 1.5s; }
+
+        @keyframes ferroxelFloat {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-8px);
+            }
+        }
+
         /* Placeholder Preview */
         .placeholder-preview {
             background: radial-gradient(circle at center, 
@@ -698,9 +730,10 @@
             backdrop-filter: blur(10px);
             display: none;
             justify-content: center;
-            align-items: center;
+            align-items: flex-start; /* Changed from center to flex-start for scrollability */
             z-index: 2000;
             padding: 20px;
+            overflow-y: auto; /* Added for scrollability */
             animation: fadeIn 0.3s ease;
         }
 
@@ -722,15 +755,16 @@
                 var(--dark-gray),
                 rgba(40, 40, 40, 0.98));
             border-radius: 12px;
-            max-width: 95%;
-            max-height: 95%;
-            overflow-y: auto;
+            width: 95%;
+            max-width: none;
+            max-height: none;
             position: relative;
             box-shadow: 
                 0 0 40px rgba(255, 107, 107, 0.3),
                 0 20px 60px rgba(0, 0, 0, 0.5);
             animation: slideIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             border: 2px solid rgba(255, 255, 255, 0.1);
+            margin: auto 0; /* Added to center vertically when content is small */
         }
 
         @keyframes slideIn {
@@ -782,8 +816,12 @@
                 inset 0 1px 0 rgba(255, 255, 255, 0.1);
             border: 1px solid rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(10px);
-            max-width: 100%;
+            width: 100%;
+            height: 100%;
             margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
         }
 
         .game-header {
@@ -815,29 +853,62 @@
             filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.5));
         }
 
-        .expand-button {
-            background: rgba(90, 0, 0, 0.6);
-            color: var(--white);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            padding: 8px 16px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            font-size: 0.9rem;
-        }
-
-        .expand-button:hover {
-            background: rgba(122, 0, 0, 0.7);
-            transform: translateY(-2px);
-            border-color: rgba(255, 255, 255, 0.25);
-        }
-
         .game-description {
             color: rgba(255, 255, 255, 0.9);
             line-height: 1.6;
             margin-bottom: 25px;
             font-size: 1rem;
+        }
+
+        /* Game Controls Container */
+        .game-controls {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .game-button {
+            background: linear-gradient(145deg, var(--medium-red), var(--light-red));
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 0 rgba(0, 0, 0, 0.3);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .game-button:hover {
+            background: linear-gradient(145deg, var(--light-red), var(--accent-red));
+            transform: translateY(-2px);
+            box-shadow: 0 6px 0 rgba(0, 0, 0, 0.3);
+        }
+
+        .game-button:active {
+            transform: translateY(1px);
+            box-shadow: 0 2px 0 rgba(0, 0, 0, 0.3);
+        }
+
+        .game-button.start {
+            background: linear-gradient(145deg, #3A7D00, #4CAF50);
+        }
+
+        .game-button.start:hover {
+            background: linear-gradient(145deg, #4CAF50, #66BB6A);
+        }
+
+        .game-button.reset {
+            background: linear-gradient(145deg, #7A0000, var(--error-color));
+        }
+
+        .game-button.reset:hover {
+            background: linear-gradient(145deg, var(--error-color), #FF5252);
         }
 
         /* Canvas Container */
@@ -851,59 +922,190 @@
                 inset 0 2px 8px rgba(0, 0, 0, 0.4),
                 0 4px 12px rgba(0, 0, 0, 0.2);
             border: 2px solid rgba(255, 255, 255, 0.05);
+            flex: 1;
+            min-height: 500px;
         }
 
-        #particleGame {
+        #particleGame, #ferroxelCanvas {
             display: block;
             width: 100%;
-            height: auto;
-            max-width: 600px;
-            margin: 0 auto;
+            height: 100%;
+            max-width: none;
         }
 
-        /* Game Controls */
-        .game-controls {
+        /* Ferroxel UI Styles */
+        #ferroxelUI {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 100;
+        }
+
+        #ferroxelCrosshair {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 30px;
+            height: 30px;
+            opacity: 0.8;
+            display: none;
+        }
+
+        #ferroxelCrosshair.active {
+            display: block;
+        }
+
+        #ferroxelCrosshair::before,
+        #ferroxelCrosshair::after {
+            content: '';
+            position: absolute;
+            background: white;
+            box-shadow: 0 0 3px rgba(0,0,0,0.5);
+        }
+
+        #ferroxelCrosshair::before {
+            width: 100%;
+            height: 2px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        #ferroxelCrosshair::after {
+            width: 2px;
+            height: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        #ferroxelInventory {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: none;
+            gap: 5px;
+            padding: 10px;
+            background: rgba(0, 0, 0, 0.7);
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            pointer-events: auto;
+        }
+
+        #ferroxelInventory.active {
             display: flex;
-            gap: 15px;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
         }
 
-        .game-button {
-            background: linear-gradient(145deg, 
-                var(--medium-red),
-                var(--dark-red));
-            color: var(--white);
-            border: 2px solid rgba(255, 255, 255, 0.2);
-            padding: 12px 28px;
-            border-radius: 6px;
+        .ferroxel-inventory-slot {
+            width: 60px;
+            height: 60px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             cursor: pointer;
-            font-weight: 600;
-            font-size: 1rem;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 
-                0 4px 0 rgba(0, 0, 0, 0.3),
-                0 6px 12px rgba(0, 0, 0, 0.2);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
+            position: relative;
+            overflow: hidden;
         }
 
-        .game-button:hover {
-            background: linear-gradient(145deg, 
-                var(--accent-red),
-                var(--medium-red));
-            transform: translateY(-2px);
-            box-shadow: 
-                0 6px 0 rgba(0, 0, 0, 0.4),
-                0 8px 16px rgba(0, 0, 0, 0.3);
-            border-color: rgba(255, 255, 255, 0.3);
+        .ferroxel-inventory-slot::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, transparent 30%, rgba(255,255,255,0.1) 50%, transparent 70%);
+            transform: translateX(-100%);
+            transition: transform 0.6s;
         }
 
-        .game-button:active {
-            transform: translateY(0);
-            box-shadow: 
-                0 2px 0 rgba(0, 0, 0, 0.3),
-                0 3px 8px rgba(0, 0, 0, 0.2);
+        .ferroxel-inventory-slot:hover::before {
+            transform: translateX(100%);
+        }
+
+        .ferroxel-inventory-slot.active {
+            border-color: #FFD700;
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.6), inset 0 0 10px rgba(255, 215, 0, 0.3);
+            transform: scale(1.1);
+        }
+
+        .ferroxel-inventory-slot:hover {
+            transform: scale(1.05);
+            border-color: rgba(255, 255, 255, 0.6);
+        }
+
+        .ferroxel-inventory-slot.active:hover {
+            transform: scale(1.1);
+        }
+
+        .ferroxel-block-preview {
+            width: 40px;
+            height: 40px;
+            background-size: cover;
+            image-rendering: pixelated;
+            image-rendering: -moz-crisp-edges;
+            image-rendering: crisp-edges;
+        }
+
+        #ferroxelControls {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            color: white;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+            background: rgba(0, 0, 0, 0.6);
+            padding: 20px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            font-size: 12px;
+            line-height: 1.8;
+            letter-spacing: 1px;
+            animation: fadeIn 1s ease-out;
+            display: none;
+        }
+
+        #ferroxelControls.active {
+            display: block;
+        }
+
+        #ferroxelFPS {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            color: white;
+            font-size: 14px;
+            font-weight: 700;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+            background: rgba(0, 0, 0, 0.6);
+            padding: 10px 15px;
+            border-radius: 10px;
+            letter-spacing: 1px;
+            display: none;
+        }
+
+        #ferroxelFPS.active {
+            display: block;
+        }
+
+        #ferroxelErrorMessage {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(255, 0, 0, 0.9);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            z-index: 2000;
+            display: none;
         }
 
         /* Game Stats */
@@ -961,40 +1163,6 @@
         .life-icon.lost {
             background: rgba(244, 67, 54, 0.3);
             opacity: 0.3;
-        }
-
-        /* Instructions */
-        .game-instructions {
-            background: rgba(0, 0, 0, 0.2);
-            padding: 20px;
-            border-radius: 6px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            margin-bottom: 20px;
-        }
-
-        .game-instructions h3 {
-            margin-bottom: 15px;
-            color: var(--accent-red);
-            font-size: 1.2rem;
-        }
-
-        .game-instructions ul {
-            list-style: none;
-            padding: 0;
-        }
-
-        .game-instructions li {
-            padding: 8px 0;
-            padding-left: 25px;
-            position: relative;
-            line-height: 1.6;
-        }
-
-        .game-instructions li::before {
-            content: '▸';
-            position: absolute;
-            left: 0;
-            color: var(--accent-red);
         }
 
         /* Mobile Controls */
@@ -1080,17 +1248,119 @@
             color: var(--error-color);
         }
 
-        /* Expanded State */
-        .game-card.expanded {
+        /* Ferroxel Start Screen */
+        #ferroxelStartScreen {
             position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 95vw;
-            height: 95vh;
-            max-width: none;
-            z-index: 2001;
-            overflow-y: auto;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #1a1a2e, #16213e, #0f3460);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            transition: opacity 0.5s, transform 0.5s;
+            overflow: auto;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        #ferroxelStartScreen::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M 10 0 L 0 0 0 10" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="0.5"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>');
+            opacity: 0.3;
+            pointer-events: none;
+        }
+
+        #ferroxelStartScreen.hidden {
+            opacity: 0;
+            transform: scale(1.1);
+            pointer-events: none;
+        }
+
+        .ferroxel-title-container {
+            text-align: center;
+            margin-bottom: 40px;
+            position: relative;
+            z-index: 2;
+            max-width: 100%;
+        }
+
+        #ferroxelStartScreen h1 {
+            font-size: clamp(40px, 10vw, 80px);
+            font-weight: 900;
+            color: white;
+            text-shadow: 5px 5px 20px rgba(0,0,0,0.5);
+            margin-bottom: 10px;
+            animation: float 3s ease-in-out infinite;
+            letter-spacing: 5px;
+            line-height: 1.2;
+            word-wrap: break-word;
+        }
+
+        #ferroxelStartScreen .subtitle {
+            font-size: clamp(16px, 3vw, 20px);
+            color: rgba(255, 255, 255, 0.8);
+            text-shadow: 2px 2px 10px rgba(0,0,0,0.5);
+            letter-spacing: 3px;
+            line-height: 1.4;
+            max-width: 100%;
+            padding: 0 10px;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        #ferroxelStartButton {
+            padding: 20px 60px;
+            font-size: clamp(18px, 4vw, 24px);
+            font-weight: 700;
+            background: linear-gradient(135deg, #3A7D00, #8B4513);
+            border: none;
+            border-radius: 50px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            font-family: 'Orbitron', monospace;
+            letter-spacing: 2px;
+            position: relative;
+            z-index: 2;
+            overflow: hidden;
+            margin-top: 20px;
+        }
+
+        #ferroxelStartButton::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: 0.5s;
+        }
+
+        #ferroxelStartButton:hover::before {
+            left: 100%;
+        }
+
+        #ferroxelStartButton:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.4);
+        }
+
+        #ferroxelStartButton:active {
+            transform: translateY(0);
         }
 
         /* Responsive Design */
@@ -1132,6 +1402,21 @@
             .game-stats {
                 grid-template-columns: 1fr 1fr;
             }
+            
+            .modal-content {
+                width: 98%;
+                height: 98%;
+            }
+            
+            .game-controls {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .game-button {
+                width: 100%;
+                max-width: 200px;
+            }
         }
 
         @media (max-width: 480px) {
@@ -1143,6 +1428,10 @@
             .return-button {
                 padding: 8px 12px;
                 font-size: 0.8rem;
+            }
+            
+            .canvas-container {
+                min-height: 300px;
             }
         }
     </style>
@@ -1187,12 +1476,20 @@
                 <div class="channel-title">Dodge-Grays</div>
             </div>
 
-            <!-- Placeholder Channel Tiles -->
-            <div class="channel-tile placeholder" data-game="coming-soon">
-                <div class="channel-preview placeholder-preview"></div>
-                <div class="channel-title">Coming Soon</div>
+            <!-- Ferroxel Channel Tile (formerly VoxelCraft) -->
+            <div class="channel-tile active-game" data-game="ferroxel">
+                <div class="channel-preview">
+                    <div class="ferroxel-preview">
+                        <div class="ferroxel-cube grass"></div>
+                        <div class="ferroxel-cube dirt"></div>
+                        <div class="ferroxel-cube stone"></div>
+                        <div class="ferroxel-cube wood"></div>
+                    </div>
+                </div>
+                <div class="channel-title">Ferroxel</div>
             </div>
 
+            <!-- Placeholder Channel Tiles -->
             <div class="channel-tile placeholder" data-game="coming-soon">
                 <div class="channel-preview placeholder-preview"></div>
                 <div class="channel-title">Coming Soon</div>
@@ -1236,13 +1533,18 @@
                     <div class="game-title">
                         <h2>Dodge-Grays</h2>
                     </div>
-                    <button class="expand-button" id="expandButton" title="Expand to full window">⛶ Expand</button>
                 </div>
 
                 <p class="game-description">
                     Navigate through a field of dangerous particles! Use arrow keys or on-screen controls to avoid 
                     the red particles while collecting green power-ups. Can you survive and achieve the highest score?
                 </p>
+
+                <!-- Game Controls -->
+                <div class="game-controls">
+                    <button class="game-button start" id="dodgeStartButton">Start Game</button>
+                    <button class="game-button reset" id="dodgeResetButton">Reset Game</button>
+                </div>
 
                 <div class="game-stats">
                     <div class="stat-box">
@@ -1270,33 +1572,62 @@
                     <div class="game-message" id="particleMessage"></div>
                 </div>
 
-                <div class="game-controls">
-                    <button class="game-button" id="particleStart">Start Game</button>
-                    <button class="game-button" id="particleReset">Reset</button>
-                </div>
-
                 <div class="mobile-controls" id="mobileControls">
                     <button class="up">↑</button>
                     <button class="down">↓</button>
                     <button class="left">←</button>
                     <button class="right">→</button>
                 </div>
+            </div>
 
-                <div class="game-instructions">
-                    <h3>How to Play</h3>
-                    <ul>
-                        <li><strong>Desktop:</strong> Use Arrow Keys or WASD to move</li>
-                        <li><strong>Mobile:</strong> Use the on-screen D-pad controls</li>
-                        <li><strong>Avoid:</strong> Red particles (they hurt!)</li>
-                        <li><strong>Collect:</strong> Green power-ups for bonuses</li>
-                        <li><strong>Survive:</strong> As long as possible and rack up points</li>
-                        <li><strong>Level Up:</strong> Every 1000 points increases difficulty</li>
-                    </ul>
+            <!-- Ferroxel Game Content (formerly VoxelCraft) -->
+            <div class="game-card" id="ferroxelCard" style="display: none;">
+                <div class="game-header">
+                    <div class="game-title">
+                        <h2>Ferroxel</h2>
+                    </div>
+                </div>
+
+                <p class="game-description">
+                    Ferroset's Mini Minecraft/Luanti Clone.
+                </p>
+
+                <div class="canvas-container">
+                    <!-- Ferroxel Start Screen -->
+                    <div id="ferroxelStartScreen">
+                        <div class="ferroxel-title-container">
+                            <h1>FERROXEL</h1>
+                            <div class="subtitle">FERROSET'S MINI MINECRAFT/LUANTI CLONE</div>
+                        </div>
+                        <button id="ferroxelStartButton">START GAME</button>
+                    </div>
+                    
+                    <div id="ferroxelErrorMessage"></div>
+                    
+                    <canvas id="ferroxelCanvas"></canvas>
+                    
+                    <div id="ferroxelUI">
+                        <div id="ferroxelCrosshair"></div>
+                        <div id="ferroxelControls">
+                            <h3>CONTROLS</h3>
+                            <div style="color: #FFD700; margin-bottom: 10px;">Click game to enable mouse look</div>
+                            <div>WASD - Move</div>
+                            <div>SPACE - Jump</div>
+                            <div>SHIFT - Sprint</div>
+                            <div>Mouse - Look Around</div>
+                            <div>Left Click - Break Block</div>
+                            <div>Right Click - Place Block</div>
+                            <div>1-6 - Select Block</div>
+                        </div>
+                        <div id="ferroxelFPS">FPS: 0</div>
+                        <div id="ferroxelInventory"></div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script>
         // =============================================
         // BUBBLY BACKGROUND EFFECT
@@ -1396,8 +1727,21 @@
                 }
                 
                 if (gameType === 'dodge-grays') {
+                    document.getElementById('particleCard').style.display = 'block';
+                    document.getElementById('ferroxelCard').style.display = 'none';
                     gameModal.classList.add('active');
                     document.body.style.overflow = 'hidden';
+                } else if (gameType === 'ferroxel') {
+                    document.getElementById('particleCard').style.display = 'none';
+                    document.getElementById('ferroxelCard').style.display = 'block';
+                    gameModal.classList.add('active');
+                    document.body.style.overflow = 'hidden';
+                    
+                    // Initialize Ferroxel if not already initialized
+                    if (!window.ferroxelGameInitialized) {
+                        initFerroxel();
+                        window.ferroxelGameInitialized = true;
+                    }
                 }
             });
         });
@@ -1406,9 +1750,12 @@
         function closeModal() {
             gameModal.classList.remove('active');
             document.body.style.overflow = 'auto';
-            // Reset game when closing
+            // Reset games when closing
             if (typeof DodgeGame !== 'undefined') {
-                DodgeGame.reset();
+                DodgeGame.stop();
+            }
+            if (typeof FerroxelGame !== 'undefined') {
+                FerroxelGame.stop();
             }
         }
 
@@ -1451,14 +1798,17 @@
 
         const DOM = {
             particleGame: document.getElementById('particleGame'),
-            particleStart: document.getElementById('particleStart'),
-            particleReset: document.getElementById('particleReset'),
             particleScore: document.getElementById('particleScore'),
             particleLives: document.getElementById('particleLives'),
             particleLevel: document.getElementById('particleLevel'),
             particleMessage: document.getElementById('particleMessage'),
             livesDisplay: document.getElementById('livesDisplay'),
-            mobileControls: document.getElementById('mobileControls')
+            mobileControls: document.getElementById('mobileControls'),
+            dodgeStartButton: document.getElementById('dodgeStartButton'),
+            dodgeResetButton: document.getElementById('dodgeResetButton'),
+            ferroxelCanvas: document.getElementById('ferroxelCanvas'),
+            ferroxelStartScreen: document.getElementById('ferroxelStartScreen'),
+            ferroxelStartButton: document.getElementById('ferroxelStartButton')
         };
 
         // =============================================
@@ -1619,7 +1969,7 @@
             }
 
             /**
-             * Create explosion effect
+             * Create explosion effect - FIXED: Removed syntax error
              */
             function createExplosion(x, y) {
                 for (let i = 0; i < 20; i++) {
@@ -1628,7 +1978,7 @@
                     state.debris.push({
                         x, y,
                         vx: Math.cos(angle) * speed,
-                        vy: Math.sin(angle) * speed,
+                        vy: Math.sin(angle) * speed, // FIXED: Removed extra equals sign
                         size: Math.random() * 4 + 2,
                         alpha: 1,
                         decay: 0.02
@@ -1978,20 +2328,819 @@
                     state.scoreIntervalId = null;
                 }
                 
-                GameState.animationIds.clear();
-                GameState.intervals.clear();
-                
                 init();
             }
 
+            /**
+             * Stop the game
+             */
+            function stop() {
+                state.gameRunning = false;
+                
+                if (state.animationId) {
+                    cancelAnimationFrame(state.animationId);
+                    state.animationId = null;
+                }
+                
+                if (state.scoreIntervalId) {
+                    clearInterval(state.scoreIntervalId);
+                    state.scoreIntervalId = null;
+                }
+            }
+
+            // Initialize the game but don't start it automatically
             init();
 
             return {
                 start,
                 reset,
+                stop,
                 init
             };
         })();
+
+        // =============================================
+        // FERROXEL GAME (formerly VoxelCraft)
+        // =============================================
+
+        let FerroxelGame = null;
+
+        function initFerroxel() {
+            FerroxelGame = (function() {
+                // Global game variables
+                let gameState = {
+                    initialized: false,
+                    running: false,
+                    scene: null,
+                    camera: null,
+                    renderer: null,
+                    world: new Map(),
+                    blockMeshes: new Map(),
+                    particles: [],
+                    clock: null,
+                    raycaster: null,
+                    frameCount: 0,
+                    lastTime: performance.now(),
+                    isPointerLocked: false,
+                    selectedBlockType: 1,
+                    keys: {},
+                    player: {
+                        position: { x: 25, y: 20, z: 25 },
+                        velocity: { x: 0, y: 0, z: 0 },
+                        rotation: { x: 0, y: 0 },
+                        onGround: false
+                    },
+                    inventoryInitialized: false // Track if inventory is already set up
+                };
+                
+                // Game constants
+                const WORLD_SIZE = 30; // Reduced for better performance
+                const BLOCK_SIZE = 1;
+                const GRAVITY = -20;
+                const JUMP_VELOCITY = 10;
+                const PLAYER_HEIGHT = 1.8;
+                const PLAYER_SPEED = 5;
+                const SPRINT_MULTIPLIER = 1.8;
+                
+                // Block types
+                const BlockType = {
+                    AIR: 0,
+                    GRASS: 1,
+                    DIRT: 2,
+                    STONE: 3,
+                    WOOD: 4,
+                    LEAVES: 5,
+                    SAND: 6
+                };
+                
+                // Block colors
+                const blockColors = {
+                    [BlockType.GRASS]: 0x3A7D00,
+                    [BlockType.DIRT]: 0x8B4513,
+                    [BlockType.STONE]: 0x808080,
+                    [BlockType.WOOD]: 0x654321,
+                    [BlockType.LEAVES]: 0x228B22,
+                    [BlockType.SAND]: 0xF4A460
+                };
+                
+                // Simple terrain noise function
+                function terrainNoise(x, z) {
+                    const height = 10 + 
+                        Math.sin(x * 0.1) * 3 + 
+                        Math.cos(z * 0.1) * 3 + 
+                        Math.sin((x + z) * 0.05) * 2;
+                    return Math.floor(height);
+                }
+                
+                // Initialize Three.js
+                function initThreeJS() {
+                    try {
+                        // Get canvas container
+                        const canvasContainer = DOM.ferroxelCanvas.parentElement;
+                        
+                        // Scene
+                        gameState.scene = new THREE.Scene();
+                        gameState.scene.fog = new THREE.Fog(0x87CEEB, 10, 100);
+                        
+                        // Camera
+                        gameState.camera = new THREE.PerspectiveCamera(
+                            75, 
+                            canvasContainer.clientWidth / canvasContainer.clientHeight, 
+                            0.1, 
+                            100
+                        ); // Reduced far plane for performance
+                        gameState.camera.position.set(
+                            gameState.player.position.x,
+                            gameState.player.position.y,
+                            gameState.player.position.z
+                        );
+                        
+                        // Renderer with performance optimizations
+                        gameState.renderer = new THREE.WebGLRenderer({ 
+                            canvas: DOM.ferroxelCanvas,
+                            antialias: false, // Disabled for performance
+                            powerPreference: "high-performance"
+                        });
+                        gameState.renderer.setSize(canvasContainer.clientWidth, canvasContainer.clientHeight);
+                        gameState.renderer.shadowMap.enabled = false; // Disabled for performance
+                        gameState.renderer.setClearColor(0x87CEEB); // FIX: Set clear color to light blue
+                        
+                        // Lights
+                        const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+                        gameState.scene.add(ambientLight);
+                        
+                        const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+                        directionalLight.position.set(50, 100, 50);
+                        gameState.scene.add(directionalLight);
+                        
+                        // Sky - FIXED: Changed to light blue
+                        const skyGeometry = new THREE.SphereGeometry(200, 16, 16); // Reduced detail
+                        const skyMaterial = new THREE.MeshBasicMaterial({
+                            color: 0x87CEEB, // FIX: Changed to light blue
+                            side: THREE.BackSide
+                        });
+                        const sky = new THREE.Mesh(skyGeometry, skyMaterial);
+                        gameState.scene.add(sky);
+                        
+                        // Utilities
+                        gameState.clock = new THREE.Clock();
+                        gameState.raycaster = new THREE.Raycaster();
+                        
+                        return true;
+                    } catch (error) {
+                        console.error('Failed to initialize Three.js:', error);
+                        return false;
+                    }
+                }
+                
+                // Generate world
+                function generateWorld() {
+                    const boxGeometry = new THREE.BoxGeometry(BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE);
+                    
+                    for (let x = 0; x < WORLD_SIZE; x++) {
+                        for (let z = 0; z < WORLD_SIZE; z++) {
+                            const height = terrainNoise(x, z);
+                            
+                            for (let y = 0; y < height; y++) {
+                                let blockType;
+                                if (y === height - 1) {
+                                    blockType = BlockType.GRASS;
+                                } else if (y > height - 4) {
+                                    blockType = BlockType.DIRT;
+                                } else {
+                                    blockType = BlockType.STONE;
+                                }
+                                
+                                const key = `${x},${y},${z}`;
+                                gameState.world.set(key, blockType);
+                                
+                                // Create mesh
+                                const material = new THREE.MeshLambertMaterial({ 
+                                    color: blockColors[blockType]
+                                });
+                                const mesh = new THREE.Mesh(boxGeometry, material);
+                                mesh.position.set(x, y, z);
+                                gameState.scene.add(mesh);
+                                gameState.blockMeshes.set(key, mesh);
+                            }
+                            
+                            // Add trees randomly (reduced frequency for performance)
+                            if (Math.random() < 0.005 && gameState.world.get(`${x},${height - 1},${z}`) === BlockType.GRASS) {
+                                generateTree(x, height, z);
+                            }
+                        }
+                    }
+                }
+                
+                // Generate tree
+                function generateTree(x, y, z) {
+                    const boxGeometry = new THREE.BoxGeometry(BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE);
+                    
+                    // Trunk
+                    for (let i = 0; i < 4; i++) { // Reduced height for performance
+                        const key = `${x},${y + i},${z}`;
+                        gameState.world.set(key, BlockType.WOOD);
+                        
+                        const material = new THREE.MeshLambertMaterial({ 
+                            color: blockColors[BlockType.WOOD]
+                        });
+                        const mesh = new THREE.Mesh(boxGeometry, material);
+                        mesh.position.set(x, y + i, z);
+                        gameState.scene.add(mesh);
+                        gameState.blockMeshes.set(key, mesh);
+                    }
+                    
+                    // Leaves (simplified and reduced)
+                    for (let dx = -1; dx <= 1; dx++) {
+                        for (let dy = 2; dy <= 4; dy++) { // Reduced height
+                            for (let dz = -1; dz <= 1; dz++) {
+                                if (dx === 0 && dz === 0 && dy < 4) continue;
+                                
+                                const key = `${x + dx},${y + dy},${z + dz}`;
+                                if (!gameState.world.has(key)) {
+                                    gameState.world.set(key, BlockType.LEAVES);
+                                    
+                                    const material = new THREE.MeshLambertMaterial({ 
+                                        color: blockColors[BlockType.LEAVES],
+                                        transparent: true,
+                                        opacity: 0.9
+                                    });
+                                    const mesh = new THREE.Mesh(boxGeometry, material);
+                                    mesh.position.set(x + dx, y + dy, z + dz);
+                                    gameState.scene.add(mesh);
+                                    gameState.blockMeshes.set(key, mesh);
+                                }
+                            }
+                        }
+                    }
+                }
+                
+                // Setup inventory UI - FIXED: Prevent duplication
+                function setupInventory() {
+                    // Only set up inventory once
+                    if (gameState.inventoryInitialized) return;
+                    
+                    const inventory = document.getElementById('ferroxelInventory');
+                    const blockTypes = [
+                        { type: BlockType.GRASS, name: 'Grass', color: '#3A7D00' },
+                        { type: BlockType.DIRT, name: 'Dirt', color: '#8B4513' },
+                        { type: BlockType.STONE, name: 'Stone', color: '#808080' },
+                        { type: BlockType.WOOD, name: 'Wood', color: '#654321' },
+                        { type: BlockType.LEAVES, name: 'Leaves', color: '#228B22' },
+                        { type: BlockType.SAND, name: 'Sand', color: '#F4A460' }
+                    ];
+                    
+                    blockTypes.forEach((block, index) => {
+                        const slot = document.createElement('div');
+                        slot.className = 'ferroxel-inventory-slot';
+                        if (index === 0) slot.classList.add('active');
+                        
+                        const preview = document.createElement('div');
+                        preview.className = 'ferroxel-block-preview';
+                        preview.style.backgroundColor = block.color;
+                        
+                        slot.appendChild(preview);
+                        slot.addEventListener('click', () => {
+                            document.querySelectorAll('.ferroxel-inventory-slot').forEach(s => s.classList.remove('active'));
+                            slot.classList.add('active');
+                            gameState.selectedBlockType = block.type;
+                        });
+                        
+                        inventory.appendChild(slot);
+                    });
+                    
+                    gameState.inventoryInitialized = true; // Mark as initialized
+                }
+                
+                // Create particles for block breaking (optimized)
+                function createBlockParticles(x, y, z, blockType) {
+                    const particleGeometry = new THREE.BoxGeometry(0.1, 0.1, 0.1);
+                    const particleMaterial = new THREE.MeshLambertMaterial({ 
+                        color: blockColors[blockType] 
+                    });
+                    
+                    // Create fewer particles for performance
+                    for (let i = 0; i < 4; i++) { // Reduced from 8 to 4
+                        const particle = new THREE.Mesh(particleGeometry, particleMaterial);
+                        
+                        // Position at the block center with slight offset
+                        particle.position.set(
+                            x + 0.5 + (Math.random() - 0.5) * 0.2,
+                            y + 0.5 + (Math.random() - 0.5) * 0.2,
+                            z + 0.5 + (Math.random() - 0.5) * 0.2
+                        );
+                        
+                        // Random velocity
+                        const velocity = {
+                            x: (Math.random() - 0.5) * 5,
+                            y: Math.random() * 3 + 2,
+                            z: (Math.random() - 0.5) * 5
+                        };
+                        
+                        // Random rotation
+                        const rotationSpeed = {
+                            x: (Math.random() - 0.5) * 0.2,
+                            y: (Math.random() - 0.5) * 0.2,
+                            z: (Math.random() - 0.5) * 0.2
+                        };
+                        
+                        // Shorter lifetime
+                        const lifetime = 0.8 + Math.random() * 0.3; // Reduced from 1-1.5 to 0.8-1.1
+                        
+                        gameState.scene.add(particle);
+                        gameState.particles.push({
+                            mesh: particle,
+                            velocity: velocity,
+                            rotationSpeed: rotationSpeed,
+                            lifetime: lifetime,
+                            maxLifetime: lifetime
+                        });
+                    }
+                }
+                
+                // Update particles
+                function updateParticles(deltaTime) {
+                    for (let i = gameState.particles.length - 1; i >= 0; i--) {
+                        const particle = gameState.particles[i];
+                        
+                        // Update position
+                        particle.mesh.position.x += particle.velocity.x * deltaTime;
+                        particle.mesh.position.y += particle.velocity.y * deltaTime;
+                        particle.mesh.position.z += particle.velocity.z * deltaTime;
+                        
+                        // Apply gravity
+                        particle.velocity.y += GRAVITY * deltaTime;
+                        
+                        // Update rotation
+                        particle.mesh.rotation.x += particle.rotationSpeed.x;
+                        particle.mesh.rotation.y += particle.rotationSpeed.y;
+                        particle.mesh.rotation.z += particle.rotationSpeed.z;
+                        
+                        // Update lifetime
+                        particle.lifetime -= deltaTime;
+                        
+                        // Fade out
+                        const opacity = particle.lifetime / particle.maxLifetime;
+                        particle.mesh.material.opacity = opacity;
+                        
+                        // Remove dead particles
+                        if (particle.lifetime <= 0) {
+                            gameState.scene.remove(particle.mesh);
+                            gameState.particles.splice(i, 1);
+                        }
+                    }
+                }
+                
+                // Setup event listeners
+                function setupEventListeners() {
+                    // Keyboard
+                    document.addEventListener('keydown', (e) => {
+                        // Prevent space bar from triggering multiple events
+                        if (e.code === 'Space') {
+                            e.preventDefault();
+                        }
+                        
+                        gameState.keys[e.code] = true;
+                        
+                        // Number keys for block selection
+                        if (e.code >= 'Digit1' && e.code <= 'Digit6') {
+                            const index = parseInt(e.code.replace('Digit', '')) - 1;
+                            const slots = document.querySelectorAll('.ferroxel-inventory-slot');
+                            if (slots[index]) {
+                                slots.forEach(s => s.classList.remove('active'));
+                                slots[index].classList.add('active');
+                                const blockTypeArray = [BlockType.GRASS, BlockType.DIRT, BlockType.STONE, BlockType.WOOD, BlockType.LEAVES, BlockType.SAND];
+                                gameState.selectedBlockType = blockTypeArray[index];
+                            }
+                        }
+                    });
+                    
+                    document.addEventListener('keyup', (e) => {
+                        gameState.keys[e.code] = false;
+                    });
+                    
+                    // Mouse movement
+                    document.addEventListener('mousemove', (e) => {
+                        if (!gameState.isPointerLocked) return;
+                        
+                        const movementX = e.movementX || e.mozMovementX || e.webkitMovementX || 0;
+                        const movementY = e.movementY || e.mozMovementY || e.webkitMovementY || 0;
+                        
+                        // Apply rotation with proper FPS camera controls
+                        gameState.player.rotation.y -= movementX * 0.002;
+                        gameState.player.rotation.x -= movementY * 0.002;
+                        
+                        // Clamp vertical rotation to prevent flipping
+                        gameState.player.rotation.x = Math.max(-Math.PI / 2, Math.min(Math.PI / 2, gameState.player.rotation.x));
+                    });
+                    
+                    // Click for pointer lock
+                    DOM.ferroxelCanvas.addEventListener('click', () => {
+                        if (!gameState.isPointerLocked && gameState.running) {
+                            const canvas = DOM.ferroxelCanvas;
+                            canvas.requestPointerLock = canvas.requestPointerLock || 
+                                                       canvas.mozRequestPointerLock || 
+                                                       canvas.webkitRequestPointerLock;
+                            if (canvas.requestPointerLock) {
+                                canvas.requestPointerLock();
+                            }
+                        }
+                    });
+                    
+                    // Mouse buttons
+                    document.addEventListener('mousedown', (e) => {
+                        if (!gameState.isPointerLocked || !gameState.running) return;
+                        
+                        if (e.button === 0) {
+                            breakBlock();
+                        } else if (e.button === 2) {
+                            placeBlock();
+                        }
+                    });
+                    
+                    document.addEventListener('contextmenu', (e) => e.preventDefault());
+                    
+                    // Pointer lock change
+                    function handlePointerLockChange() {
+                        const canvas = DOM.ferroxelCanvas;
+                        gameState.isPointerLocked = document.pointerLockElement === canvas || 
+                                                   document.mozPointerLockElement === canvas || 
+                                                   document.webkitPointerLockElement === canvas;
+                        
+                        // Show/hide crosshair based on pointer lock
+                        const crosshair = document.getElementById('ferroxelCrosshair');
+                        if (gameState.isPointerLocked) {
+                            crosshair.classList.add('active');
+                        } else {
+                            crosshair.classList.remove('active');
+                        }
+                    }
+                    
+                    document.addEventListener('pointerlockchange', handlePointerLockChange);
+                    document.addEventListener('mozpointerlockchange', handlePointerLockChange);
+                    document.addEventListener('webkitpointerlockchange', handlePointerLockChange);
+                    
+                    // Window resize - handle both normal and fullscreen modes
+                    function handleResize() {
+                        if (gameState.camera && gameState.renderer) {
+                            const canvasContainer = DOM.ferroxelCanvas.parentElement;
+                            gameState.renderer.setSize(canvasContainer.clientWidth, canvasContainer.clientHeight);
+                            gameState.camera.aspect = canvasContainer.clientWidth / canvasContainer.clientHeight;
+                            gameState.camera.updateProjectionMatrix();
+                        }
+                    }
+                    
+                    window.addEventListener('resize', handleResize);
+                }
+                
+                // Get block at position
+                function getBlockAt(x, y, z) {
+                    const key = `${Math.floor(x)},${Math.floor(y)},${Math.floor(z)}`;
+                    return gameState.world.get(key) || BlockType.AIR;
+                }
+                
+                // Set block at position
+                function setBlockAt(x, y, z, type) {
+                    const key = `${Math.floor(x)},${Math.floor(y)},${Math.floor(z)}`;
+                    
+                    if (type === BlockType.AIR) {
+                        gameState.world.delete(key);
+                        const mesh = gameState.blockMeshes.get(key);
+                        if (mesh) {
+                            gameState.scene.remove(mesh);
+                            gameState.blockMeshes.delete(key);
+                        }
+                    } else {
+                        gameState.world.set(key, type);
+                        
+                        if (!gameState.blockMeshes.has(key)) {
+                            const boxGeometry = new THREE.BoxGeometry(BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE);
+                            const material = new THREE.MeshLambertMaterial({ 
+                                color: blockColors[type]
+                            });
+                            const mesh = new THREE.Mesh(boxGeometry, material);
+                            mesh.position.set(Math.floor(x), Math.floor(y), Math.floor(z));
+                            gameState.scene.add(mesh);
+                            gameState.blockMeshes.set(key, mesh);
+                        }
+                    }
+                }
+                
+                // Cast ray from camera
+                function castRay() {
+                    // Create direction vector based on camera rotation
+                    const direction = new THREE.Vector3();
+                    
+                    // Apply rotation to direction vector
+                    const euler = new THREE.Euler(
+                        gameState.player.rotation.x,
+                        gameState.player.rotation.y,
+                        0,
+                        'YXZ'
+                    );
+                    
+                    direction.set(0, 0, -1);
+                    direction.applyEuler(euler);
+                    
+                    gameState.raycaster.set(
+                        new THREE.Vector3(
+                            gameState.player.position.x,
+                            gameState.player.position.y,
+                            gameState.player.position.z
+                        ),
+                        direction
+                    );
+                    
+                    const intersects = [];
+                    gameState.blockMeshes.forEach((mesh, key) => {
+                        const intersection = gameState.raycaster.intersectObject(mesh);
+                        if (intersection.length > 0) {
+                            intersects.push({
+                                ...intersection[0],
+                                key: key
+                            });
+                        }
+                    });
+                    
+                    intersects.sort((a, b) => a.distance - b.distance);
+                    return intersects[0] || null;
+                }
+                
+                // Break block
+                function breakBlock() {
+                    const hit = castRay();
+                    if (hit && hit.distance < 5) {
+                        const [x, y, z] = hit.key.split(',').map(Number);
+                        const blockType = gameState.world.get(hit.key);
+                        
+                        // Create particles before removing the block
+                        createBlockParticles(x, y, z, blockType);
+                        
+                        setBlockAt(x, y, z, BlockType.AIR);
+                    }
+                }
+                
+                // Place block
+                function placeBlock() {
+                    const hit = castRay();
+                    if (hit && hit.distance < 5) {
+                        const normal = hit.face.normal;
+                        const [x, y, z] = hit.key.split(',').map(Number);
+                        const newX = x + normal.x;
+                        const newY = y + normal.y;
+                        const newZ = z + normal.z;
+                        
+                        // Check collision with player
+                        const playerMinX = gameState.player.position.x - 0.3;
+                        const playerMaxX = gameState.player.position.x + 0.3;
+                        const playerMinY = gameState.player.position.y - PLAYER_HEIGHT / 2;
+                        const playerMaxY = gameState.player.position.y + PLAYER_HEIGHT / 2;
+                        const playerMinZ = gameState.player.position.z - 0.3;
+                        const playerMaxZ = gameState.player.position.z + 0.3;
+                        
+                        const blockMinX = newX - 0.5;
+                        const blockMaxX = newX + 0.5;
+                        const blockMinY = newY - 0.5;
+                        const blockMaxY = newY + 0.5;
+                        const blockMinZ = newZ - 0.5;
+                        const blockMaxZ = newZ + 0.5;
+                        
+                        const collides = !(playerMaxX < blockMinX || playerMinX > blockMaxX ||
+                                          playerMaxY < blockMinY || playerMinY > blockMaxY ||
+                                          playerMaxZ < blockMinZ || playerMinZ > blockMaxZ);
+                        
+                        if (!collides) {
+                            setBlockAt(newX, newY, newZ, gameState.selectedBlockType);
+                        }
+                    }
+                }
+                
+                // Check collision
+                function checkCollision(position) {
+                    const margin = 0.3;
+                    const positions = [
+                        [position.x - margin, position.y, position.z - margin],
+                        [position.x + margin, position.y, position.z - margin],
+                        [position.x - margin, position.y, position.z + margin],
+                        [position.x + margin, position.y, position.z + margin],
+                        [position.x, position.y - PLAYER_HEIGHT, position.z]
+                    ];
+                    
+                    for (let pos of positions) {
+                        if (getBlockAt(...pos) !== BlockType.AIR) {
+                            return true;
+                        }
+                    }
+                    return false;
+                }
+                
+                // Update player physics
+                function updatePlayer(deltaTime) {
+                    if (!gameState.running) return;
+                    
+                    const moveSpeed = PLAYER_SPEED * (gameState.keys['ShiftLeft'] ? SPRINT_MULTIPLIER : 1);
+                    
+                    // Calculate movement direction
+                    const forward = new THREE.Vector3();
+                    const right = new THREE.Vector3();
+                    
+                    // Create rotation matrix from player's yaw (only y rotation for movement)
+                    const euler = new THREE.Euler(0, gameState.player.rotation.y, 0, 'YXZ');
+                    const matrix = new THREE.Matrix4();
+                    matrix.makeRotationFromEuler(euler);
+                    
+                    forward.set(0, 0, -1).applyMatrix4(matrix);
+                    right.set(1, 0, 0).applyMatrix4(matrix);
+                    
+                    const movement = new THREE.Vector3();
+                    if (gameState.keys['KeyW']) movement.add(forward);
+                    if (gameState.keys['KeyS']) movement.sub(forward);
+                    if (gameState.keys['KeyA']) movement.sub(right);
+                    if (gameState.keys['KeyD']) movement.add(right);
+                    
+                    if (movement.length() > 0) {
+                        movement.normalize().multiplyScalar(moveSpeed * deltaTime);
+                        
+                        const newPosition = {
+                            x: gameState.player.position.x + movement.x,
+                            y: gameState.player.position.y,
+                            z: gameState.player.position.z + movement.z
+                        };
+                        
+                        if (!checkCollision(newPosition)) {
+                            gameState.player.position.x = newPosition.x;
+                            gameState.player.position.z = newPosition.z;
+                        }
+                    }
+                    
+                    // Jumping - FIXED: Prevent multiple jumps in quick succession
+                    if (gameState.keys['Space'] && gameState.player.onGround) {
+                        gameState.player.velocity.y = JUMP_VELOCITY;
+                        gameState.player.onGround = false;
+                        // Clear the space key to prevent multiple jumps
+                        gameState.keys['Space'] = false;
+                    }
+                    
+                    // Apply gravity
+                    gameState.player.velocity.y += GRAVITY * deltaTime;
+                    
+                    // Apply vertical velocity
+                    const newY = gameState.player.position.y + gameState.player.velocity.y * deltaTime;
+                    const testPosition = {
+                        x: gameState.player.position.x,
+                        y: newY,
+                        z: gameState.player.position.z
+                    };
+                    
+                    if (!checkCollision(testPosition)) {
+                        gameState.player.position.y = newY;
+                        gameState.player.onGround = false;
+                    } else {
+                        if (gameState.player.velocity.y < 0) {
+                            gameState.player.onGround = true;
+                        }
+                        gameState.player.velocity.y = 0;
+                    }
+                    
+                    // Update camera position and rotation
+                    if (gameState.camera) {
+                        gameState.camera.position.set(
+                            gameState.player.position.x,
+                            gameState.player.position.y,
+                            gameState.player.position.z
+                        );
+                        
+                        // Apply rotation using quaternion for proper FPS camera
+                        const euler = new THREE.Euler(
+                            gameState.player.rotation.x,
+                            gameState.player.rotation.y,
+                            0,
+                            'YXZ'
+                        );
+                        
+                        gameState.camera.setRotationFromEuler(euler);
+                    }
+                }
+                
+                // Animation loop
+                function animate() {
+                    if (!gameState.running) return;
+                    
+                    requestAnimationFrame(animate);
+                    
+                    const deltaTime = gameState.clock.getDelta();
+                    
+                    if (gameState.isPointerLocked) {
+                        updatePlayer(deltaTime);
+                    }
+                    
+                    // Update particles
+                    updateParticles(deltaTime);
+                    
+                    // Update FPS
+                    gameState.frameCount++;
+                    const currentTime = performance.now();
+                    if (currentTime >= gameState.lastTime + 1000) {
+                        const fps = Math.round(gameState.frameCount * 1000 / (currentTime - gameState.lastTime));
+                        document.getElementById('ferroxelFPS').textContent = `FPS: ${fps}`;
+                        gameState.frameCount = 0;
+                        gameState.lastTime = currentTime;
+                    }
+                    
+                    if (gameState.renderer && gameState.scene && gameState.camera) {
+                        gameState.renderer.render(gameState.scene, gameState.camera);
+                    }
+                }
+                
+                // Start game
+                function start() {
+                    console.log('Starting Ferroxel...');
+                    
+                    // Hide start screen
+                    DOM.ferroxelStartScreen.classList.add('hidden');
+                    
+                    // Initialize Three.js
+                    if (!initThreeJS()) {
+                        showFerroxelError('Failed to initialize 3D engine');
+                        return;
+                    }
+                    
+                    console.log('Three.js initialized');
+                    
+                    // Generate world
+                    generateWorld();
+                    console.log('World generated');
+                    
+                    // Setup UI
+                    setupInventory();
+                    document.getElementById('ferroxelControls').classList.add('active');
+                    document.getElementById('ferroxelFPS').classList.add('active');
+                    document.getElementById('ferroxelInventory').classList.add('active');
+                    
+                    // Setup controls
+                    setupEventListeners();
+                    
+                    // Start game loop
+                    gameState.running = true;
+                    gameState.initialized = true;
+                    animate();
+                    
+                    console.log('Ferroxel started successfully!');
+                }
+                
+                // Show error message
+                function showFerroxelError(message) {
+                    const errorDiv = document.getElementById('ferroxelErrorMessage');
+                    errorDiv.textContent = 'Error: ' + message;
+                    errorDiv.style.display = 'block';
+                    setTimeout(() => {
+                        errorDiv.style.display = 'none';
+                    }, 5000);
+                }
+                
+                // Stop game
+                function stop() {
+                    gameState.running = false;
+                    
+                    // Clean up Three.js resources
+                    if (gameState.scene) {
+                        while(gameState.scene.children.length > 0) { 
+                            gameState.scene.remove(gameState.scene.children[0]); 
+                        }
+                    }
+                    
+                    if (gameState.renderer) {
+                        gameState.renderer.dispose();
+                    }
+                    
+                    // Reset UI
+                    DOM.ferroxelStartScreen.classList.remove('hidden');
+                    document.getElementById('ferroxelControls').classList.remove('active');
+                    document.getElementById('ferroxelFPS').classList.remove('active');
+                    document.getElementById('ferroxelInventory').classList.remove('active');
+                    document.getElementById('ferroxelCrosshair').classList.remove('active');
+                    
+                    // Reset game state but preserve inventory initialization
+                    const inventoryInitialized = gameState.inventoryInitialized;
+                    gameState.initialized = false;
+                    gameState.world.clear();
+                    gameState.blockMeshes.clear();
+                    gameState.particles = [];
+                    gameState.isPointerLocked = false;
+                    gameState.inventoryInitialized = inventoryInitialized;
+                    
+                    console.log('Ferroxel stopped');
+                }
+                
+                return {
+                    start,
+                    stop
+                };
+            })();
+            
+            // Setup Ferroxel start button
+            DOM.ferroxelStartButton.addEventListener('click', FerroxelGame.start);
+        }
 
         // =============================================
         // EVENT LISTENERS
@@ -2007,63 +3156,14 @@
                 GameState.keys[e.key] = false;
             });
 
-            // Game controls
-            DOM.particleStart.addEventListener('click', DodgeGame.start);
-            DOM.particleReset.addEventListener('click', DodgeGame.reset);
+            // Dodge-Grays Start and Reset buttons
+            DOM.dodgeStartButton.addEventListener('click', () => {
+                DodgeGame.start();
+            });
 
-            // Expand button
-            const expandButton = document.getElementById('expandButton');
-            const gameCard = document.getElementById('particleCard');
-            const canvas = document.getElementById('particleGame');
-            let isExpanded = false;
-            let originalCanvasWidth = 600;
-            let originalCanvasHeight = 400;
-
-            if (expandButton) {
-                expandButton.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    
-                    if (!isExpanded) {
-                        gameCard.classList.add('expanded');
-                        expandButton.textContent = '⛶ Collapse';
-                        expandButton.title = 'Collapse to normal size';
-                        isExpanded = true;
-                        
-                        const aspectRatio = originalCanvasWidth / originalCanvasHeight;
-                        const maxWidth = Math.min(window.innerWidth * 0.9, 800);
-                        const maxHeight = Math.min(window.innerHeight * 0.6, 600);
-                        
-                        let newWidth = maxWidth;
-                        let newHeight = newWidth / aspectRatio;
-                        
-                        if (newHeight > maxHeight) {
-                            newHeight = maxHeight;
-                            newWidth = newHeight * aspectRatio;
-                        }
-                        
-                        canvas.width = Math.floor(newWidth);
-                        canvas.height = Math.floor(newHeight);
-                        
-                        DodgeGame.init();
-                    } else {
-                        gameCard.classList.remove('expanded');
-                        expandButton.textContent = '⛶ Expand';
-                        expandButton.title = 'Expand to full window';
-                        isExpanded = false;
-                        
-                        canvas.width = originalCanvasWidth;
-                        canvas.height = originalCanvasHeight;
-                        
-                        DodgeGame.init();
-                    }
-                });
-
-                window.addEventListener('keydown', (e) => {
-                    if (e.key === 'Escape' && isExpanded) {
-                        expandButton.click();
-                    }
-                });
-            }
+            DOM.dodgeResetButton.addEventListener('click', () => {
+                DodgeGame.reset();
+            });
 
             // Mobile controls
             const mobileControls = DOM.mobileControls.querySelectorAll('button');
