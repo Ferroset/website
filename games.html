@@ -9,10 +9,12 @@
             --dark-red: #5A0000;
             --medium-red: #7A0000;
             --light-red: #9A0000;
+            --accent-red: #FF6B6B;
             --white: #FFFFFF;
             --light-gray: #F5F5F5;
-            --dark-gray: rgba(40, 40, 40, 0.85);
-            --darker-gray: #222222;
+            --dark-gray: rgba(40, 40, 40, 0.95);
+            --darker-gray: #1a1a1a;
+            --card-glass: rgba(40, 40, 40, 0.7);
             --success-color: #4CAF50;
             --warning-color: #FF9800;
             --error-color: #F44336;
@@ -26,7 +28,10 @@
         }
 
         body {
-            background: linear-gradient(135deg, var(--dark-red), var(--darker-gray));
+            background: 
+                radial-gradient(ellipse at top, rgba(122, 0, 0, 0.3), transparent 50%),
+                radial-gradient(ellipse at bottom, rgba(90, 0, 0, 0.2), transparent 50%),
+                linear-gradient(135deg, var(--dark-red), var(--darker-gray));
             color: var(--white);
             min-height: 100vh;
             display: flex;
@@ -37,36 +42,59 @@
             position: relative;
         }
 
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg"><defs><pattern id="grid" width="100" height="100" patternUnits="userSpaceOnUse"><path d="M 100 0 L 0 0 0 100" fill="none" stroke="rgba(255,255,255,0.03)" stroke-width="1"/></pattern></defs><rect width="100%" height="100%" fill="url(%23grid)"/></svg>');
+            pointer-events: none;
+            z-index: 0;
+        }
+
         /* Return Button */
         .return-button {
-            position: absolute;
-            top: 15px;
-            left: 15px;
-            background-color: rgba(90, 0, 0, 0.7);
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: rgba(90, 0, 0, 0.6);
             color: var(--white);
-            border: none;
-            padding: 8px 15px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            padding: 10px 18px;
             border-radius: 4px;
             cursor: pointer;
-            font-weight: 500;
-            transition: all 0.3s ease;
-            font-size: 0.85rem;
+            font-weight: 600;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-size: 0.9rem;
             text-decoration: none;
             z-index: 1000;
-            backdrop-filter: blur(5px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            box-shadow: 
+                0 4px 0 rgba(0, 0, 0, 0.4),
+                2px 2px 0 rgba(0, 0, 0, 0.6);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .return-button::before {
+            content: '←';
+            font-size: 1.2em;
         }
 
         .return-button:hover {
-            background-color: rgba(122, 0, 0, 0.8);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+            background: rgba(122, 0, 0, 0.7);
+            transform: translateX(-4px);
+            box-shadow: 
+                0 6px 0 rgba(0, 0, 0, 0.5),
+                3px 3px 0 rgba(0, 0, 0, 0.7);
+            border-color: rgba(255, 255, 255, 0.25);
         }
 
         .return-button:active {
-            transform: translateY(0);
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+            transform: translateX(-2px);
         }
 
         /* Splash Screen */
@@ -76,13 +104,20 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: linear-gradient(135deg, var(--dark-red), var(--darker-gray));
+            background: 
+                radial-gradient(ellipse at center, rgba(122, 0, 0, 0.4), transparent 70%),
+                linear-gradient(135deg, var(--dark-red), var(--darker-gray));
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             z-index: 9999;
-            transition: opacity 0.5s ease;
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+
+        #splashScreen.fade-out {
+            opacity: 0;
+            transform: scale(0.98);
         }
 
         .splash-content {
@@ -90,47 +125,113 @@
             display: flex;
             flex-direction: column;
             align-items: center;
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .splash-logo {
             max-width: 500px;
             width: 80vw;
             height: auto;
-            margin-bottom: 30px;
+            margin-bottom: 40px;
             filter: drop-shadow(4px 4px 0 rgba(0, 0, 0, 0.9));
+            animation: logoFloat 3s ease-in-out infinite;
+        }
+
+        @keyframes logoFloat {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
         }
 
         .loading-container {
-            width: 400px;
+            width: 450px;
             max-width: 80vw;
             margin: 0 auto;
         }
 
         .loading-bar {
             width: 100%;
-            height: 25px;
-            background-color: rgba(255, 255, 255, 0.1);
-            border-radius: 5px;
+            height: 28px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 4px;
             overflow: hidden;
-            margin-bottom: 15px;
-            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            margin-bottom: 20px;
+            box-shadow: 
+                inset 0 2px 0 rgba(0, 0, 0, 0.4),
+                0 4px 0 rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+        }
+
+        .loading-bar::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 100%;
+            background: linear-gradient(90deg, 
+                transparent, 
+                rgba(255, 255, 255, 0.1), 
+                transparent);
+            animation: shimmer 2s infinite;
+        }
+
+        @keyframes shimmer {
+            0% {
+                transform: translateX(-100%);
+            }
+            100% {
+                transform: translateX(100%);
+            }
         }
 
         .loading-progress {
             height: 100%;
             width: 0%;
-            background-color: var(--white);
-            border-radius: 4px;
-            transition: width 0.3s ease;
-            box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+            background: linear-gradient(90deg, 
+                var(--medium-red), 
+                var(--accent-red), 
+                var(--medium-red));
+            background-size: 200% 100%;
+            border-radius: 2px;
+            transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 0 0 2px rgba(255, 107, 107, 0.3);
+            animation: progressGlow 2s ease-in-out infinite;
+            position: relative;
+            overflow: hidden;
+        }
+
+        @keyframes progressGlow {
+            0%, 100% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
         }
 
         .loading-text {
-            font-size: 1.2rem;
-            font-weight: bold;
-            text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.7);
-            height: 24px;
+            font-size: 1.3rem;
+            font-weight: 700;
+            text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.9);
+            height: 28px;
+            letter-spacing: 0.5px;
+            color: var(--white);
         }
 
         /* Background Animation Elements */
@@ -140,8 +241,9 @@
             left: 0;
             width: 100%;
             height: 100%;
-            z-index: -1;
+            z-index: 0;
             overflow: hidden;
+            pointer-events: none;
         }
 
         .floating-shape {
@@ -167,59 +269,130 @@
 
         header {
             text-align: center;
-            margin-bottom: 30px;
+            margin-bottom: 40px;
             width: 100%;
-            margin-top: 10px;
+            margin-top: 20px;
+            position: relative;
+            z-index: 1;
+            animation: fadeInDown 0.8s ease-out 0.3s both;
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         h1 {
-            font-size: 2.5rem;
-            margin-bottom: 10px;
-            text-shadow: 3px 3px 0 rgba(0, 0, 0, 0.9);
+            font-size: clamp(1.8rem, 4vw, 2.5rem);
+            margin-bottom: 12px;
+            font-weight: 700;
+            color: var(--white);
+            letter-spacing: 0.5px;
+            text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.9);
         }
 
         .subtitle {
-            font-size: 1.2rem;
-            margin-bottom: 20px;
-            opacity: 0.9;
-            text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.7);
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+            margin-top: 10px;
+            opacity: 0.85;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+            text-shadow: 0 2px 0 rgba(0, 0, 0, 0.8);
         }
 
         .games-container {
-            display: flex;
-            justify-content: center;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(min(100%, 500px), 1fr));
+            gap: 20px;
             width: 100%;
-            max-width: 1100px;
+            max-width: 1200px;
+            padding: 0 20px;
+            position: relative;
+            z-index: 1;
+            animation: fadeIn 1s ease-out 0.5s both;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .games-container {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
         }
 
         .game-card {
-            background-color: var(--dark-gray);
-            border-radius: 12px;
-            padding: 20px;
+            background: var(--card-glass);
+            border-radius: 8px;
+            padding: 15px;
             box-shadow:
                 0 6px 0 rgba(0, 0, 0, 0.4),
-                4px 4px 0 rgba(0, 0, 0, 0.6);
-            transition: all 0.3s ease;
+                4px 4px 0 rgba(0, 0, 0, 0.6),
+                0 0 0 1px rgba(255, 255, 255, 0.1);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             display: flex;
             flex-direction: column;
             align-items: center;
-            backdrop-filter: blur(5px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            cursor: pointer;
+            backdrop-filter: blur(20px) saturate(180%);
+            border: 1px solid rgba(255, 255, 255, 0.15);
             position: relative;
             z-index: 1;
             overflow: hidden;
-            width: 100%;
-            max-width: 600px;
+            cursor: pointer;
+            height: 180px; /* Much more compact preview */
+            min-height: 180px;
         }
 
+        .game-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 100%;
+            background: linear-gradient(135deg, 
+                rgba(255, 107, 107, 0.1) 0%, 
+                transparent 50%);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+            pointer-events: none;
+        }
+
+        /* Hover state - expand without pushing other cards */
         .game-card:hover {
-            transform: translateY(-5px);
+            position: absolute; /* Take out of flow */
+            height: auto;
+            min-height: 500px;
+            width: calc(100% - 40px); /* Match grid column width */
+            transform: translateY(-10px);
             box-shadow:
-                0 10px 0 rgba(0, 0, 0, 0.5),
-                6px 6px 0 rgba(0, 0, 0, 0.7);
+                0 15px 0 rgba(0, 0, 0, 0.5),
+                8px 8px 0 rgba(0, 0, 0, 0.7),
+                0 0 0 1px rgba(255, 107, 107, 0.3);
+            border-color: rgba(255, 107, 107, 0.4);
+            z-index: 50; /* Above other cards */
+            padding: 20px;
         }
 
+        .game-card:hover::before {
+            opacity: 1;
+        }
+
+        /* Expanded fullscreen state */
         .game-card.expanded {
             position: fixed;
             top: 0;
@@ -230,135 +403,319 @@
             border-radius: 0;
             padding: 30px;
             overflow-y: auto;
-            transition: all 0.3s ease;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             max-width: none;
+            max-height: none;
+            min-height: auto;
+            backdrop-filter: blur(30px) saturate(180%);
+            background: rgba(40, 40, 40, 0.98); /* Much more opaque */
+            cursor: default;
         }
 
-        /* Expand/Collapse button - Desktop only */
+        .game-card.expanded:hover {
+            transform: none;
+            position: fixed;
+        }
+
+        /* Expand/Collapse button - Desktop only, visible on hover */
         .expand-button {
             position: absolute;
-            top: 10px;
-            right: 10px;
-            background-color: rgba(90, 0, 0, 0.7);
+            top: 15px;
+            right: 15px;
+            background: rgba(90, 0, 0, 0.6);
             color: var(--white);
             border: 1px solid rgba(255, 255, 255, 0.2);
-            padding: 8px 15px;
+            padding: 8px 16px;
             border-radius: 4px;
             cursor: pointer;
-            font-weight: 500;
-            transition: all 0.3s ease;
-            font-size: 0.85rem;
+            font-weight: 600;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-size: 0.9rem;
             z-index: 10;
-            backdrop-filter: blur(5px);
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
-            display: none; /* Hidden by default, shown on desktop */
+            backdrop-filter: blur(10px);
+            box-shadow: 
+                0 4px 0 rgba(0, 0, 0, 0.4),
+                2px 2px 0 rgba(0, 0, 0, 0.6);
+            opacity: 0;
+            pointer-events: none;
+            display: none; /* Hidden by default */
         }
 
-        .expand-button:hover {
-            background-color: rgba(122, 0, 0, 0.8);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
-        }
-
-        .expand-button:active {
-            transform: translateY(0);
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-        }
-
-        /* Show expand button only on desktop (screens wider than 768px) */
+        /* Show expand button on desktop hover */
         @media (min-width: 769px) {
             .expand-button {
                 display: block;
             }
+            
+            .game-card:hover .expand-button {
+                opacity: 1;
+                pointer-events: auto;
+            }
         }
 
-        /* When expanded, position button at top right */
+        .expand-button:hover {
+            background: rgba(122, 0, 0, 0.7);
+            transform: scale(1.05);
+            box-shadow: 
+                0 6px 0 rgba(0, 0, 0, 0.5),
+                3px 3px 0 rgba(0, 0, 0, 0.7);
+            border-color: rgba(255, 107, 107, 0.4);
+        }
+
+        .expand-button:active {
+            transform: scale(0.98);
+        }
+
+        /* When expanded, show close button instead */
         .game-card.expanded .expand-button {
             position: fixed;
-            top: 20px;
-            right: 20px;
+            top: 25px;
+            right: 25px;
             z-index: 101;
+            opacity: 1;
+            pointer-events: auto;
         }
 
         .game-title {
-            font-size: 1.8rem;
-            margin-bottom: 15px;
+            font-size: 1.5rem;
+            margin-bottom: 8px;
+            margin-top: 5px;
             text-align: center;
             color: var(--white);
+            font-weight: 700;
+            letter-spacing: 0.5px;
             text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.9);
+        }
+
+        .game-card:hover .game-title {
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+        }
+
+        .game-card.expanded .game-title {
+            font-size: 1.8rem;
         }
 
         .game-description {
             text-align: center;
-            margin-bottom: 15px;
-            font-size: 1rem;
-            line-height: 1.4;
-            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 0;
+            font-size: 0.95rem;
+            line-height: 1.5;
+            color: rgba(255, 255, 255, 0.85);
+            max-width: 500px;
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        .expand-message {
-            text-align: center;
+        .game-card:hover .game-description {
+            max-height: 150px; /* Increased to prevent cutoff */
+            opacity: 1;
+            margin-bottom: 12px;
+        }
+
+        .game-card.expanded .game-description {
+            max-height: 150px;
+            opacity: 1;
             margin-bottom: 15px;
+        }
+
+        /* Preview Canvas - Much smaller in default state */
+        .game-card .canvas-container {
+            transform: scale(0.35); /* Smaller for compact preview */
+            transform-origin: center;
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            pointer-events: none; /* Prevent clicking canvas in preview */
+            margin-bottom: -80px; /* Compensate for scale */
+        }
+
+        .game-card:hover .canvas-container {
+            transform: scale(0.7); /* Larger on hover */
+            margin-bottom: -30px;
+        }
+
+        .game-card.expanded .canvas-container {
+            transform: scale(1);
+            pointer-events: auto; /* Enable interaction when expanded */
+            margin-bottom: 20px;
+        }
+
+        /* Game Info Section - Hidden by default, shown on hover */
+        .game-info {
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            text-align: center;
+            margin-bottom: 0;
+        }
+
+        .game-card:hover .game-info {
+            max-height: 400px; /* Increased to prevent cutoff */
+            opacity: 1;
+            margin-bottom: 15px;
+        }
+
+        .game-card.expanded .game-info {
+            max-height: 0;
+            opacity: 0;
+            margin-bottom: 0;
+        }
+
+        .game-info h3 {
+            font-size: 1.1rem;
+            color: var(--accent-red);
+            margin-bottom: 10px;
+            margin-top: 5px;
+            font-weight: 600;
+        }
+
+        .game-info p {
+            font-size: 0.95rem;
+            color: rgba(255, 255, 255, 0.8);
+            line-height: 1.6;
+            margin-bottom: 10px;
+        }
+
+        .game-info ul {
+            list-style: none;
+            padding: 0;
+            margin: 10px 0;
             font-size: 0.9rem;
-            color: rgba(255, 255, 255, 0.6);
-            font-style: italic;
+            color: rgba(255, 255, 255, 0.75);
+        }
+
+        .game-info ul li {
+            margin-bottom: 6px;
+        }
+
+        .game-info ul li::before {
+            content: '▸ ';
+            color: var(--accent-red);
+        }
+
+        /* Hide controls/stats/lives in preview, show on hover */
+        .game-controls,
+        .game-stats,
+        .lives-container {
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            margin: 0;
+        }
+
+        .game-card.expanded .game-controls,
+        .game-card.expanded .game-stats,
+        .game-card.expanded .lives-container {
+            max-height: 200px;
+            opacity: 1;
+            margin-top: 15px;
+            margin-bottom: 12px;
+        }
+
+        .game-card.expanded .game-stats {
+            margin-top: 12px;
+        }
+
+        /* Mobile controls only in expanded */
+        .mobile-controls {
+            display: none;
+        }
+
+        .game-card.expanded .mobile-controls {
+            display: grid;
+        }
+
+        @media (max-width: 768px) {
+            .game-card.expanded .mobile-controls {
+                display: grid;
+            }
         }
 
         .canvas-container {
             position: relative;
-            margin-bottom: 15px;
+            margin-bottom: 20px;
             display: flex;
             justify-content: center;
             align-items: center;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 
+                0 6px 0 rgba(0, 0, 0, 0.4),
+                3px 3px 0 rgba(0, 0, 0, 0.6);
         }
 
         .game-canvas {
-            background-color: var(--darker-gray);
+            background: linear-gradient(135deg, #1a1a1a, #0a0a0a);
             border-radius: 8px;
-            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5);
-            transition: all 0.3s ease;
+            box-shadow: inset 0 0 0 2px rgba(0, 0, 0, 0.5);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             display: block;
         }
 
         .game-card.expanded .game-canvas {
-            /* Maintain aspect ratio when expanded */
-            border-radius: 12px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
-        }
-
-        /* Hide return button when game is expanded */
-        .game-card.expanded ~ .return-button {
-            display: none;
+            border-radius: 8px;
+            box-shadow: 
+                0 10px 0 rgba(0, 0, 0, 0.6),
+                5px 5px 0 rgba(0, 0, 0, 0.8);
         }
 
         .game-controls {
             display: flex;
-            gap: 10px;
+            gap: 12px;
             margin-bottom: 15px;
             flex-wrap: wrap;
             justify-content: center;
         }
 
         button {
-            background-color: var(--light-red);
+            background: linear-gradient(135deg, var(--light-red), var(--medium-red));
             color: var(--white);
-            border: none;
-            padding: 10px 20px;
-            border-radius: 5px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 10px 24px;
+            border-radius: 4px;
             cursor: pointer;
-            font-weight: bold;
-            transition: background-color 0.3s, transform 0.2s;
+            font-weight: 600;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             font-size: 1rem;
-            box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.3);
+            box-shadow: 
+                0 4px 0 rgba(0, 0, 0, 0.4),
+                2px 2px 0 rgba(0, 0, 0, 0.6);
+            position: relative;
+            overflow: hidden;
+        }
+
+        button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        button:hover::before {
+            left: 100%;
         }
 
         button:hover {
-            background-color: var(--medium-red);
-            transform: scale(1.05);
+            background: linear-gradient(135deg, var(--medium-red), var(--light-red));
+            transform: translateY(-2px);
+            box-shadow: 
+                0 6px 0 rgba(0, 0, 0, 0.5),
+                3px 3px 0 rgba(0, 0, 0, 0.7);
+            border-color: rgba(255, 107, 107, 0.4);
         }
 
         button:active {
-            transform: scale(0.98);
+            transform: translateY(0);
+            box-shadow: 
+                0 2px 0 rgba(0, 0, 0, 0.4),
+                1px 1px 0 rgba(0, 0, 0, 0.6);
         }
 
         .close-btn {
@@ -381,14 +738,31 @@
             display: flex;
             justify-content: space-between;
             width: 100%;
-            margin-top: 10px;
+            max-width: 600px;
+            margin-top: 12px;
             font-size: 1rem;
+            gap: 15px;
         }
 
         .score, .timer, .lives {
-            font-weight: bold;
+            font-weight: 600;
             color: var(--white);
-            text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.5);
+            background: rgba(0, 0, 0, 0.3);
+            padding: 8px 16px;
+            border-radius: 4px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            box-shadow: 
+                0 3px 0 rgba(0, 0, 0, 0.4),
+                2px 2px 0 rgba(0, 0, 0, 0.6);
+            flex: 1;
+            text-align: center;
+        }
+
+        .score span, .timer span, .lives span {
+            color: var(--accent-red);
+            font-weight: 700;
+            font-size: 1.15em;
         }
 
         /* Game Message Overlay */
@@ -397,35 +771,44 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            background-color: rgba(0, 0, 0, 0.85);
+            background: rgba(0, 0, 0, 0.9);
             color: white;
-            padding: 20px 30px;
-            border-radius: 10px;
-            font-size: 1.5rem;
-            font-weight: bold;
+            padding: 20px 35px;
+            border-radius: 6px;
+            font-size: 1.4rem;
+            font-weight: 700;
             text-align: center;
             z-index: 10;
             opacity: 0;
-            transition: opacity 0.3s ease;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             pointer-events: none;
-            box-shadow: 0 5px 0 rgba(0, 0, 0, 0.5);
+            box-shadow: 
+                0 6px 0 rgba(0, 0, 0, 0.8),
+                4px 4px 0 rgba(0, 0, 0, 0.9);
             max-width: 80%;
+            backdrop-filter: blur(20px);
+            letter-spacing: 0.5px;
+            border: 2px solid rgba(255, 255, 255, 0.2);
         }
 
         .game-message.show {
             opacity: 1;
+            transform: translate(-50%, -50%) scale(1);
         }
 
         .game-message.success {
-            background-color: rgba(76, 175, 80, 0.9);
+            background: rgba(76, 175, 80, 0.95);
+            border-color: rgba(76, 175, 80, 0.5);
         }
 
         .game-message.warning {
-            background-color: rgba(255, 152, 0, 0.9);
+            background: rgba(255, 152, 0, 0.95);
+            border-color: rgba(255, 152, 0, 0.5);
         }
 
         .game-message.error {
-            background-color: rgba(244, 67, 54, 0.9);
+            background: rgba(244, 67, 54, 0.95);
+            border-color: rgba(244, 67, 54, 0.5);
         }
 
         /* Mobile Controls */
@@ -437,22 +820,31 @@
                 ". down .";
             gap: 10px;
             margin-top: 15px;
-            width: 180px;
+            width: 190px;
         }
 
         .mobile-controls button {
-            width: 50px;
-            height: 50px;
+            width: 52px;
+            height: 52px;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 1.5rem;
-            background-color: rgba(255, 255, 255, 0.2);
-            border-radius: 50%;
+            background: rgba(90, 0, 0, 0.6);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 4px;
+            box-shadow: 
+                0 4px 0 rgba(0, 0, 0, 0.4),
+                2px 2px 0 rgba(0, 0, 0, 0.6);
+            transition: all 0.2s ease;
         }
 
         .mobile-controls button:active {
-            background-color: rgba(255, 255, 255, 0.4);
+            background: rgba(122, 0, 0, 0.8);
+            transform: scale(0.95);
+            box-shadow: 
+                0 2px 0 rgba(0, 0, 0, 0.4),
+                1px 1px 0 rgba(0, 0, 0, 0.6);
         }
 
         .mobile-controls .up {
@@ -474,30 +866,71 @@
         /* Life System */
         .lives-container {
             display: flex;
-            gap: 5px;
-            margin-top: 10px;
+            gap: 8px;
+            margin-top: 12px;
+            justify-content: center;
+            align-items: center;
         }
 
         .life {
-            width: 20px;
-            height: 20px;
+            width: 22px;
+            height: 22px;
             border-radius: 50%;
-            background-color: var(--light-red);
-            transition: all 0.3s ease;
+            background: linear-gradient(135deg, var(--accent-red), var(--light-red));
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 
+                0 3px 0 rgba(0, 0, 0, 0.4),
+                2px 2px 0 rgba(0, 0, 0, 0.6);
+            position: relative;
+        }
+
+        .life::after {
+            content: '';
+            position: absolute;
+            inset: 3px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 30% 30%, 
+                rgba(255, 255, 255, 0.4), 
+                transparent);
         }
 
         .life.lost {
-            background-color: rgba(255, 255, 255, 0.2);
-            transform: scale(0.8);
+            background: rgba(50, 50, 50, 0.4);
+            transform: scale(0.7);
+            box-shadow: 
+                0 2px 0 rgba(0, 0, 0, 0.4),
+                1px 1px 0 rgba(0, 0, 0, 0.6);
+        }
+
+        .life.lost::after {
+            display: none;
         }
 
         @media (max-width: 768px) {
+            body::before {
+                background-size: 50px 50px;
+            }
+
             .splash-logo {
                 max-width: 350px;
             }
 
             .loading-container {
-                width: 300px;
+                width: 320px;
+            }
+
+            /* Keep cards compact on mobile */
+            .game-card {
+                height: 180px;
+                min-height: 180px;
+            }
+
+            /* Disable hover expansion on mobile */
+            .game-card:hover {
+                position: relative;
+                height: 180px;
+                min-height: 180px;
+                transform: none;
             }
 
             .game-card.expanded .game-canvas {
@@ -507,7 +940,7 @@
 
             .game-message {
                 font-size: 1.2rem;
-                padding: 15px 20px;
+                padding: 18px 24px;
             }
 
             .mobile-controls {
@@ -515,28 +948,74 @@
             }
             
             .return-button {
-                top: 10px;
-                left: 10px;
-                padding: 6px 12px;
-                font-size: 0.8rem;
+                top: 15px;
+                left: 15px;
+                padding: 8px 14px;
+                font-size: 0.85rem;
             }
-            
-            /* Hide expand message on mobile */
-            .expand-message {
-                display: none;
+
+            .game-stats {
+                flex-direction: column;
+                gap: 10px;
             }
-            
-            /* Disable expansion on mobile */
-            .game-card {
-                cursor: default;
+
+            h1 {
+                font-size: 2rem;
             }
-            
-            .game-card:hover {
-                transform: none;
-                box-shadow:
-                    0 6px 0 rgba(0, 0, 0, 0.4),
-                    4px 4px 0 rgba(0, 0, 0, 0.6);
-            }
+        }
+
+        /* Coming Soon Card Styles */
+        .coming-soon-card {
+            background: var(--card-glass);
+            border-radius: 8px;
+            padding: 30px;
+            box-shadow:
+                0 6px 0 rgba(0, 0, 0, 0.4),
+                4px 4px 0 rgba(0, 0, 0, 0.6),
+                0 0 0 1px rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px) saturate(180%);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 180px; /* Same as game preview card */
+            min-height: 180px;
+            position: relative;
+            overflow: hidden;
+            opacity: 0.6;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .coming-soon-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                repeating-linear-gradient(
+                    45deg,
+                    transparent,
+                    transparent 10px,
+                    rgba(255, 107, 107, 0.03) 10px,
+                    rgba(255, 107, 107, 0.03) 20px
+                );
+            pointer-events: none;
+        }
+
+        .coming-soon-card:hover {
+            opacity: 0.75;
+            border-color: rgba(255, 107, 107, 0.2);
+        }
+
+        .coming-soon-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: rgba(255, 255, 255, 0.7);
+            letter-spacing: 0.5px;
+            text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.7);
         }
     </style>
 </head>
@@ -571,6 +1050,19 @@
             <button class="expand-button" id="expandButton" title="Expand to full window">⛶ Expand</button>
             <h2 class="game-title">Dodge-Grays</h2>
             <p class="game-description">Control the dark red circle and avoid the gray particles. Your score increases over time and when particles go off-screen!</p>
+            
+            <!-- Game Info Section - Shown on hover -->
+            <div class="game-info">
+                <h3>Gameplay</h3>
+                <p>Dodge incoming gray particles while collecting power-ups. Survive as long as possible to achieve a high score!</p>
+                <ul>
+                    <li>Arrow keys or WASD to move</li>
+                    <li>Collect power-ups for advantages</li>
+                    <li>3 lives - each hit reduces health</li>
+                    <li>Score increases over time</li>
+                </ul>
+            </div>
+            
             <div class="canvas-container">
                 <canvas id="particleGame" class="game-canvas" width="600" height="400"></canvas>
                 <div class="game-message" id="particleMessage"></div>
@@ -595,6 +1087,16 @@
                 <button class="right">→</button>
                 <button class="down">↓</button>
             </div>
+        </div>
+
+        <!-- Coming Soon Card 1 -->
+        <div class="coming-soon-card">
+            <h3 class="coming-soon-title">Coming Soon!</h3>
+        </div>
+
+        <!-- Coming Soon Card 2 -->
+        <div class="coming-soon-card">
+            <h3 class="coming-soon-title">Coming Soon!</h3>
         </div>
     </div>
 
@@ -639,12 +1141,12 @@
                     clearInterval(loadingInterval);
                     clearInterval(textInterval);
 
-                    // Fade out splash screen
+                    // Fade out splash screen with CSS class
                     setTimeout(() => {
-                        splashScreen.style.opacity = '0';
+                        splashScreen.classList.add('fade-out');
                         setTimeout(() => {
                             splashScreen.style.display = 'none';
-                        }, 500);
+                        }, 600);
                     }, 300);
                 }
             }, interval);
@@ -721,13 +1223,12 @@
          */
         function createBackgroundAnimation() {
             const bgAnimation = document.getElementById('bgAnimation');
-            const shapesCount = 12; // Reduced for better performance
+            const shapesCount = 12;
 
             for (let i = 0; i < shapesCount; i++) {
                 const shape = document.createElement('div');
                 shape.classList.add('floating-shape');
 
-                // Optimized size and animation
                 const size = Math.random() * 60 + 20;
                 shape.style.width = `${size}px`;
                 shape.style.height = `${size}px`;
@@ -746,67 +1247,6 @@
         // =============================================
         // CARD EXPANSION LOGIC
         // =============================================
-
-        /**
-         * Handle card expansion/collapse
-         */
-        function setupCardExpansion() {
-            // Don't set up expansion on mobile
-            if (window.innerWidth <= 768) {
-                return;
-            }
-
-            DOM.particleCard.addEventListener('click', function(e) {
-                // Don't expand if clicking on a button
-                if (e.target.tagName === 'BUTTON') return;
-
-                const isExpanded = this.classList.contains('expanded');
-
-                if (isExpanded) {
-                    // Collapse card
-                    this.classList.remove('expanded');
-                    GameState.currentExpandedGame = null;
-                    document.removeEventListener('keydown', preventArrowKeyScrolling);
-
-                    // Remove close button
-                    const closeBtn = this.querySelector('.close-btn');
-                    if (closeBtn) closeBtn.remove();
-                    
-                    // Reset canvas size
-                    const canvas = DOM.particleGame;
-                    canvas.width = 600;
-                    canvas.height = 400;
-                } else {
-                    // Expand card
-                    this.classList.add('expanded');
-                    GameState.currentExpandedGame = this;
-
-                    // Add close button
-                    const closeBtn = document.createElement('button');
-                    closeBtn.className = 'close-btn';
-                    closeBtn.innerHTML = '×';
-                    closeBtn.addEventListener('click', function(e) {
-                        e.stopPropagation();
-                        DOM.particleCard.classList.remove('expanded');
-                        GameState.currentExpandedGame = null;
-                        document.removeEventListener('keydown', preventArrowKeyScrolling);
-                        closeBtn.remove();
-                        
-                        // Reset canvas size
-                        const canvas = DOM.particleGame;
-                        canvas.width = 600;
-                        canvas.height = 400;
-                    });
-                    this.appendChild(closeBtn);
-
-                    // Prevent arrow key scrolling
-                    document.addEventListener('keydown', preventArrowKeyScrolling);
-                }
-            });
-        }
-
-        // Initialize card expansion
-        setupCardExpansion();
 
         // =============================================
         // DODGE-GRAYS GAME IMPLEMENTATION
