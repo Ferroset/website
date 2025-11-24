@@ -1298,6 +1298,17 @@
             setTimeout(() => {
                 splashScreen.classList.add('fade-out');
 
+                // Start background music when splash starts fading
+                const audio = document.getElementById('background-music');
+                if (audio) {
+                    audio.play().catch(() => {
+                        // If autoplay is blocked, try again on first user interaction
+                        document.addEventListener('click', () => {
+                            audio.play().catch(() => {});
+                        }, { once: true });
+                    });
+                }
+
                 // After fade out completes, remove splash screen from DOM
                 setTimeout(() => {
                     splashScreen.style.display = 'none';
@@ -1432,15 +1443,6 @@
                 console.log(`Page Load Time: ${pageLoadTime}ms`);
             }
         });
-
-        // === BACKGROUND MUSIC ===
-        document.addEventListener('click', function startMusic() {
-            const audio = document.getElementById('background-music');
-            if (audio) {
-                audio.play().catch(() => {});
-                document.removeEventListener('click', startMusic);
-            }
-        }, { once: true });
     </script>
 </body>
 </html>
