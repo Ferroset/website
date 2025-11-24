@@ -628,19 +628,9 @@
             margin-top: 12px;
         }
 
-        /* Mobile controls only in expanded */
+        /* Mobile controls - hidden by default, only shown on mobile */
         .mobile-controls {
             display: none;
-        }
-
-        .game-card.expanded .mobile-controls {
-            display: grid;
-        }
-
-        @media (max-width: 768px) {
-            .game-card.expanded .mobile-controls {
-                display: grid;
-            }
         }
 
         .canvas-container {
@@ -965,7 +955,8 @@
                 padding: 18px 24px;
             }
 
-            .mobile-controls {
+            /* Mobile controls only on mobile when game is expanded */
+            .game-card.expanded .mobile-controls {
                 display: grid;
             }
             
