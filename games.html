@@ -18,6 +18,7 @@
             --success-color: #4CAF50;
             --warning-color: #FF9800;
             --error-color: #F44336;
+            --wii-glow: rgba(255, 255, 255, 0.6);
         }
 
         * {
@@ -52,6 +53,47 @@
             background: url('data:image/svg+xml,<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg"><defs><pattern id="grid" width="100" height="100" patternUnits="userSpaceOnUse"><path d="M 100 0 L 0 0 0 100" fill="none" stroke="rgba(255,255,255,0.03)" stroke-width="1"/></pattern></defs><rect width="100%" height="100%" fill="url(%23grid)"/></svg>');
             pointer-events: none;
             z-index: 0;
+        }
+
+        /* Bubbly soda effect container */
+        .bubbles-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* Individual bubble */
+        .bubble {
+            position: absolute;
+            bottom: -50px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 30% 30%, 
+                rgba(255, 255, 255, 0.25), 
+                rgba(255, 255, 255, 0.08));
+            opacity: 0.6;
+            animation: rise linear infinite;
+        }
+
+        @keyframes rise {
+            0% {
+                bottom: -50px;
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.6;
+            }
+            90% {
+                opacity: 0.6;
+            }
+            100% {
+                bottom: 110vh;
+                opacity: 0;
+            }
         }
 
         /* Return Button */
@@ -234,89 +276,436 @@
             color: var(--white);
         }
 
-        /* Background Animation Elements */
-        .bg-animation {
-            position: fixed;
-            top: 0;
-            left: 0;
+        /* Main Content */
+        #mainContent {
+            opacity: 0;
+            transition: opacity 0.6s ease;
+            z-index: 1;
             width: 100%;
-            height: 100%;
-            z-index: 0;
-            overflow: hidden;
-            pointer-events: none;
+            max-width: 1400px;
+            margin: 0 auto;
         }
 
-        .floating-shape {
-            position: absolute;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.05);
-            animation: float 15s infinite linear;
+        #mainContent.visible {
+            opacity: 1;
         }
 
-        @keyframes float {
+        .header {
+            text-align: center;
+            margin: 40px 0 60px 0;
+            z-index: 1;
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            text-shadow: 3px 3px 0 rgba(0, 0, 0, 0.9);
+            margin-bottom: 15px;
+            letter-spacing: 1px;
+            opacity: 0;
+            transform: translateY(-30px);
+            animation: none;
+        }
+
+        #mainContent.visible .header h1 {
+            animation: bounceInDown 0.7s ease-out forwards;
+        }
+
+        @keyframes bounceInDown {
             0% {
-                transform: translateY(0) rotate(0deg);
-                opacity: 0.5;
+                opacity: 0;
+                transform: translateY(-30px) scale(0.95);
             }
-            50% {
-                opacity: 0.8;
+            60% {
+                opacity: 1;
+                transform: translateY(5px) scale(1.02);
             }
             100% {
-                transform: translateY(-1000px) rotate(720deg);
-                opacity: 0;
+                opacity: 1;
+                transform: translateY(0) scale(1);
             }
         }
 
-        header {
-            text-align: center;
-            margin-bottom: 40px;
-            width: 100%;
-            margin-top: 20px;
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0;
+            text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.7);
+            transform: translateY(-10px);
+            animation: none;
+        }
+
+        #mainContent.visible .header p {
+            animation: fadeInUp 0.5s ease-out 0.25s forwards;
+        }
+
+        @keyframes fadeInUp {
+            0% {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            100% {
+                opacity: 0.9;
+                transform: translateY(0);
+            }
+        }
+
+        /* Wii-Style Grid Layout */
+        .games-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 40px;
+            padding: 20px;
+            max-width: 1000px;
+            margin: 0 auto;
+            z-index: 1;
+        }
+
+        /* Wii Channel Tile */
+        .channel-tile {
+            aspect-ratio: 1;
+            background: linear-gradient(145deg, 
+                rgba(122, 0, 0, 0.4),
+                rgba(90, 0, 0, 0.6));
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 15px;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 
+                0 8px 16px rgba(0, 0, 0, 0.4),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            opacity: 0;
+            transform: scale(0.85) translateY(20px);
+            animation: none;
+        }
+
+        #mainContent.visible .channel-tile {
+            animation: popIn 0.5s ease-out forwards;
+        }
+
+        @keyframes popIn {
+            0% {
+                opacity: 0;
+                transform: scale(0.85) translateY(20px);
+            }
+            60% {
+                transform: scale(1.02) translateY(-3px);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        /* Staggered animation delays for each tile */
+        #mainContent.visible .games-grid .channel-tile:nth-child(1) {
+            animation-delay: 0.4s;
+        }
+        #mainContent.visible .games-grid .channel-tile:nth-child(2) {
+            animation-delay: 0.48s;
+        }
+        #mainContent.visible .games-grid .channel-tile:nth-child(3) {
+            animation-delay: 0.56s;
+        }
+        #mainContent.visible .games-grid .channel-tile:nth-child(4) {
+            animation-delay: 0.64s;
+        }
+        #mainContent.visible .games-grid .channel-tile:nth-child(5) {
+            animation-delay: 0.72s;
+        }
+        #mainContent.visible .games-grid .channel-tile:nth-child(6) {
+            animation-delay: 0.80s;
+        }
+        #mainContent.visible .games-grid .channel-tile:nth-child(7) {
+            animation-delay: 0.88s;
+        }
+        #mainContent.visible .games-grid .channel-tile:nth-child(8) {
+            animation-delay: 0.96s;
+        }
+
+        .channel-tile::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at center, 
+                transparent 0%, 
+                rgba(0, 0, 0, 0.2) 100%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        /* Wii-style hover effect */
+        .channel-tile:hover {
+            transform: scale(1.08) translateY(-5px);
+            border-color: rgba(255, 255, 255, 0.4);
+            box-shadow: 
+                0 0 30px rgba(255, 255, 255, 0.3),
+                0 0 50px rgba(255, 107, 107, 0.4),
+                0 12px 24px rgba(0, 0, 0, 0.5),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+        }
+
+        .channel-tile:hover::before {
+            opacity: 1;
+        }
+
+        .channel-tile:hover::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, 
+                rgba(255, 255, 255, 0.3) 0%, 
+                transparent 70%);
+            animation: wiiGlow 2s ease-in-out infinite;
+        }
+
+        @keyframes wiiGlow {
+            0%, 100% {
+                transform: translate(0, 0);
+            }
+            50% {
+                transform: translate(10px, 10px);
+            }
+        }
+
+        .channel-tile:active {
+            transform: scale(1.02) translateY(-2px);
+        }
+
+        /* Placeholder tiles styling */
+        .channel-tile.placeholder {
+            opacity: 0.6;
+            cursor: default;
+        }
+
+        .channel-tile.placeholder:hover {
+            transform: scale(1.03) translateY(-2px);
+            box-shadow: 
+                0 0 20px rgba(255, 255, 255, 0.2),
+                0 0 30px rgba(255, 107, 107, 0.2),
+                0 10px 20px rgba(0, 0, 0, 0.5),
+                inset 0 1px 0 rgba(255, 255, 255, 0.15);
+        }
+
+        .channel-icon {
+            font-size: 4rem;
+            margin-bottom: 15px;
+            filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.5));
             position: relative;
             z-index: 1;
-            animation: fadeInDown 0.8s ease-out 0.3s both;
         }
 
-        @keyframes fadeInDown {
-            from {
+        /* Channel Preview Container */
+        .channel-preview {
+            width: 100%;
+            height: 60%;
+            position: relative;
+            margin-bottom: 15px;
+            z-index: 1;
+            opacity: 0;
+            animation: none;
+        }
+
+        #mainContent.visible .channel-tile .channel-preview {
+            animation: fadeIn 0.5s ease-out forwards;
+        }
+
+        @keyframes fadeIn {
+            0% {
                 opacity: 0;
-                transform: translateY(-30px);
             }
-            to {
+            100% {
+                opacity: 1;
+            }
+        }
+
+        /* Stagger preview animations */
+        #mainContent.visible .games-grid .channel-tile:nth-child(1) .channel-preview {
+            animation-delay: 0.6s;
+        }
+        #mainContent.visible .games-grid .channel-tile:nth-child(2) .channel-preview {
+            animation-delay: 0.68s;
+        }
+        #mainContent.visible .games-grid .channel-tile:nth-child(3) .channel-preview {
+            animation-delay: 0.76s;
+        }
+        #mainContent.visible .games-grid .channel-tile:nth-child(4) .channel-preview {
+            animation-delay: 0.84s;
+        }
+        #mainContent.visible .games-grid .channel-tile:nth-child(5) .channel-preview {
+            animation-delay: 0.92s;
+        }
+        #mainContent.visible .games-grid .channel-tile:nth-child(6) .channel-preview {
+            animation-delay: 1.0s;
+        }
+        #mainContent.visible .games-grid .channel-tile:nth-child(7) .channel-preview {
+            animation-delay: 1.08s;
+        }
+        #mainContent.visible .games-grid .channel-tile:nth-child(8) .channel-preview {
+            animation-delay: 1.16s;
+        }
+
+        /* Dodge-Grays Preview Particles */
+        .preview-particle {
+            position: absolute;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(180, 180, 180, 1), rgba(140, 140, 140, 0));
+            animation: floatParticle 3s infinite ease-in-out;
+        }
+
+        .preview-particle.p1 {
+            width: 20px;
+            height: 20px;
+            top: 20%;
+            left: 20%;
+            animation-delay: 0s;
+        }
+
+        .preview-particle.p2 {
+            width: 16px;
+            height: 16px;
+            top: 60%;
+            right: 25%;
+            animation-delay: 1s;
+        }
+
+        .preview-particle.p3 {
+            width: 18px;
+            height: 18px;
+            bottom: 25%;
+            left: 50%;
+            animation-delay: 2s;
+        }
+
+        @keyframes floatParticle {
+            0%, 100% {
+                transform: translate(0, 0);
+                opacity: 0.8;
+            }
+            50% {
+                transform: translate(10px, -10px);
+                opacity: 1;
+            }
+        }
+
+        /* Dodge-Grays Preview Player */
+        .preview-player {
+            position: absolute;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(255, 107, 107, 1), rgba(220, 70, 70, 0.3));
+            border: 2px solid rgba(255, 107, 107, 0.8);
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            box-shadow: 0 0 10px rgba(255, 107, 107, 0.5);
+            animation: playerPulse 2s infinite ease-in-out;
+        }
+
+        @keyframes playerPulse {
+            0%, 100% {
+                transform: translate(-50%, -50%) scale(1);
+            }
+            50% {
+                transform: translate(-50%, -50%) scale(1.1);
+            }
+        }
+
+        /* Placeholder Preview */
+        .placeholder-preview {
+            background: radial-gradient(circle at center, 
+                rgba(255, 255, 255, 0.05),
+                transparent);
+            border: 2px dashed rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+        }
+
+        .channel-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            text-align: center;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+            position: relative;
+            z-index: 1;
+            line-height: 1.3;
+            opacity: 0;
+            transform: translateY(5px);
+            animation: none;
+        }
+
+        #mainContent.visible .channel-tile .channel-title {
+            animation: slideUpFade 0.4s ease-out forwards;
+        }
+
+        @keyframes slideUpFade {
+            0% {
+                opacity: 0;
+                transform: translateY(5px);
+            }
+            100% {
                 opacity: 1;
                 transform: translateY(0);
             }
         }
 
-        h1 {
-            font-size: clamp(1.8rem, 4vw, 2.5rem);
-            margin-bottom: 12px;
-            font-weight: 700;
-            color: var(--white);
-            letter-spacing: 0.5px;
-            text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.9);
+        /* Stagger title animations */
+        #mainContent.visible .games-grid .channel-tile:nth-child(1) .channel-title {
+            animation-delay: 0.7s;
+        }
+        #mainContent.visible .games-grid .channel-tile:nth-child(2) .channel-title {
+            animation-delay: 0.78s;
+        }
+        #mainContent.visible .games-grid .channel-tile:nth-child(3) .channel-title {
+            animation-delay: 0.86s;
+        }
+        #mainContent.visible .games-grid .channel-tile:nth-child(4) .channel-title {
+            animation-delay: 0.94s;
+        }
+        #mainContent.visible .games-grid .channel-tile:nth-child(5) .channel-title {
+            animation-delay: 1.02s;
+        }
+        #mainContent.visible .games-grid .channel-tile:nth-child(6) .channel-title {
+            animation-delay: 1.1s;
+        }
+        #mainContent.visible .games-grid .channel-tile:nth-child(7) .channel-title {
+            animation-delay: 1.18s;
+        }
+        #mainContent.visible .games-grid .channel-tile:nth-child(8) .channel-title {
+            animation-delay: 1.26s;
         }
 
-        .subtitle {
-            font-size: 1.1rem;
-            margin-bottom: 15px;
-            margin-top: 10px;
-            opacity: 0.85;
-            font-weight: 500;
-            letter-spacing: 0.5px;
-            text-shadow: 0 2px 0 rgba(0, 0, 0, 0.8);
-        }
-
-        .games-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(min(100%, 500px), 1fr));
-            gap: 20px;
+        /* Game Modal Overlay */
+        .game-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
             width: 100%;
-            max-width: 1200px;
-            padding: 0 20px;
-            position: relative;
-            z-index: 1;
-            animation: fadeIn 1s ease-out 0.5s both;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(10px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            padding: 20px;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .game-modal.active {
+            display: flex;
         }
 
         @keyframes fadeIn {
@@ -328,492 +717,284 @@
             }
         }
 
-        @media (max-width: 768px) {
-            .games-container {
-                grid-template-columns: 1fr;
-                gap: 20px;
+        .modal-content {
+            background: linear-gradient(145deg, 
+                var(--dark-gray),
+                rgba(40, 40, 40, 0.98));
+            border-radius: 12px;
+            max-width: 95%;
+            max-height: 95%;
+            overflow-y: auto;
+            position: relative;
+            box-shadow: 
+                0 0 40px rgba(255, 107, 107, 0.3),
+                0 20px 60px rgba(0, 0, 0, 0.5);
+            animation: slideIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: scale(0.9) translateY(20px);
+                opacity: 0;
+            }
+            to {
+                transform: scale(1) translateY(0);
+                opacity: 1;
             }
         }
 
-        .game-card {
-            background: var(--card-glass);
-            border-radius: 8px;
-            padding: 15px;
-            box-shadow:
-                0 6px 0 rgba(0, 0, 0, 0.4),
-                4px 4px 0 rgba(0, 0, 0, 0.6),
-                0 0 0 1px rgba(255, 255, 255, 0.1);
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            backdrop-filter: blur(20px) saturate(180%);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            position: relative;
-            z-index: 1;
-            overflow: hidden;
-            cursor: pointer;
-            height: 180px; /* Much more compact preview */
-            min-height: 180px;
-        }
-
-        .game-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 100%;
-            background: linear-gradient(135deg, 
-                rgba(255, 107, 107, 0.1) 0%, 
-                transparent 50%);
-            opacity: 0;
-            transition: opacity 0.4s ease;
-            pointer-events: none;
-        }
-
-        /* Hover state - smaller, more subtle expansion */
-        .game-card:hover {
-            position: absolute;
-            height: auto;
-            min-height: 380px; /* Reduced from 500px */
-            max-height: 450px; /* Added max to prevent too much expansion */
-            width: calc(100% - 40px);
-            transform: translateY(-5px); /* Less dramatic lift */
-            box-shadow:
-                0 10px 0 rgba(0, 0, 0, 0.5),
-                6px 6px 0 rgba(0, 0, 0, 0.7),
-                0 0 0 1px rgba(255, 107, 107, 0.3);
-            border-color: rgba(255, 107, 107, 0.4);
-            z-index: 50;
-            padding: 18px;
-            overflow: hidden; /* Prevent content overflow */
-        }
-
-        .game-card:hover::before {
-            opacity: 1;
-        }
-
-        /* Expanded fullscreen state - fully responsive */
-        .game-card.expanded {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            z-index: 100;
-            border-radius: 0;
-            padding: 15px;
-            overflow-y: auto;
-            overflow-x: hidden;
-            transition: all 0.3s ease;
-            max-width: none;
-            max-height: none;
-            min-height: auto;
-            backdrop-filter: blur(30px) saturate(180%);
-            background: rgba(40, 40, 40, 0.98);
-            cursor: default;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: flex-start;
-        }
-
-        .game-card.expanded:hover {
-            transform: none;
-            position: fixed;
-        }
-
-        /* Expand/Collapse button - Desktop only, visible on hover */
-        .expand-button {
+        .modal-close {
             position: absolute;
             top: 15px;
             right: 15px;
+            background: rgba(255, 0, 0, 0.7);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            font-size: 1.5rem;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+            z-index: 10;
+            font-weight: bold;
+        }
+
+        .modal-close:hover {
+            background: rgba(255, 0, 0, 0.9);
+            transform: rotate(90deg) scale(1.1);
+            box-shadow: 0 0 15px rgba(255, 0, 0, 0.5);
+        }
+
+        /* Game Card Styles (inside modal) */
+        .game-card {
+            background: linear-gradient(145deg, 
+                var(--card-glass),
+                rgba(40, 40, 40, 0.85));
+            border-radius: 8px;
+            padding: 30px;
+            box-shadow: 
+                0 8px 32px rgba(0, 0, 0, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            max-width: 100%;
+            margin: 0 auto;
+        }
+
+        .game-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .game-title {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .game-title h2 {
+            font-size: 2rem;
+            font-weight: 700;
+            text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.9);
+            margin: 0;
+        }
+
+        .game-icon {
+            font-size: 2.5rem;
+            filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.5));
+        }
+
+        .expand-button {
             background: rgba(90, 0, 0, 0.6);
             color: var(--white);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.15);
             padding: 8px 16px;
             border-radius: 4px;
             cursor: pointer;
             font-weight: 600;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.3s ease;
             font-size: 0.9rem;
-            z-index: 10;
-            backdrop-filter: blur(10px);
-            box-shadow: 
-                0 4px 0 rgba(0, 0, 0, 0.4),
-                2px 2px 0 rgba(0, 0, 0, 0.6);
-            opacity: 0;
-            pointer-events: none;
-            display: none; /* Hidden by default */
-        }
-
-        /* Show expand button on desktop hover */
-        @media (min-width: 769px) {
-            .expand-button {
-                display: block;
-            }
-            
-            .game-card:hover .expand-button {
-                opacity: 1;
-                pointer-events: auto;
-            }
         }
 
         .expand-button:hover {
             background: rgba(122, 0, 0, 0.7);
-            transform: scale(1.05);
-            box-shadow: 
-                0 6px 0 rgba(0, 0, 0, 0.5),
-                3px 3px 0 rgba(0, 0, 0, 0.7);
-            border-color: rgba(255, 107, 107, 0.4);
-        }
-
-        .expand-button:active {
-            transform: scale(0.98);
-        }
-
-        /* When expanded, show close button instead */
-        .game-card.expanded .expand-button {
-            position: fixed;
-            top: 25px;
-            right: 25px;
-            z-index: 101;
-            opacity: 1;
-            pointer-events: auto;
-        }
-
-        .game-title {
-            font-size: 1.5rem;
-            margin-bottom: 8px;
-            margin-top: 5px;
-            text-align: center;
-            color: var(--white);
-            font-weight: 700;
-            letter-spacing: 0.5px;
-            text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.9);
-        }
-
-        .game-card:hover .game-title {
-            font-size: 1.8rem;
-            margin-bottom: 10px;
-        }
-
-        .game-card.expanded .game-title {
-            font-size: 1.8rem;
+            transform: translateY(-2px);
+            border-color: rgba(255, 255, 255, 0.25);
         }
 
         .game-description {
-            text-align: center;
-            margin-bottom: 0;
-            font-size: 0.95rem;
-            line-height: 1.5;
-            color: rgba(255, 255, 255, 0.85);
-            max-width: 500px;
-            max-height: 0;
-            opacity: 0;
-            overflow: hidden;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .game-card:hover .game-description {
-            max-height: 150px; /* Increased to prevent cutoff */
-            opacity: 1;
-            margin-bottom: 12px;
-        }
-
-        .game-card.expanded .game-description {
-            max-height: 150px;
-            opacity: 1;
-            margin-bottom: 15px;
-        }
-
-        /* Preview Canvas - Much smaller in default state */
-        .game-card .canvas-container {
-            transform: scale(0.35); /* Smaller for compact preview */
-            transform-origin: center;
-            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            pointer-events: none; /* Prevent clicking canvas in preview */
-            margin-bottom: -80px; /* Compensate for scale */
-        }
-
-        .game-card:hover .canvas-container {
-            transform: scale(0.7); /* Larger on hover */
-            margin-bottom: -30px;
-        }
-
-        .game-card.expanded .canvas-container {
-            transform: none;
-            pointer-events: auto;
-            margin-bottom: 15px;
-            width: 100%;
-            max-width: min(90vw, 800px);
-        }
-
-        /* Game Info Section - Hidden by default, shown on hover */
-        .game-info {
-            max-height: 0;
-            opacity: 0;
-            overflow: hidden;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            text-align: center;
-            margin-bottom: 0;
-        }
-
-        .game-card:hover .game-info {
-            max-height: 280px; /* Reduced from 400px for smaller expansion */
-            opacity: 1;
-            margin-bottom: 12px;
-        }
-
-        .game-card.expanded .game-info {
-            max-height: 0;
-            opacity: 0;
-            margin-bottom: 0;
-        }
-
-        .game-info h3 {
-            font-size: 1.1rem;
-            color: var(--accent-red);
-            margin-bottom: 10px;
-            margin-top: 5px;
-            font-weight: 600;
-        }
-
-        .game-info p {
-            font-size: 0.95rem;
-            color: rgba(255, 255, 255, 0.8);
+            color: rgba(255, 255, 255, 0.9);
             line-height: 1.6;
-            margin-bottom: 10px;
+            margin-bottom: 25px;
+            font-size: 1rem;
         }
 
-        .game-info ul {
-            list-style: none;
-            padding: 0;
-            margin: 10px 0;
-            font-size: 0.9rem;
-            color: rgba(255, 255, 255, 0.75);
-        }
-
-        .game-info ul li {
-            margin-bottom: 6px;
-        }
-
-        .game-info ul li::before {
-            content: '▸ ';
-            color: var(--accent-red);
-        }
-
-        /* Hide controls/stats/lives in preview, show on hover */
-        .game-controls,
-        .game-stats,
-        .lives-container {
-            max-height: 0;
-            opacity: 0;
-            overflow: hidden;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            margin: 0;
-        }
-
-        .game-card.expanded .game-controls,
-        .game-card.expanded .game-stats,
-        .game-card.expanded .lives-container {
-            max-height: 200px;
-            opacity: 1;
-            margin-top: 15px;
-            margin-bottom: 12px;
-        }
-
-        .game-card.expanded .game-stats {
-            margin-top: 12px;
-        }
-
-        /* Mobile controls - hidden by default, only shown on mobile */
-        .mobile-controls {
-            display: none;
-        }
-
+        /* Canvas Container */
         .canvas-container {
             position: relative;
-            margin-bottom: 20px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            border-radius: 8px;
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 6px;
             overflow: hidden;
+            margin-bottom: 20px;
             box-shadow: 
-                0 6px 0 rgba(0, 0, 0, 0.4),
-                3px 3px 0 rgba(0, 0, 0, 0.6);
+                inset 0 2px 8px rgba(0, 0, 0, 0.4),
+                0 4px 12px rgba(0, 0, 0, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.05);
         }
 
-        .game-canvas {
-            background: linear-gradient(135deg, #1a1a1a, #0a0a0a);
-            border-radius: 8px;
-            box-shadow: inset 0 0 0 2px rgba(0, 0, 0, 0.5);
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        #particleGame {
             display: block;
-            max-width: 100%;
+            width: 100%;
             height: auto;
+            max-width: 600px;
+            margin: 0 auto;
         }
 
-        .game-card.expanded .game-canvas {
-            border-radius: 8px;
-            box-shadow: 
-                0 10px 0 rgba(0, 0, 0, 0.6),
-                5px 5px 0 rgba(0, 0, 0, 0.8);
-            max-width: min(90vw, 800px);
-            max-height: min(60vh, 600px);
-            width: auto;
-            height: auto;
-        }
-
+        /* Game Controls */
         .game-controls {
             display: flex;
-            gap: 12px;
-            margin-bottom: 15px;
+            gap: 15px;
+            margin-bottom: 20px;
             flex-wrap: wrap;
-            justify-content: center;
         }
 
-        button {
-            background: linear-gradient(135deg, var(--light-red), var(--medium-red));
+        .game-button {
+            background: linear-gradient(145deg, 
+                var(--medium-red),
+                var(--dark-red));
             color: var(--white);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            padding: 10px 24px;
-            border-radius: 4px;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            padding: 12px 28px;
+            border-radius: 6px;
             cursor: pointer;
             font-weight: 600;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             font-size: 1rem;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             box-shadow: 
-                0 4px 0 rgba(0, 0, 0, 0.4),
-                2px 2px 0 rgba(0, 0, 0, 0.6);
-            position: relative;
-            overflow: hidden;
+                0 4px 0 rgba(0, 0, 0, 0.3),
+                0 6px 12px rgba(0, 0, 0, 0.2);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
-        button::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-            transition: left 0.5s;
-        }
-
-        button:hover::before {
-            left: 100%;
-        }
-
-        button:hover {
-            background: linear-gradient(135deg, var(--medium-red), var(--light-red));
+        .game-button:hover {
+            background: linear-gradient(145deg, 
+                var(--accent-red),
+                var(--medium-red));
             transform: translateY(-2px);
             box-shadow: 
-                0 6px 0 rgba(0, 0, 0, 0.5),
-                3px 3px 0 rgba(0, 0, 0, 0.7);
-            border-color: rgba(255, 107, 107, 0.4);
+                0 6px 0 rgba(0, 0, 0, 0.4),
+                0 8px 16px rgba(0, 0, 0, 0.3);
+            border-color: rgba(255, 255, 255, 0.3);
         }
 
-        button:active {
+        .game-button:active {
             transform: translateY(0);
             box-shadow: 
-                0 2px 0 rgba(0, 0, 0, 0.4),
-                1px 1px 0 rgba(0, 0, 0, 0.6);
+                0 2px 0 rgba(0, 0, 0, 0.3),
+                0 3px 8px rgba(0, 0, 0, 0.2);
         }
 
-        .close-btn {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            background-color: rgba(0, 0, 0, 0.5);
-            width: 40px;
-            height: 40px;
+        /* Game Stats */
+        .game-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .stat-box {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 15px;
+            border-radius: 6px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            opacity: 0.8;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .stat-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--accent-red);
+            text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.9);
+        }
+
+        /* Lives Display */
+        .lives-display {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .life-icon {
+            width: 30px;
+            height: 30px;
+            background: var(--accent-red);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.5rem;
-            z-index: 101;
-            box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.3);
+            font-size: 1.2rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
         }
 
-        .game-stats {
-            display: flex;
-            justify-content: space-between;
-            width: 100%;
-            max-width: 600px;
-            margin-top: 12px;
-            font-size: 1rem;
-            gap: 15px;
+        .life-icon.lost {
+            background: rgba(244, 67, 54, 0.3);
+            opacity: 0.3;
         }
 
-        .score, .timer, .lives {
-            font-weight: 600;
-            color: var(--white);
-            background: rgba(0, 0, 0, 0.3);
-            padding: 8px 16px;
-            border-radius: 4px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            box-shadow: 
-                0 3px 0 rgba(0, 0, 0, 0.4),
-                2px 2px 0 rgba(0, 0, 0, 0.6);
-            flex: 1;
-            text-align: center;
-        }
-
-        .score span, .timer span, .lives span {
-            color: var(--accent-red);
-            font-weight: 700;
-            font-size: 1.15em;
-        }
-
-        /* Game Message Overlay */
-        .game-message {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: rgba(0, 0, 0, 0.9);
-            color: white;
-            padding: 20px 35px;
+        /* Instructions */
+        .game-instructions {
+            background: rgba(0, 0, 0, 0.2);
+            padding: 20px;
             border-radius: 6px;
-            font-size: 1.4rem;
-            font-weight: 700;
-            text-align: center;
-            z-index: 10;
-            opacity: 0;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            pointer-events: none;
-            box-shadow: 
-                0 6px 0 rgba(0, 0, 0, 0.8),
-                4px 4px 0 rgba(0, 0, 0, 0.9);
-            max-width: 80%;
-            backdrop-filter: blur(20px);
-            letter-spacing: 0.5px;
-            border: 2px solid rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 20px;
         }
 
-        .game-message.show {
-            opacity: 1;
-            transform: translate(-50%, -50%) scale(1);
+        .game-instructions h3 {
+            margin-bottom: 15px;
+            color: var(--accent-red);
+            font-size: 1.2rem;
         }
 
-        .game-message.success {
-            background: rgba(76, 175, 80, 0.95);
-            border-color: rgba(76, 175, 80, 0.5);
+        .game-instructions ul {
+            list-style: none;
+            padding: 0;
         }
 
-        .game-message.warning {
-            background: rgba(255, 152, 0, 0.95);
-            border-color: rgba(255, 152, 0, 0.5);
+        .game-instructions li {
+            padding: 8px 0;
+            padding-left: 25px;
+            position: relative;
+            line-height: 1.6;
         }
 
-        .game-message.error {
-            background: rgba(244, 67, 54, 0.95);
-            border-color: rgba(244, 67, 54, 0.5);
+        .game-instructions li::before {
+            content: '▸';
+            position: absolute;
+            left: 0;
+            color: var(--accent-red);
         }
 
         /* Mobile Controls */
@@ -823,447 +1004,440 @@
                 ". up ."
                 "left . right"
                 ". down .";
+            grid-template-columns: repeat(3, 60px);
+            grid-template-rows: repeat(3, 60px);
             gap: 10px;
-            margin-top: 15px;
-            width: 190px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .mobile-controls {
+                display: grid;
+            }
         }
 
         .mobile-controls button {
-            width: 52px;
-            height: 52px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
             background: rgba(90, 0, 0, 0.6);
             border: 2px solid rgba(255, 255, 255, 0.2);
-            border-radius: 4px;
-            box-shadow: 
-                0 4px 0 rgba(0, 0, 0, 0.4),
-                2px 2px 0 rgba(0, 0, 0, 0.6);
+            color: white;
+            font-size: 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            user-select: none;
+            -webkit-user-select: none;
+            touch-action: manipulation;
             transition: all 0.2s ease;
         }
 
         .mobile-controls button:active {
             background: rgba(122, 0, 0, 0.8);
             transform: scale(0.95);
-            box-shadow: 
-                0 2px 0 rgba(0, 0, 0, 0.4),
-                1px 1px 0 rgba(0, 0, 0, 0.6);
         }
 
-        .mobile-controls .up {
-            grid-area: up;
-        }
+        .mobile-controls .up { grid-area: up; }
+        .mobile-controls .down { grid-area: down; }
+        .mobile-controls .left { grid-area: left; }
+        .mobile-controls .right { grid-area: right; }
 
-        .mobile-controls .left {
-            grid-area: left;
-        }
-
-        .mobile-controls .right {
-            grid-area: right;
-        }
-
-        .mobile-controls .down {
-            grid-area: down;
-        }
-
-        /* Life System */
-        .lives-container {
-            display: flex;
-            gap: 8px;
-            margin-top: 12px;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .life {
-            width: 22px;
-            height: 22px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, var(--accent-red), var(--light-red));
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 
-                0 3px 0 rgba(0, 0, 0, 0.4),
-                2px 2px 0 rgba(0, 0, 0, 0.6);
-            position: relative;
-        }
-
-        .life::after {
-            content: '';
+        /* Game Messages */
+        .game-message {
             position: absolute;
-            inset: 3px;
-            border-radius: 50%;
-            background: radial-gradient(circle at 30% 30%, 
-                rgba(255, 255, 255, 0.4), 
-                transparent);
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.9);
+            color: white;
+            padding: 20px 40px;
+            border-radius: 8px;
+            font-size: 1.5rem;
+            font-weight: bold;
+            text-align: center;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            z-index: 100;
         }
 
-        .life.lost {
-            background: rgba(50, 50, 50, 0.4);
-            transform: scale(0.7);
-            box-shadow: 
-                0 2px 0 rgba(0, 0, 0, 0.4),
-                1px 1px 0 rgba(0, 0, 0, 0.6);
+        .game-message.visible {
+            opacity: 1;
         }
 
-        .life.lost::after {
-            display: none;
+        .game-message.success {
+            border-color: var(--success-color);
+            color: var(--success-color);
         }
 
+        .game-message.warning {
+            border-color: var(--warning-color);
+            color: var(--warning-color);
+        }
+
+        .game-message.error {
+            border-color: var(--error-color);
+            color: var(--error-color);
+        }
+
+        /* Expanded State */
+        .game-card.expanded {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 95vw;
+            height: 95vh;
+            max-width: none;
+            z-index: 2001;
+            overflow-y: auto;
+        }
+
+        /* Responsive Design */
         @media (max-width: 768px) {
-            body::before {
-                background-size: 50px 50px;
+            .header h1 {
+                font-size: 2rem;
             }
 
-            .splash-logo {
-                max-width: 350px;
-            }
-
-            .loading-container {
-                width: 320px;
-            }
-
-            /* Keep cards compact on mobile */
-            .game-card {
-                height: 180px;
-                min-height: 180px;
-            }
-
-            /* Disable hover expansion on mobile */
-            .game-card:hover {
-                position: relative;
-                height: 180px;
-                min-height: 180px;
-                max-height: none;
-                transform: none;
-                padding: 15px;
-            }
-
-            /* Responsive canvas in expanded state */
-            .game-card.expanded {
-                padding: 10px;
-            }
-
-            .game-card.expanded .game-canvas {
-                max-width: 95vw;
-                max-height: 50vh;
-            }
-
-            .game-message {
-                font-size: 1.2rem;
-                padding: 18px 24px;
-            }
-
-            /* Mobile controls only on mobile when game is expanded */
-            .game-card.expanded .mobile-controls {
-                display: grid;
-            }
-            
-            .return-button {
-                top: 10px;
-                left: 10px;
-                padding: 6px 12px;
-                font-size: 0.8rem;
-            }
-
-            .game-stats {
-                flex-direction: column;
-                gap: 8px;
-            }
-
-            h1 {
-                font-size: 1.8rem;
-            }
-
-            .subtitle {
+            .header p {
                 font-size: 1rem;
             }
-        }
 
-        /* Tablet and medium screens */
-        @media (min-width: 769px) and (max-width: 1024px) {
-            .game-card.expanded .game-canvas {
-                max-width: 85vw;
-                max-height: 55vh;
-            }
-        }
-
-        /* Large desktop screens */
-        @media (min-width: 1920px) {
-            .games-container {
-                max-width: 1600px;
-            }
-
-            .game-card.expanded .game-canvas {
-                max-width: 1200px;
-                max-height: 800px;
-            }
-        }
-
-        /* Small height screens (laptops) */
-        @media (max-height: 768px) {
-            .game-card.expanded {
+            .games-grid {
+                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+                gap: 25px;
                 padding: 10px;
             }
 
-            .game-card.expanded .game-canvas {
-                max-height: 50vh;
+            .channel-tile {
+                border-radius: 12px;
             }
 
-            .game-card.expanded .game-title {
+            .channel-icon {
+                font-size: 3rem;
+            }
+
+            .channel-title {
+                font-size: 0.95rem;
+            }
+
+            .game-card {
+                padding: 20px;
+            }
+
+            .game-title h2 {
                 font-size: 1.5rem;
-                margin-bottom: 8px;
             }
 
             .game-stats {
-                margin-top: 8px;
+                grid-template-columns: 1fr 1fr;
             }
         }
 
-        /* Coming Soon Card Styles */
-        .coming-soon-card {
-            background: var(--card-glass);
-            border-radius: 8px;
-            padding: 30px;
-            box-shadow:
-                0 6px 0 rgba(0, 0, 0, 0.4),
-                4px 4px 0 rgba(0, 0, 0, 0.6),
-                0 0 0 1px rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(20px) saturate(180%);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 180px; /* Same as game preview card */
-            min-height: 180px;
-            position: relative;
-            overflow: hidden;
-            opacity: 0.6;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        }
+        @media (max-width: 480px) {
+            .games-grid {
+                grid-template-columns: 1fr;
+                max-width: 250px;
+            }
 
-        .coming-soon-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: 
-                repeating-linear-gradient(
-                    45deg,
-                    transparent,
-                    transparent 10px,
-                    rgba(255, 107, 107, 0.03) 10px,
-                    rgba(255, 107, 107, 0.03) 20px
-                );
-            pointer-events: none;
-        }
-
-        .coming-soon-card:hover {
-            opacity: 0.75;
-            border-color: rgba(255, 107, 107, 0.2);
-        }
-
-        .coming-soon-title {
-            font-size: 1.4rem;
-            font-weight: 700;
-            color: rgba(255, 255, 255, 0.7);
-            letter-spacing: 0.5px;
-            text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.7);
+            .return-button {
+                padding: 8px 12px;
+                font-size: 0.8rem;
+            }
         }
     </style>
 </head>
 <body>
+    <!-- Bubbly Background Effect -->
+    <div class="bubbles-container" id="bubblesContainer"></div>
+
     <!-- Return Button -->
-    <a href="/index.html" class="return-button">Return To Ferroserver.net</a>
+    <a href="index.html" class="return-button">Return to Menu</a>
 
     <!-- Splash Screen -->
     <div id="splashScreen">
         <div class="splash-content">
             <img src="/images/ferros.png" alt="FerrOS" class="splash-logo">
+            
             <div class="loading-container">
                 <div class="loading-bar">
                     <div class="loading-progress" id="loadingProgress"></div>
                 </div>
-                <div class="loading-text" id="loadingText">Boot</div>
             </div>
         </div>
     </div>
 
-    <!-- Background Animation -->
-    <div class="bg-animation" id="bgAnimation"></div>
-
-    <header>
-        <h1>Ferroserver Games</h1>
-        <p class="subtitle">More Stuff Coming Soon!</p>
-    </header>
-
-    <div class="games-container">
-        <!-- Game: Dodge-Grays -->
-        <div class="game-card" id="particleCard">
-            <button class="expand-button" id="expandButton" title="Expand to full window">⛶ Expand</button>
-            <h2 class="game-title">Dodge-Grays</h2>
-            <p class="game-description">Control the dark red circle and avoid the gray particles. Your score increases over time and when particles go off-screen!</p>
-            
-            <!-- Game Info Section - Shown on hover -->
-            <div class="game-info">
-                <h3>Gameplay</h3>
-                <p>Dodge incoming gray particles while collecting power-ups. Survive as long as possible to achieve a high score!</p>
-                <ul>
-                    <li>Arrow keys or WASD to move</li>
-                    <li>Collect power-ups for advantages</li>
-                    <li>3 lives - each hit reduces health</li>
-                    <li>Score increases over time</li>
-                </ul>
-            </div>
-            
-            <div class="canvas-container">
-                <canvas id="particleGame" class="game-canvas" width="600" height="400"></canvas>
-                <div class="game-message" id="particleMessage"></div>
-            </div>
-            <div class="game-controls">
-                <button id="particleStart">Start Game</button>
-                <button id="particleReset">Reset</button>
-            </div>
-            <div class="game-stats">
-                <div class="score">Score: <span id="particleScore">0</span></div>
-                <div class="timer">Time: <span id="particleTimer">0.0</span>s</div>
-                <div class="lives">Lives: <span id="particleLives">3</span></div>
-            </div>
-            <div class="lives-container" id="livesContainer">
-                <div class="life"></div>
-                <div class="life"></div>
-                <div class="life"></div>
-            </div>
-            <div class="mobile-controls" id="mobileControls">
-                <button class="up">↑</button>
-                <button class="left">←</button>
-                <button class="right">→</button>
-                <button class="down">↓</button>
-            </div>
+    <!-- Main Content -->
+    <div id="mainContent">
+        <div class="header">
+            <h1>Ferroserver Game Hub</h1>
+            <p>Select a game to play</p>
         </div>
 
-        <!-- Coming Soon Card 1 -->
-        <div class="coming-soon-card">
-            <h3 class="coming-soon-title">Coming Soon!</h3>
-        </div>
+        <!-- Wii-Style Games Grid -->
+        <div class="games-grid">
+            <!-- Dodge-Grays Channel Tile -->
+            <div class="channel-tile active-game" data-game="dodge-grays">
+                <div class="channel-preview">
+                    <div class="preview-particle p1"></div>
+                    <div class="preview-particle p2"></div>
+                    <div class="preview-particle p3"></div>
+                    <div class="preview-player"></div>
+                </div>
+                <div class="channel-title">Dodge-Grays</div>
+            </div>
 
-        <!-- Coming Soon Card 2 -->
-        <div class="coming-soon-card">
-            <h3 class="coming-soon-title">Coming Soon!</h3>
+            <!-- Placeholder Channel Tiles -->
+            <div class="channel-tile placeholder" data-game="coming-soon">
+                <div class="channel-preview placeholder-preview"></div>
+                <div class="channel-title">Coming Soon</div>
+            </div>
+
+            <div class="channel-tile placeholder" data-game="coming-soon">
+                <div class="channel-preview placeholder-preview"></div>
+                <div class="channel-title">Coming Soon</div>
+            </div>
+
+            <div class="channel-tile placeholder" data-game="coming-soon">
+                <div class="channel-preview placeholder-preview"></div>
+                <div class="channel-title">Coming Soon</div>
+            </div>
+
+            <div class="channel-tile placeholder" data-game="coming-soon">
+                <div class="channel-preview placeholder-preview"></div>
+                <div class="channel-title">Coming Soon</div>
+            </div>
+
+            <div class="channel-tile placeholder" data-game="coming-soon">
+                <div class="channel-preview placeholder-preview"></div>
+                <div class="channel-title">Coming Soon</div>
+            </div>
+
+            <div class="channel-tile placeholder" data-game="coming-soon">
+                <div class="channel-preview placeholder-preview"></div>
+                <div class="channel-title">Coming Soon</div>
+            </div>
+
+            <div class="channel-tile placeholder" data-game="coming-soon">
+                <div class="channel-preview placeholder-preview"></div>
+                <div class="channel-title">Coming Soon</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Game Modal -->
+    <div class="game-modal" id="gameModal">
+        <div class="modal-content">
+            <button class="modal-close" id="modalClose">×</button>
+            
+            <!-- Dodge-Grays Game Content -->
+            <div class="game-card" id="particleCard">
+                <div class="game-header">
+                    <div class="game-title">
+                        <h2>Dodge-Grays</h2>
+                    </div>
+                    <button class="expand-button" id="expandButton" title="Expand to full window">⛶ Expand</button>
+                </div>
+
+                <p class="game-description">
+                    Navigate through a field of dangerous particles! Use arrow keys or on-screen controls to avoid 
+                    the red particles while collecting green power-ups. Can you survive and achieve the highest score?
+                </p>
+
+                <div class="game-stats">
+                    <div class="stat-box">
+                        <div class="stat-label">Score</div>
+                        <div class="stat-value" id="particleScore">0</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-label">Lives</div>
+                        <div class="stat-value" id="particleLives">3</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-label">Level</div>
+                        <div class="stat-value" id="particleLevel">1</div>
+                    </div>
+                </div>
+
+                <div class="lives-display" id="livesDisplay">
+                    <div class="life-icon"></div>
+                    <div class="life-icon"></div>
+                    <div class="life-icon"></div>
+                </div>
+
+                <div class="canvas-container">
+                    <canvas id="particleGame" width="600" height="400"></canvas>
+                    <div class="game-message" id="particleMessage"></div>
+                </div>
+
+                <div class="game-controls">
+                    <button class="game-button" id="particleStart">Start Game</button>
+                    <button class="game-button" id="particleReset">Reset</button>
+                </div>
+
+                <div class="mobile-controls" id="mobileControls">
+                    <button class="up">↑</button>
+                    <button class="down">↓</button>
+                    <button class="left">←</button>
+                    <button class="right">→</button>
+                </div>
+
+                <div class="game-instructions">
+                    <h3>How to Play</h3>
+                    <ul>
+                        <li><strong>Desktop:</strong> Use Arrow Keys or WASD to move</li>
+                        <li><strong>Mobile:</strong> Use the on-screen D-pad controls</li>
+                        <li><strong>Avoid:</strong> Red particles (they hurt!)</li>
+                        <li><strong>Collect:</strong> Green power-ups for bonuses</li>
+                        <li><strong>Survive:</strong> As long as possible and rack up points</li>
+                        <li><strong>Level Up:</strong> Every 1000 points increases difficulty</li>
+                    </ul>
+                </div>
+            </div>
         </div>
     </div>
 
     <script>
         // =============================================
-        // SPLASH SCREEN AND LOADING ANIMATION
+        // BUBBLY BACKGROUND EFFECT
         // =============================================
-
-        // Splash screen elements
-        const splashScreen = document.getElementById('splashScreen');
-        const loadingProgress = document.getElementById('loadingProgress');
-        const loadingText = document.getElementById('loadingText');
-
-        /**
-         * Initialize splash screen and loading animation
-         */
-        function initSplashScreen() {
-            let progress = 0;
-            let dots = 0;
-            const maxProgress = 100;
-            const duration = 2500; // 2.5 seconds total
-            const interval = 30; // Update every 30ms
-            const steps = duration / interval;
-            const increment = maxProgress / steps;
-
-            // Text animation interval (slower - 800ms per cycle)
-            const textInterval = setInterval(() => {
-                dots = (dots + 1) % 4;
-                const dotString = '.'.repeat(dots);
-                loadingText.textContent = `Boot${dotString}`;
+        
+        function createBubbles() {
+            const container = document.getElementById('bubblesContainer');
+            
+            function createBubble() {
+                const bubble = document.createElement('div');
+                bubble.className = 'bubble';
+                
+                // Random size between 3px and 12px
+                const size = Math.random() * 9 + 3;
+                bubble.style.width = size + 'px';
+                bubble.style.height = size + 'px';
+                
+                // Random horizontal position
+                bubble.style.left = Math.random() * 100 + '%';
+                
+                // Random duration between 8s and 15s
+                const duration = Math.random() * 7 + 8;
+                bubble.style.animationDuration = duration + 's';
+                
+                // Random delay to stagger bubbles
+                const delay = Math.random() * 5;
+                bubble.style.animationDelay = delay + 's';
+                
+                container.appendChild(bubble);
+                
+                // Remove bubble after animation completes
+                setTimeout(() => {
+                    bubble.remove();
+                }, (duration + delay) * 1000);
+            }
+            
+            // Create initial bubbles
+            for (let i = 0; i < 30; i++) {
+                setTimeout(() => createBubble(), Math.random() * 5000);
+            }
+            
+            // Continuously create new bubbles
+            setInterval(() => {
+                createBubble();
             }, 800);
+        }
 
-            // Start the loading animation
+        // =============================================
+        // SPLASH SCREEN FUNCTIONALITY
+        // =============================================
+        
+        function initSplashScreen() {
+            const splashScreen = document.getElementById('splashScreen');
+            const mainContent = document.getElementById('mainContent');
+            const loadingProgress = document.getElementById('loadingProgress');
+
+            let progress = 0;
+
             const loadingInterval = setInterval(() => {
-                // Update progress bar
-                progress += increment;
-                if (progress > maxProgress) progress = maxProgress;
-                loadingProgress.style.width = `${progress}%`;
-
-                // Check if loading is complete
-                if (progress >= maxProgress) {
+                progress += Math.random() * 15 + 5;
+                
+                if (progress >= 100) {
+                    progress = 100;
                     clearInterval(loadingInterval);
-                    clearInterval(textInterval);
-
-                    // Fade out splash screen with CSS class
+                    
+                    loadingProgress.style.width = '100%';
+                    
                     setTimeout(() => {
                         splashScreen.classList.add('fade-out');
                         setTimeout(() => {
                             splashScreen.style.display = 'none';
+                            mainContent.classList.add('visible');
                         }, 600);
-                    }, 300);
+                    }, 500);
+                } else {
+                    loadingProgress.style.width = progress + '%';
                 }
-            }, interval);
+            }, 200);
         }
 
         // =============================================
-        // INITIALIZATION AND UTILITIES
+        // MODAL FUNCTIONALITY
         // =============================================
 
-        // Game state management
+        const gameModal = document.getElementById('gameModal');
+        const modalClose = document.getElementById('modalClose');
+        const channelTiles = document.querySelectorAll('.channel-tile');
+
+        // Open modal when channel tile is clicked
+        channelTiles.forEach(tile => {
+            tile.addEventListener('click', () => {
+                const gameType = tile.getAttribute('data-game');
+                
+                // Don't open modal for placeholder tiles
+                if (tile.classList.contains('placeholder')) {
+                    return;
+                }
+                
+                if (gameType === 'dodge-grays') {
+                    gameModal.classList.add('active');
+                    document.body.style.overflow = 'hidden';
+                }
+            });
+        });
+
+        // Close modal
+        function closeModal() {
+            gameModal.classList.remove('active');
+            document.body.style.overflow = 'auto';
+            // Reset game when closing
+            if (typeof DodgeGame !== 'undefined') {
+                DodgeGame.reset();
+            }
+        }
+
+        modalClose.addEventListener('click', closeModal);
+
+        // Close modal when clicking outside content
+        gameModal.addEventListener('click', (e) => {
+            if (e.target === gameModal) {
+                closeModal();
+            }
+        });
+
+        // Close modal with Escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && gameModal.classList.contains('active')) {
+                closeModal();
+            }
+        });
+
+        // =============================================
+        // GAME STATE MANAGEMENT
+        // =============================================
+
         const GameState = {
-            currentExpandedGame: null,
             keys: {},
             animationIds: new Set(),
             intervals: new Set()
         };
 
-        // Performance optimization - cache DOM elements
-        const DOM = {
-            particleCard: document.getElementById('particleCard'),
-            particleGame: document.getElementById('particleGame'),
-            particleStart: document.getElementById('particleStart'),
-            particleReset: document.getElementById('particleReset'),
-            particleScore: document.getElementById('particleScore'),
-            particleTimer: document.getElementById('particleTimer'),
-            particleMessage: document.getElementById('particleMessage'),
-            particleLives: document.getElementById('particleLives'),
-            livesContainer: document.getElementById('livesContainer'),
-            mobileControls: document.getElementById('mobileControls')
-        };
-
-        // =============================================
-        // UTILITY FUNCTIONS
-        // =============================================
-
-        /**
-         * Prevent arrow key scrolling during gameplay
-         */
-        function preventArrowKeyScrolling(e) {
-            if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', ' '].includes(e.key)) {
-                e.preventDefault();
-            }
-        }
-
-        /**
-         * Show game message overlay
-         */
-        function showGameMessage(element, message, type = '', duration = 2000) {
-            element.textContent = message;
-            element.className = `game-message ${type}`;
-            element.classList.add('show');
-
-            setTimeout(() => {
-                element.classList.remove('show');
-            }, duration);
-        }
-
-        /**
-         * Clean up animations and intervals
-         */
         function cleanupAnimations() {
             GameState.animationIds.forEach(id => cancelAnimationFrame(id));
             GameState.intervals.forEach(id => clearInterval(id));
@@ -1272,143 +1446,112 @@
         }
 
         // =============================================
-        // BACKGROUND ANIMATION
+        // DOM REFERENCES
         // =============================================
 
-        /**
-         * Create floating background shapes
-         */
-        function createBackgroundAnimation() {
-            const bgAnimation = document.getElementById('bgAnimation');
-            const shapesCount = 12;
+        const DOM = {
+            particleGame: document.getElementById('particleGame'),
+            particleStart: document.getElementById('particleStart'),
+            particleReset: document.getElementById('particleReset'),
+            particleScore: document.getElementById('particleScore'),
+            particleLives: document.getElementById('particleLives'),
+            particleLevel: document.getElementById('particleLevel'),
+            particleMessage: document.getElementById('particleMessage'),
+            livesDisplay: document.getElementById('livesDisplay'),
+            mobileControls: document.getElementById('mobileControls')
+        };
 
-            for (let i = 0; i < shapesCount; i++) {
-                const shape = document.createElement('div');
-                shape.classList.add('floating-shape');
+        // =============================================
+        // UTILITY FUNCTIONS
+        // =============================================
 
-                const size = Math.random() * 60 + 20;
-                shape.style.width = `${size}px`;
-                shape.style.height = `${size}px`;
-                shape.style.left = `${Math.random() * 100}vw`;
-                shape.style.top = `${Math.random() * 100}vh`;
-                shape.style.animationDuration = `${Math.random() * 15 + 10}s`;
-                shape.style.animationDelay = `${Math.random() * 5}s`;
-
-                bgAnimation.appendChild(shape);
-            }
+        function showGameMessage(element, message, type = 'success', duration = 2000) {
+            element.textContent = message;
+            element.className = `game-message visible ${type}`;
+            
+            setTimeout(() => {
+                element.classList.remove('visible');
+            }, duration);
         }
 
-        // Initialize background animation
-        createBackgroundAnimation();
+        function updateLivesDisplay() {
+            const lifeIcons = DOM.livesDisplay.querySelectorAll('.life-icon');
+            lifeIcons.forEach((icon, index) => {
+                if (index >= parseInt(DOM.particleLives.textContent)) {
+                    icon.classList.add('lost');
+                } else {
+                    icon.classList.remove('lost');
+                }
+            });
+        }
 
         // =============================================
-        // CARD EXPANSION LOGIC
-        // =============================================
-
-        // =============================================
-        // DODGE-GRAYS GAME IMPLEMENTATION
+        // PARTICLE DODGE GAME
         // =============================================
 
         const DodgeGame = (function() {
-            // Game constants - REDUCED VALUES FOR LESS BUSY GAMEPLAY
-            const CONSTANTS = {
-                PLAYER_RADIUS: 15,
-                PARTICLE_RADIUS: 5,
-                PARTICLE_COLOR: '#CCCCCC',
-                PLAYER_COLOR: '#5A0000',
-                PLAYER_SPEED: 3, // REDUCED FROM 6 TO 3
-                INITIAL_PARTICLES: 2, // REDUCED FROM 5 TO 2 (LESS THAN 1/4)
-                PARTICLE_SPAWN_RATE: 0.005, // REDUCED FROM 0.02 TO 0.005
-                SCORE_INTERVAL: 1000,
-                SCORE_INCREMENT: 5,
-                MAX_LIVES: 3,
-                EXPLOSION_PARTICLES: 15,
-                DEBRIS_PARTICLES: 4,
-                // NEW: Powerup constants
-                POWERUP_SIZE: 12, // Diamond size
-                POWERUP_SPAWN_RATE: 0.0005, // SIGNIFICANTLY REDUCED FROM 0.003 TO 0.0005
-                POWERUP_DURATION: 5, // seconds
-                POWERUP_TYPES: {
-                    SLOW_TIME: { color: '#00FF00', name: 'SLOW TIME' },
-                    EXTRA_LIFE: { color: '#FFD700', name: 'EXTRA LIFE' },
-                    INVULNERABILITY: { color: '#00FFFF', name: 'INVULNERABILITY' },
-                    DOUBLE_SCORE: { color: '#FF00FF', name: 'DOUBLE SCORE' }
-                }
-            };
-
-            // Game state
-            let state = {
-                player: { x: 0, y: 0, radius: CONSTANTS.PLAYER_RADIUS },
-                particles: [],
-                debris: [],
-                powerups: [], // NEW: Powerups array
-                score: 0,
-                gameTime: 0,
-                gameRunning: false,
-                lastTime: 0,
-                scoreIntervalId: null,
-                lives: CONSTANTS.MAX_LIVES,
-                isInvulnerable: false,
-                invulnerabilityTimer: 0,
-                isGameOver: false,
-                gameOverTime: 0,
-                // NEW: Active powerup states
-                activePowerups: {
-                    slowTime: { active: false, timer: 0 },
-                    doubleScore: { active: false, timer: 0 }
-                },
-                scoreMultiplier: 1,
-                // FIX: Track animation frame ID to prevent multiple loops
-                animationId: null
-            };
-
-            // Canvas context
             const canvas = DOM.particleGame;
             const ctx = canvas.getContext('2d');
 
+            // Game constants
+            const CONSTANTS = {
+                PLAYER_SIZE: 15,
+                PLAYER_SPEED: 5,
+                PARTICLE_MIN_SIZE: 3,
+                PARTICLE_MAX_SIZE: 12,
+                PARTICLE_SIZE: 8,
+                PARTICLE_BASE_SPEED: 2,
+                INITIAL_PARTICLE_COUNT: 5,
+                POWERUP_SIZE: 12,
+                POWERUP_SPAWN_CHANCE: 0.003,
+                SCORE_INCREMENT: 1,
+                SCORE_INTERVAL: 100,
+                LEVEL_THRESHOLD: 1000,
+                MAX_LIVES: 3
+            };
+
+            // Game state
+            const state = {
+                player: { x: 0, y: 0, size: CONSTANTS.PLAYER_SIZE },
+                particles: [],
+                powerups: [],
+                debris: [],
+                score: 0,
+                lives: CONSTANTS.MAX_LIVES,
+                level: 1,
+                gameRunning: false,
+                isGameOver: false,
+                gameOverTime: 0,
+                lastTime: 0,
+                scoreMultiplier: 1,
+                isInvulnerable: false,
+                invulnerabilityTimer: 0,
+                animationId: null,
+                scoreIntervalId: null
+            };
+
             /**
-             * Initialize game state
+             * Initialize the game
              */
             function init() {
                 state.player.x = canvas.width / 2;
                 state.player.y = canvas.height / 2;
                 state.particles = [];
+                state.powerups = [];
                 state.debris = [];
-                state.powerups = []; // NEW: Reset powerups
                 state.score = 0;
-                state.gameTime = 0;
                 state.lives = CONSTANTS.MAX_LIVES;
+                state.level = 1;
+                state.scoreMultiplier = 1;
                 state.isInvulnerable = false;
                 state.invulnerabilityTimer = 0;
-                state.isGameOver = false;
-                state.gameOverTime = 0;
-                // NEW: Reset powerup states
-                state.activePowerups = {
-                    slowTime: { active: false, timer: 0 },
-                    doubleScore: { active: false, timer: 0 }
-                };
-                state.scoreMultiplier = 1;
-                // FIX: Clear any existing animation
-                if (state.animationId) {
-                    cancelAnimationFrame(state.animationId);
-                    state.animationId = null;
-                }
 
-                // FIX: Clear any existing intervals
-                if (state.scoreIntervalId) {
-                    clearInterval(state.scoreIntervalId);
-                    state.scoreIntervalId = null;
-                }
-
-                DOM.particleScore.textContent = state.score;
-                DOM.particleTimer.textContent = state.gameTime.toFixed(1);
-                DOM.particleLives.textContent = state.lives;
-
-                // Update lives display
+                DOM.particleScore.textContent = '0';
+                DOM.particleLives.textContent = CONSTANTS.MAX_LIVES;
+                DOM.particleLevel.textContent = '1';
                 updateLivesDisplay();
 
-                // Create initial particles - REDUCED COUNT
-                for (let i = 0; i < CONSTANTS.INITIAL_PARTICLES; i++) {
+                for (let i = 0; i < CONSTANTS.INITIAL_PARTICLE_COUNT; i++) {
                     createParticle();
                 }
 
@@ -1416,475 +1559,185 @@
             }
 
             /**
-             * Update the lives display
-             */
-            function updateLivesDisplay() {
-                const lives = DOM.livesContainer.querySelectorAll('.life');
-                lives.forEach((life, index) => {
-                    if (index < state.lives) {
-                        life.classList.remove('lost');
-                    } else {
-                        life.classList.add('lost');
-                    }
-                });
-            }
-
-            /**
-             * Create a new particle with optimized properties
+             * Create a new particle
              */
             function createParticle() {
+                const size = CONSTANTS.PARTICLE_SIZE;
                 const side = Math.floor(Math.random() * 4);
                 let x, y, vx, vy;
 
-                // Optimized particle creation with switch statement
                 switch(side) {
                     case 0: // Top
                         x = Math.random() * canvas.width;
-                        y = -10;
-                        vx = (Math.random() - 0.5) * 1.5;
-                        vy = Math.random() * 1.5 + 0.5;
+                        y = -size;
+                        vx = (Math.random() - 0.5) * 1.2;
+                        vy = Math.random() * 1.2 + 0.6;
                         break;
                     case 1: // Right
-                        x = canvas.width + 10;
+                        x = canvas.width + size;
                         y = Math.random() * canvas.height;
-                        vx = -Math.random() * 1.5 - 0.5;
-                        vy = (Math.random() - 0.5) * 1.5;
+                        vx = -(Math.random() * 1.2 + 0.6);
+                        vy = (Math.random() - 0.5) * 1.2;
                         break;
                     case 2: // Bottom
                         x = Math.random() * canvas.width;
-                        y = canvas.height + 10;
-                        vx = (Math.random() - 0.5) * 1.5;
-                        vy = -Math.random() * 1.5 - 0.5;
+                        y = canvas.height + size;
+                        vx = (Math.random() - 0.5) * 1.2;
+                        vy = -(Math.random() * 1.2 + 0.6);
                         break;
                     case 3: // Left
-                        x = -10;
+                        x = -size;
                         y = Math.random() * canvas.height;
-                        vx = Math.random() * 1.5 + 0.5;
-                        vy = (Math.random() - 0.5) * 1.5;
+                        vx = Math.random() * 1.2 + 0.6;
+                        vy = (Math.random() - 0.5) * 1.2;
                         break;
                 }
 
-                state.particles.push({ x, y, vx, vy, radius: CONSTANTS.PARTICLE_RADIUS });
+                const speedMultiplier = 1 + (state.level - 1) * 0.2;
+                
+                state.particles.push({
+                    x, y,
+                    vx: vx * speedMultiplier,
+                    vy: vy * speedMultiplier,
+                    size,
+                    hue: Math.random() * 60
+                });
             }
 
             /**
-             * Create a new powerup
+             * Create a power-up
              */
             function createPowerup() {
-                const powerupTypes = Object.keys(CONSTANTS.POWERUP_TYPES);
-                const randomType = powerupTypes[Math.floor(Math.random() * powerupTypes.length)];
-                const powerup = CONSTANTS.POWERUP_TYPES[randomType];
-                
-                // Spawn powerup at random position (not too close to edges)
-                const x = Math.random() * (canvas.width - 40) + 20;
-                const y = Math.random() * (canvas.height - 40) + 20;
-                
                 state.powerups.push({
-                    x,
-                    y,
+                    x: Math.random() * (canvas.width - 40) + 20,
+                    y: Math.random() * (canvas.height - 40) + 20,
                     size: CONSTANTS.POWERUP_SIZE,
-                    type: randomType,
-                    color: powerup.color,
-                    name: powerup.name
+                    type: Math.random() < 0.5 ? 'shield' : 'multiplier',
+                    lifetime: 0,
+                    maxLifetime: 5000
                 });
             }
 
             /**
-             * Draw a diamond shape for powerups
-             */
-            function drawDiamond(x, y, size, color) {
-                ctx.fillStyle = color;
-                ctx.beginPath();
-                ctx.moveTo(x, y - size); // Top
-                ctx.lineTo(x + size, y); // Right
-                ctx.lineTo(x, y + size); // Bottom
-                ctx.lineTo(x - size, y); // Left
-                ctx.closePath();
-                ctx.fill();
-                
-                // Add glow effect
-                ctx.shadowColor = color;
-                ctx.shadowBlur = 10;
-                ctx.fill();
-                ctx.shadowBlur = 0;
-            }
-
-            /**
-             * Create debris particles when a gray particle hits the player or is destroyed
-             */
-            function createDebris(x, y, count = CONSTANTS.DEBRIS_PARTICLES, color = CONSTANTS.PARTICLE_COLOR) {
-                for (let i = 0; i < count; i++) {
-                    const angle = Math.random() * Math.PI * 2;
-                    const speed = Math.random() * 2 + 1;
-                    state.debris.push({
-                        x,
-                        y,
-                        vx: Math.cos(angle) * speed,
-                        vy: Math.sin(angle) * speed,
-                        radius: CONSTANTS.PARTICLE_RADIUS / 2,
-                        alpha: 1,
-                        decay: 0.02,
-                        color: color
-                    });
-                }
-            }
-
-            /**
-             * Create explosion particles when player dies
+             * Create explosion effect
              */
             function createExplosion(x, y) {
-                for (let i = 0; i < CONSTANTS.EXPLOSION_PARTICLES; i++) {
-                    const angle = Math.random() * Math.PI * 2;
+                for (let i = 0; i < 20; i++) {
+                    const angle = (Math.PI * 2 * i) / 20;
                     const speed = Math.random() * 3 + 2;
                     state.debris.push({
-                        x,
-                        y,
+                        x, y,
                         vx: Math.cos(angle) * speed,
                         vy: Math.sin(angle) * speed,
-                        radius: Math.random() * 3 + 2,
+                        size: Math.random() * 4 + 2,
                         alpha: 1,
-                        decay: 0.01,
-                        color: '#FF0000'
+                        decay: 0.02
                     });
                 }
             }
 
             /**
-             * Optimized drawing function with minimal operations
+             * Update game state
              */
-            function draw() {
-                // Clear canvas efficiently
-                ctx.fillStyle = 'rgba(0, 0, 0, 0.85)';
-                ctx.fillRect(0, 0, canvas.width, canvas.height);
+            function update(currentTime) {
+                if (!state.gameRunning) return;
 
-                // Draw player with invulnerability effect
-                if (!state.isGameOver) {
-                    if (state.isInvulnerable && Math.floor(state.invulnerabilityTimer * 10) % 2 === 0) {
-                        // Flash effect when invulnerable
-                        ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
-                    } else {
-                        ctx.fillStyle = CONSTANTS.PLAYER_COLOR;
+                const deltaTime = state.lastTime ? (currentTime - state.lastTime) / 1000 : 0;
+                state.lastTime = currentTime;
+
+                if (state.isGameOver) {
+                    state.gameOverTime += deltaTime;
+                    updateDebris(deltaTime);
+                    
+                    if (state.gameOverTime > 2) {
+                        state.gameRunning = false;
+                        showGameMessage(DOM.particleMessage, `GAME OVER! Final Score: ${state.score}`, 'error', 3000);
                     }
-                    ctx.beginPath();
-                    ctx.arc(state.player.x, state.player.y, state.player.radius, 0, Math.PI * 2);
-                    ctx.fill();
+                } else {
+                    updatePlayer(deltaTime);
+                    updateParticles(deltaTime);
+                    updatePowerups(deltaTime);
+                    updateDebris(deltaTime);
+                    checkCollisions();
+                    updateLevel();
+
+                    if (Math.random() < CONSTANTS.POWERUP_SPAWN_CHANCE) {
+                        createPowerup();
+                    }
                 }
 
-                // Draw particles in batch
-                ctx.fillStyle = CONSTANTS.PARTICLE_COLOR;
-                state.particles.forEach(particle => {
-                    ctx.beginPath();
-                    ctx.arc(particle.x, particle.y, particle.radius, 0, Math.PI * 2);
-                    ctx.fill();
-                });
-
-                // NEW: Draw powerups as diamonds
-                state.powerups.forEach(powerup => {
-                    drawDiamond(powerup.x, powerup.y, powerup.size, powerup.color);
-                });
-
-                // Draw debris particles
-                state.debris.forEach(debris => {
-                    ctx.save();
-                    ctx.globalAlpha = debris.alpha;
-                    ctx.fillStyle = debris.color || CONSTANTS.PARTICLE_COLOR;
-                    ctx.beginPath();
-                    ctx.arc(debris.x, debris.y, debris.radius, 0, Math.PI * 2);
-                    ctx.fill();
-                    ctx.restore();
-                });
-
-                // Draw UI elements
-                drawUI();
+                draw();
+                state.animationId = requestAnimationFrame(update);
             }
 
             /**
-             * Draw UI elements separately for better performance
+             * Update player position
              */
-            function drawUI() {
-                ctx.fillStyle = 'white';
-                ctx.font = 'bold 16px Arial';
-                ctx.textAlign = 'left';
+            function updatePlayer(deltaTime) {
+                const speed = CONSTANTS.PLAYER_SPEED;
                 
-                // Show score with multiplier if active
-                let scoreText = `SCORE: ${state.score}`;
-                if (state.scoreMultiplier > 1) {
-                    scoreText += ` (x${state.scoreMultiplier})`;
+                if (GameState.keys['ArrowUp'] || GameState.keys['w'] || GameState.keys['W'] || GameState.keys['up']) {
+                    state.player.y = Math.max(state.player.size, state.player.y - speed);
                 }
-                ctx.fillText(scoreText, 10, 25);
-                
-                ctx.textAlign = 'right';
-                ctx.fillText(`TIME: ${state.gameTime.toFixed(1)}S`, canvas.width - 10, 25);
-                ctx.textAlign = 'left';
-
-                // NEW: Draw active powerup indicators
-                let powerupY = 50;
-                Object.keys(state.activePowerups).forEach(powerupKey => {
-                    const powerup = state.activePowerups[powerupKey];
-                    if (powerup.active) {
-                        const powerupType = CONSTANTS.POWERUP_TYPES[powerupKey.toUpperCase()];
-                        if (powerupType) {
-                            ctx.fillStyle = powerupType.color;
-                            ctx.fillText(`${powerupType.name}: ${powerup.timer.toFixed(1)}s`, 10, powerupY);
-                            powerupY += 20;
-                        }
-                    }
-                });
-
-                // Draw instructions
-                ctx.fillStyle = 'white';
-                ctx.font = '14px Arial';
-                ctx.textAlign = 'center';
-                const instruction = state.gameRunning ? 'USE ARROW KEYS TO MOVE' : 'CLICK "START GAME" TO BEGIN!';
-                ctx.fillText(instruction, canvas.width / 2, canvas.height - 15);
-                ctx.textAlign = 'left';
-            }
-
-            /**
-             * Main game update loop with delta time
-             */
-            function update(timestamp) {
-                // FIX: Safety check - stop if game is not running
-                if (!state.gameRunning) {
-                    if (state.animationId) {
-                        cancelAnimationFrame(state.animationId);
-                        state.animationId = null;
-                    }
-                    return;
+                if (GameState.keys['ArrowDown'] || GameState.keys['s'] || GameState.keys['S'] || GameState.keys['down']) {
+                    state.player.y = Math.min(canvas.height - state.player.size, state.player.y + speed);
+                }
+                if (GameState.keys['ArrowLeft'] || GameState.keys['a'] || GameState.keys['A'] || GameState.keys['left']) {
+                    state.player.x = Math.max(state.player.size, state.player.x - speed);
+                }
+                if (GameState.keys['ArrowRight'] || GameState.keys['d'] || GameState.keys['D'] || GameState.keys['right']) {
+                    state.player.x = Math.min(canvas.width - state.player.size, state.player.x + speed);
                 }
 
-                // Calculate delta time for smooth animation
-                const deltaTime = state.lastTime ? (timestamp - state.lastTime) / 1000 : 0.016; // Cap at 60fps
-                state.lastTime = timestamp;
-
-                // Apply slow time effect if active
-                const effectiveDeltaTime = state.activePowerups.slowTime.active ? deltaTime * 0.5 : deltaTime;
-
-                // Update game time
-                state.gameTime += deltaTime; // Real time for display
-                DOM.particleTimer.textContent = state.gameTime.toFixed(1);
-
-                // Update invulnerability timer
                 if (state.isInvulnerable) {
-                    state.invulnerabilityTimer -= effectiveDeltaTime;
+                    state.invulnerabilityTimer -= deltaTime;
                     if (state.invulnerabilityTimer <= 0) {
                         state.isInvulnerable = false;
                     }
                 }
-
-                // NEW: Update active powerups
-                updatePowerups(effectiveDeltaTime);
-
-                // Handle game over state
-                if (state.isGameOver) {
-                    state.gameOverTime += effectiveDeltaTime;
-                    
-                    // Continue animation for 2 seconds after game over
-                    if (state.gameOverTime >= 2) {
-                        // FIX: Properly stop the game without freezing
-                        state.gameRunning = false;
-                        showGameMessage(DOM.particleMessage, `GAME OVER! FINAL SCORE: ${state.score}`, 'error', 3000);
-                        
-                        // Reset after delay
-                        setTimeout(() => {
-                            if (state.animationId) {
-                                cancelAnimationFrame(state.animationId);
-                                state.animationId = null;
-                            }
-                            init();
-                        }, 3000);
-                        return;
-                    }
-                } else {
-                    // Move player
-                    movePlayer();
-
-                    // Update particles
-                    updateParticles();
-
-                    // NEW: Update powerups and check collisions
-                    updatePowerupsAndCollisions();
-                }
-
-                // Update debris
-                updateDebris();
-
-                // NEW: Spawn powerups occasionally - SIGNIFICANTLY REDUCED FREQUENCY
-                if (Math.random() < CONSTANTS.POWERUP_SPAWN_RATE) {
-                    createPowerup();
-                }
-
-                // Draw frame
-                draw();
-
-                // FIX: Clear old animation ID before requesting new frame
-                if (state.animationId) {
-                    GameState.animationIds.delete(state.animationId);
-                }
-                state.animationId = requestAnimationFrame(update);
-                GameState.animationIds.add(state.animationId);
             }
 
             /**
-             * Handle player movement with keyboard input
+             * Update particles
              */
-            function movePlayer() {
-                const speed = CONSTANTS.PLAYER_SPEED; // REDUCED SPEED
-                if (GameState.keys['ArrowUp'] || GameState.keys['up']) state.player.y = Math.max(state.player.radius, state.player.y - speed);
-                if (GameState.keys['ArrowDown'] || GameState.keys['down']) state.player.y = Math.min(canvas.height - state.player.radius, state.player.y + speed);
-                if (GameState.keys['ArrowLeft'] || GameState.keys['left']) state.player.x = Math.max(state.player.radius, state.player.x - speed);
-                if (GameState.keys['ArrowRight'] || GameState.keys['right']) state.player.x = Math.min(canvas.width - state.player.radius, state.player.x + speed);
+            function updateParticles(deltaTime) {
+                for (let i = state.particles.length - 1; i >= 0; i--) {
+                    const p = state.particles[i];
+                    p.x += p.vx;
+                    p.y += p.vy;
+
+                    if (p.x < -p.size || p.x > canvas.width + p.size ||
+                        p.y < -p.size || p.y > canvas.height + p.size) {
+                        state.particles.splice(i, 1);
+                        createParticle();
+                    }
+                }
             }
 
             /**
-             * Update active powerups and their timers
+             * Update power-ups
              */
             function updatePowerups(deltaTime) {
-                Object.keys(state.activePowerups).forEach(powerupKey => {
-                    const powerup = state.activePowerups[powerupKey];
-                    if (powerup.active) {
-                        powerup.timer -= deltaTime;
-                        if (powerup.timer <= 0) {
-                            powerup.active = false;
-                            // Reset effects
-                            if (powerupKey === 'doubleScore') {
-                                state.scoreMultiplier = 1;
-                            }
-                            showGameMessage(DOM.particleMessage, `${CONSTANTS.POWERUP_TYPES[powerupKey.toUpperCase()].name} ENDED!`, 'warning', 1000);
-                        }
-                    }
-                });
-            }
-
-            /**
-             * Update powerups and check for collisions with player
-             */
-            function updatePowerupsAndCollisions() {
                 for (let i = state.powerups.length - 1; i >= 0; i--) {
                     const powerup = state.powerups[i];
-                    
-                    // Check collision with player (using diamond bounds approximation)
-                    const dx = powerup.x - state.player.x;
-                    const dy = powerup.y - state.player.y;
-                    const distanceSquared = dx * dx + dy * dy;
-                    const minDistance = powerup.size + state.player.radius;
+                    powerup.lifetime += deltaTime * 1000;
 
-                    if (distanceSquared < minDistance * minDistance) {
-                        // Collect powerup
-                        collectPowerup(powerup.type);
+                    if (powerup.lifetime > powerup.maxLifetime) {
                         state.powerups.splice(i, 1);
                     }
                 }
             }
 
             /**
-             * Handle powerup collection
-             */
-            function collectPowerup(type) {
-                showGameMessage(DOM.particleMessage, `${CONSTANTS.POWERUP_TYPES[type].name}!`,
-                               'success', 1500);
-
-                switch(type) {
-                    case 'SLOW_TIME':
-                        state.activePowerups.slowTime.active = true;
-                        state.activePowerups.slowTime.timer = CONSTANTS.POWERUP_DURATION;
-                        break;
-                        
-                    case 'EXTRA_LIFE':
-                        if (state.lives < CONSTANTS.MAX_LIVES) {
-                            state.lives++;
-                            DOM.particleLives.textContent = state.lives;
-                            updateLivesDisplay();
-                        } else {
-                            // If at max lives, give bonus points instead
-                            state.score += 100;
-                            DOM.particleScore.textContent = state.score;
-                        }
-                        break;
-                        
-                    case 'INVULNERABILITY':
-                        state.isInvulnerable = true;
-                        state.invulnerabilityTimer = CONSTANTS.POWERUP_DURATION;
-                        break;
-                        
-                    case 'DOUBLE_SCORE':
-                        state.activePowerups.doubleScore.active = true;
-                        state.activePowerups.doubleScore.timer = CONSTANTS.POWERUP_DURATION;
-                        state.scoreMultiplier = 2;
-                        break;
-                }
-            }
-
-            /**
-             * Update all particles and check collisions
-             */
-            function updateParticles() {
-                // Process particles in reverse for safe removal
-                for (let i = state.particles.length - 1; i >= 0; i--) {
-                    const particle = state.particles[i];
-
-                    // Apply slow time effect to particles if active
-                    const speedMultiplier = state.activePowerups.slowTime.active ? 0.5 : 1;
-
-                    // Move particle
-                    particle.x += particle.vx * speedMultiplier;
-                    particle.y += particle.vy * speedMultiplier;
-
-                    // Check bounds and respawn
-                    if (particle.x < -20 || particle.x > canvas.width + 20 ||
-                        particle.y < -20 || particle.y > canvas.height + 20) {
-                        state.particles.splice(i, 1);
-                        createParticle();
-                        state.score++;
-                        DOM.particleScore.textContent = state.score;
-                    }
-
-                    // Check collision with player (optimized distance check)
-                    const dx = particle.x - state.player.x;
-                    const dy = particle.y - state.player.y;
-                    const distanceSquared = dx * dx + dy * dy;
-                    const minDistance = particle.radius + state.player.radius - 3;
-
-                    if (distanceSquared < minDistance * minDistance) {
-                        if (!state.isInvulnerable && !state.isGameOver) {
-                            // Player gets hit - remove the particle and create debris
-                            state.particles.splice(i, 1);
-                            createDebris(particle.x, particle.y);
-                            
-                            // Handle player hit
-                            playerHit();
-                            // Don't return early - let the loop continue to process other particles
-                        } else if (state.isInvulnerable) {
-                            // During invulnerability - particle gets destroyed but player doesn't get hurt
-                            state.particles.splice(i, 1);
-                            createDebris(particle.x, particle.y, 8, '#FF0000'); // Red debris for destroyed particles
-                            state.score += 2; // Bonus score for destroying particles during invulnerability
-                            DOM.particleScore.textContent = state.score;
-                        }
-                    }
-                }
-
-                // Spawn new particles occasionally - REDUCED FREQUENCY
-                if (Math.random() < CONSTANTS.PARTICLE_SPAWN_RATE) {
-                    createParticle();
-                }
-            }
-
-            /**
              * Update debris particles
              */
-            function updateDebris() {
+            function updateDebris(deltaTime) {
                 for (let i = state.debris.length - 1; i >= 0; i--) {
                     const debris = state.debris[i];
-                    
-                    // Move debris
                     debris.x += debris.vx;
                     debris.y += debris.vy;
-                    
-                    // Apply decay
                     debris.alpha -= debris.decay;
                     
-                    // Remove if faded out
                     if (debris.alpha <= 0) {
                         state.debris.splice(i, 1);
                     }
@@ -1892,7 +1745,172 @@
             }
 
             /**
-             * Handle player being hit by a particle
+             * Check for collisions
+             */
+            function checkCollisions() {
+                // Check particle collisions (always, even when invulnerable)
+                for (let i = state.particles.length - 1; i >= 0; i--) {
+                    const particle = state.particles[i];
+                    const dx = state.player.x - particle.x;
+                    const dy = state.player.y - particle.y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+
+                    if (distance < state.player.size + particle.size) {
+                        // Create explosion at particle location
+                        createExplosion(particle.x, particle.y);
+                        
+                        // Remove the particle
+                        state.particles.splice(i, 1);
+                        
+                        // Create a new particle to replace it
+                        createParticle();
+                        
+                        // Only damage player if not invulnerable
+                        if (!state.isInvulnerable) {
+                            playerHit();
+                        }
+                    }
+                }
+
+                for (let i = state.powerups.length - 1; i >= 0; i--) {
+                    const powerup = state.powerups[i];
+                    const dx = state.player.x - powerup.x;
+                    const dy = state.player.y - powerup.y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+
+                    if (distance < state.player.size + powerup.size) {
+                        if (powerup.type === 'shield') {
+                            state.isInvulnerable = true;
+                            state.invulnerabilityTimer = 3.0;
+                            showGameMessage(DOM.particleMessage, 'SHIELD ACTIVATED!', 'success', 1500);
+                        } else {
+                            state.scoreMultiplier = 2;
+                            setTimeout(() => { state.scoreMultiplier = 1; }, 5000);
+                            showGameMessage(DOM.particleMessage, '2X SCORE MULTIPLIER!', 'success', 1500);
+                        }
+                        state.powerups.splice(i, 1);
+                    }
+                }
+            }
+
+            /**
+             * Update game level
+             */
+            function updateLevel() {
+                const newLevel = Math.floor(state.score / CONSTANTS.LEVEL_THRESHOLD) + 1;
+                if (newLevel > state.level) {
+                    state.level = newLevel;
+                    DOM.particleLevel.textContent = state.level;
+                    showGameMessage(DOM.particleMessage, `LEVEL ${state.level}!`, 'success', 2000);
+
+                    const particlesToAdd = Math.min(2, Math.floor(state.level / 2));
+                    for (let i = 0; i < particlesToAdd; i++) {
+                        createParticle();
+                    }
+                }
+            }
+
+            /**
+             * Draw everything
+             */
+            function draw() {
+                ctx.fillStyle = '#1a1a1a';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+                // Draw particles
+                for (let particle of state.particles) {
+                    const gradient = ctx.createRadialGradient(
+                        particle.x, particle.y, 0,
+                        particle.x, particle.y, particle.size
+                    );
+                    gradient.addColorStop(0, 'rgba(180, 180, 180, 1)');
+                    gradient.addColorStop(1, 'rgba(140, 140, 140, 0)');
+
+                    ctx.fillStyle = gradient;
+                    ctx.beginPath();
+                    ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+
+                // Draw power-ups
+                for (let powerup of state.powerups) {
+                    const alpha = 1 - (powerup.lifetime / powerup.maxLifetime);
+                    const pulse = Math.sin(powerup.lifetime / 200) * 0.2 + 0.8;
+                    const size = powerup.size * pulse;
+                    
+                    ctx.save();
+                    ctx.globalAlpha = alpha;
+                    
+                    if (powerup.type === 'shield') {
+                        ctx.fillStyle = `rgba(100, 200, 255, ${pulse})`;
+                        ctx.strokeStyle = `rgba(150, 220, 255, ${pulse})`;
+                    } else {
+                        ctx.fillStyle = `rgba(255, 215, 0, ${pulse})`;
+                        ctx.strokeStyle = `rgba(255, 235, 100, ${pulse})`;
+                    }
+                    
+                    ctx.lineWidth = 2;
+                    
+                    // Draw diamond shape
+                    ctx.beginPath();
+                    ctx.moveTo(powerup.x, powerup.y - size);           // Top point
+                    ctx.lineTo(powerup.x + size, powerup.y);           // Right point
+                    ctx.lineTo(powerup.x, powerup.y + size);           // Bottom point
+                    ctx.lineTo(powerup.x - size, powerup.y);           // Left point
+                    ctx.closePath();
+                    ctx.fill();
+                    ctx.stroke();
+                    
+                    ctx.restore();
+                }
+
+                // Draw debris
+                for (let debris of state.debris) {
+                    ctx.save();
+                    ctx.globalAlpha = debris.alpha;
+                    ctx.fillStyle = 'rgba(180, 180, 180, 1)';
+                    ctx.beginPath();
+                    ctx.arc(debris.x, debris.y, debris.size, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.restore();
+                }
+
+                // Draw player
+                if (!state.isGameOver) {
+                    ctx.save();
+                    
+                    if (state.isInvulnerable) {
+                        ctx.globalAlpha = Math.sin(Date.now() / 100) * 0.5 + 0.5;
+                    }
+                    
+                    const playerGradient = ctx.createRadialGradient(
+                        state.player.x, state.player.y, 0,
+                        state.player.x, state.player.y, state.player.size
+                    );
+                    
+                    if (state.isInvulnerable) {
+                        playerGradient.addColorStop(0, 'rgba(100, 200, 255, 1)');
+                        playerGradient.addColorStop(1, 'rgba(50, 150, 255, 0.3)');
+                    } else {
+                        playerGradient.addColorStop(0, 'rgba(255, 107, 107, 1)');
+                        playerGradient.addColorStop(1, 'rgba(220, 70, 70, 0.3)');
+                    }
+
+                    ctx.fillStyle = playerGradient;
+                    ctx.beginPath();
+                    ctx.arc(state.player.x, state.player.y, state.player.size, 0, Math.PI * 2);
+                    ctx.fill();
+
+                    ctx.strokeStyle = state.isInvulnerable ? 'rgba(100, 200, 255, 0.8)' : 'rgba(255, 107, 107, 0.8)';
+                    ctx.lineWidth = 2;
+                    ctx.stroke();
+                    
+                    ctx.restore();
+                }
+            }
+
+            /**
+             * Handle player being hit
              */
             function playerHit() {
                 state.lives--;
@@ -1900,14 +1918,12 @@
                 updateLivesDisplay();
                 
                 if (state.lives <= 0) {
-                    // Game over - create explosion
                     createExplosion(state.player.x, state.player.y);
                     state.isGameOver = true;
                     state.gameOverTime = 0;
                 } else {
-                    // Make player invulnerable for a short time
                     state.isInvulnerable = true;
-                    state.invulnerabilityTimer = 2.0; // 2 seconds of invulnerability
+                    state.invulnerabilityTimer = 2.0;
                     showGameMessage(DOM.particleMessage, `HIT! LIVES: ${state.lives}`, 'warning', 1000);
                 }
             }
@@ -1922,23 +1938,19 @@
                 state.isGameOver = false;
                 state.lastTime = 0;
 
-                // FIX: Clear any existing animation before starting new one
                 if (state.animationId) {
                     cancelAnimationFrame(state.animationId);
                     state.animationId = null;
                 }
 
-                // FIX: Clear any existing intervals
                 if (state.scoreIntervalId) {
                     clearInterval(state.scoreIntervalId);
                     state.scoreIntervalId = null;
                 }
 
-                // Start game loop
                 state.animationId = requestAnimationFrame(update);
                 GameState.animationIds.add(state.animationId);
 
-                // Start score interval
                 state.scoreIntervalId = setInterval(() => {
                     if (state.gameRunning && !state.isGameOver) {
                         state.score += CONSTANTS.SCORE_INCREMENT * state.scoreMultiplier;
@@ -1956,7 +1968,6 @@
                 state.gameRunning = false;
                 state.isGameOver = false;
                 
-                // FIX: More thorough cleanup
                 if (state.animationId) {
                     cancelAnimationFrame(state.animationId);
                     state.animationId = null;
@@ -1973,10 +1984,8 @@
                 init();
             }
 
-            // Initialize the game
             init();
 
-            // Public API
             return {
                 start,
                 reset,
@@ -1985,12 +1994,9 @@
         })();
 
         // =============================================
-        // EVENT LISTENERS AND INITIALIZATION
+        // EVENT LISTENERS
         // =============================================
 
-        /**
-         * Initialize all event listeners
-         */
         function initEventListeners() {
             // Keyboard input
             window.addEventListener('keydown', (e) => {
@@ -2005,7 +2011,7 @@
             DOM.particleStart.addEventListener('click', DodgeGame.start);
             DOM.particleReset.addEventListener('click', DodgeGame.reset);
 
-            // Expand button (desktop only)
+            // Expand button
             const expandButton = document.getElementById('expandButton');
             const gameCard = document.getElementById('particleCard');
             const canvas = document.getElementById('particleGame');
@@ -2015,16 +2021,14 @@
 
             if (expandButton) {
                 expandButton.addEventListener('click', (e) => {
-                    e.stopPropagation(); // Prevent card click event
+                    e.stopPropagation();
                     
                     if (!isExpanded) {
-                        // Expand to full window
                         gameCard.classList.add('expanded');
                         expandButton.textContent = '⛶ Collapse';
                         expandButton.title = 'Collapse to normal size';
                         isExpanded = true;
                         
-                        // Calculate responsive canvas size maintaining aspect ratio
                         const aspectRatio = originalCanvasWidth / originalCanvasHeight;
                         const maxWidth = Math.min(window.innerWidth * 0.9, 800);
                         const maxHeight = Math.min(window.innerHeight * 0.6, 600);
@@ -2037,29 +2041,23 @@
                             newWidth = newHeight * aspectRatio;
                         }
                         
-                        // Update canvas size
                         canvas.width = Math.floor(newWidth);
                         canvas.height = Math.floor(newHeight);
                         
-                        // Reinitialize game with new canvas size
                         DodgeGame.init();
                     } else {
-                        // Collapse to normal size
                         gameCard.classList.remove('expanded');
                         expandButton.textContent = '⛶ Expand';
                         expandButton.title = 'Expand to full window';
                         isExpanded = false;
                         
-                        // Restore original canvas size
                         canvas.width = originalCanvasWidth;
                         canvas.height = originalCanvasHeight;
                         
-                        // Reinitialize game
                         DodgeGame.init();
                     }
                 });
 
-                // Also handle Escape key to collapse
                 window.addEventListener('keydown', (e) => {
                     if (e.key === 'Escape' && isExpanded) {
                         expandButton.click();
@@ -2082,7 +2080,6 @@
                     GameState.keys[direction] = false;
                 });
                 
-                // Also support mouse events for testing
                 button.addEventListener('mousedown', (e) => {
                     e.preventDefault();
                     GameState.keys[direction] = true;
@@ -2100,20 +2097,19 @@
             });
         }
 
-        // Initialize everything when DOM is ready
+        // Initialize
         if (document.readyState === 'loading') {
             document.addEventListener('DOMContentLoaded', function() {
-                // Start with splash screen
+                createBubbles();
                 initSplashScreen();
-                // Then initialize event listeners
                 initEventListeners();
             });
         } else {
+            createBubbles();
             initSplashScreen();
             initEventListeners();
         }
 
-        // Cleanup on page unload
         window.addEventListener('beforeunload', cleanupAnimations);
     </script>
 </body>
