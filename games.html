@@ -372,27 +372,29 @@
             pointer-events: none;
         }
 
-        /* Hover state - expand without pushing other cards */
+        /* Hover state - smaller, more subtle expansion */
         .game-card:hover {
-            position: absolute; /* Take out of flow */
+            position: absolute;
             height: auto;
-            min-height: 500px;
-            width: calc(100% - 40px); /* Match grid column width */
-            transform: translateY(-10px);
+            min-height: 380px; /* Reduced from 500px */
+            max-height: 450px; /* Added max to prevent too much expansion */
+            width: calc(100% - 40px);
+            transform: translateY(-5px); /* Less dramatic lift */
             box-shadow:
-                0 15px 0 rgba(0, 0, 0, 0.5),
-                8px 8px 0 rgba(0, 0, 0, 0.7),
+                0 10px 0 rgba(0, 0, 0, 0.5),
+                6px 6px 0 rgba(0, 0, 0, 0.7),
                 0 0 0 1px rgba(255, 107, 107, 0.3);
             border-color: rgba(255, 107, 107, 0.4);
-            z-index: 50; /* Above other cards */
-            padding: 20px;
+            z-index: 50;
+            padding: 18px;
+            overflow: hidden; /* Prevent content overflow */
         }
 
         .game-card:hover::before {
             opacity: 1;
         }
 
-        /* Expanded fullscreen state */
+        /* Expanded fullscreen state - fully responsive */
         .game-card.expanded {
             position: fixed;
             top: 0;
@@ -401,15 +403,20 @@
             height: 100vh;
             z-index: 100;
             border-radius: 0;
-            padding: 30px;
+            padding: 15px;
             overflow-y: auto;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow-x: hidden;
+            transition: all 0.3s ease;
             max-width: none;
             max-height: none;
             min-height: auto;
             backdrop-filter: blur(30px) saturate(180%);
-            background: rgba(40, 40, 40, 0.98); /* Much more opaque */
+            background: rgba(40, 40, 40, 0.98);
             cursor: default;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
         }
 
         .game-card.expanded:hover {
@@ -536,9 +543,11 @@
         }
 
         .game-card.expanded .canvas-container {
-            transform: scale(1);
-            pointer-events: auto; /* Enable interaction when expanded */
-            margin-bottom: 20px;
+            transform: none;
+            pointer-events: auto;
+            margin-bottom: 15px;
+            width: 100%;
+            max-width: min(90vw, 800px);
         }
 
         /* Game Info Section - Hidden by default, shown on hover */
@@ -552,9 +561,9 @@
         }
 
         .game-card:hover .game-info {
-            max-height: 400px; /* Increased to prevent cutoff */
+            max-height: 280px; /* Reduced from 400px for smaller expansion */
             opacity: 1;
-            margin-bottom: 15px;
+            margin-bottom: 12px;
         }
 
         .game-card.expanded .game-info {
@@ -653,6 +662,8 @@
             box-shadow: inset 0 0 0 2px rgba(0, 0, 0, 0.5);
             transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             display: block;
+            max-width: 100%;
+            height: auto;
         }
 
         .game-card.expanded .game-canvas {
@@ -660,6 +671,10 @@
             box-shadow: 
                 0 10px 0 rgba(0, 0, 0, 0.6),
                 5px 5px 0 rgba(0, 0, 0, 0.8);
+            max-width: min(90vw, 800px);
+            max-height: min(60vh, 600px);
+            width: auto;
+            height: auto;
         }
 
         .game-controls {
@@ -930,12 +945,19 @@
                 position: relative;
                 height: 180px;
                 min-height: 180px;
+                max-height: none;
                 transform: none;
+                padding: 15px;
+            }
+
+            /* Responsive canvas in expanded state */
+            .game-card.expanded {
+                padding: 10px;
             }
 
             .game-card.expanded .game-canvas {
-                width: 95vw;
-                height: 50vh;
+                max-width: 95vw;
+                max-height: 50vh;
             }
 
             .game-message {
@@ -948,19 +970,63 @@
             }
             
             .return-button {
-                top: 15px;
-                left: 15px;
-                padding: 8px 14px;
-                font-size: 0.85rem;
+                top: 10px;
+                left: 10px;
+                padding: 6px 12px;
+                font-size: 0.8rem;
             }
 
             .game-stats {
                 flex-direction: column;
-                gap: 10px;
+                gap: 8px;
             }
 
             h1 {
-                font-size: 2rem;
+                font-size: 1.8rem;
+            }
+
+            .subtitle {
+                font-size: 1rem;
+            }
+        }
+
+        /* Tablet and medium screens */
+        @media (min-width: 769px) and (max-width: 1024px) {
+            .game-card.expanded .game-canvas {
+                max-width: 85vw;
+                max-height: 55vh;
+            }
+        }
+
+        /* Large desktop screens */
+        @media (min-width: 1920px) {
+            .games-container {
+                max-width: 1600px;
+            }
+
+            .game-card.expanded .game-canvas {
+                max-width: 1200px;
+                max-height: 800px;
+            }
+        }
+
+        /* Small height screens (laptops) */
+        @media (max-height: 768px) {
+            .game-card.expanded {
+                padding: 10px;
+            }
+
+            .game-card.expanded .game-canvas {
+                max-height: 50vh;
+            }
+
+            .game-card.expanded .game-title {
+                font-size: 1.5rem;
+                margin-bottom: 8px;
+            }
+
+            .game-stats {
+                margin-top: 8px;
             }
         }
 
@@ -1967,10 +2033,10 @@
                         expandButton.title = 'Collapse to normal size';
                         isExpanded = true;
                         
-                        // Calculate new canvas size maintaining aspect ratio
+                        // Calculate responsive canvas size maintaining aspect ratio
                         const aspectRatio = originalCanvasWidth / originalCanvasHeight;
-                        const maxWidth = window.innerWidth - 100;
-                        const maxHeight = window.innerHeight - 300;
+                        const maxWidth = Math.min(window.innerWidth * 0.9, 800);
+                        const maxHeight = Math.min(window.innerHeight * 0.6, 600);
                         
                         let newWidth = maxWidth;
                         let newHeight = newWidth / aspectRatio;
@@ -1981,8 +2047,8 @@
                         }
                         
                         // Update canvas size
-                        canvas.width = newWidth;
-                        canvas.height = newHeight;
+                        canvas.width = Math.floor(newWidth);
+                        canvas.height = Math.floor(newHeight);
                         
                         // Reinitialize game with new canvas size
                         DodgeGame.init();
