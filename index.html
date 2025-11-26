@@ -82,54 +82,56 @@
             opacity: 0;
         }
 
-        /* Flowing waves container */
-        .games-waves {
+        /* Bubbles container */
+        .games-bubbles {
             position: absolute;
             width: 100%;
             height: 100%;
             overflow: hidden;
         }
 
-        /* Individual wave layers */
-        .games-wave {
+        /* Individual bubble styling */
+        .bubble {
             position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 200%;
-            height: 100%;
-            background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 320'%3E%3Cpath fill='%238B0000' fill-opacity='0.4' d='M0,160L48,176C96,192,192,224,288,213.3C384,203,480,149,576,138.7C672,128,768,160,864,186.7C960,213,1056,235,1152,224C1248,213,1344,171,1392,149.3L1440,128L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z'%3E%3C/path%3E%3C/svg%3E") repeat-x;
-            background-size: 50% 100%;
-            animation: gamesWaveFlow 8s linear infinite;
+            bottom: -50px;
+            background: radial-gradient(circle at 30% 30%, rgba(139, 0, 0, 0.25), rgba(100, 0, 0, 0.15) 50%, rgba(80, 0, 0, 0.1));
+            border-radius: 50%;
+            opacity: 0.4;
+            animation: bubbleRise linear infinite;
+            box-shadow: inset -1px -1px 5px rgba(0, 0, 0, 0.15), inset 1px 1px 5px rgba(255, 100, 100, 0.05);
         }
 
-        .games-wave:nth-child(1) {
-            opacity: 0.7;
-            animation-duration: 8s;
-            bottom: 0;
+        /* Bubble rise animation */
+        @keyframes bubbleRise {
+            0% {
+                transform: translateY(0) translateX(0) scale(1);
+                opacity: 0.4;
+            }
+            50% {
+                opacity: 0.35;
+            }
+            100% {
+                transform: translateY(-120vh) translateX(var(--drift, 10px)) scale(var(--end-scale, 0.8));
+                opacity: 0;
+            }
         }
 
-        .games-wave:nth-child(2) {
-            opacity: 0.5;
-            animation-duration: 10s;
-            animation-delay: -2s;
-            bottom: 10px;
-            background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 320'%3E%3Cpath fill='%23660000' fill-opacity='0.5' d='M0,64L48,80C96,96,192,128,288,128C384,128,480,96,576,106.7C672,117,768,171,864,181.3C960,192,1056,160,1152,138.7C1248,117,1344,107,1392,101.3L1440,96L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z'%3E%3C/path%3E%3C/svg%3E") repeat-x;
-            background-size: 50% 100%;
-        }
-
-        .games-wave:nth-child(3) {
-            opacity: 0.3;
-            animation-duration: 12s;
-            animation-delay: -4s;
-            bottom: 20px;
-            background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 320'%3E%3Cpath fill='%23440000' fill-opacity='0.6' d='M0,224L48,213.3C96,203,192,181,288,181.3C384,181,480,203,576,218.7C672,235,768,245,864,234.7C960,224,1056,192,1152,181.3C1248,171,1344,181,1392,186.7L1440,192L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z'%3E%3C/path%3E%3C/svg%3E") repeat-x;
-            background-size: 50% 100%;
-        }
-
-        @keyframes gamesWaveFlow {
-            0% { transform: translateX(0); }
-            100% { transform: translateX(-50%); }
-        }
+        /* Different bubble sizes and speeds */
+        .bubble:nth-child(1) { left: 5%; width: 12px; height: 12px; animation-duration: 5s; animation-delay: 0s; --drift: 15px; --end-scale: 0.6; }
+        .bubble:nth-child(2) { left: 15%; width: 8px; height: 8px; animation-duration: 6s; animation-delay: 0.5s; --drift: -10px; --end-scale: 0.7; }
+        .bubble:nth-child(3) { left: 25%; width: 18px; height: 18px; animation-duration: 7s; animation-delay: 0.2s; --drift: 20px; --end-scale: 0.5; }
+        .bubble:nth-child(4) { left: 35%; width: 10px; height: 10px; animation-duration: 5.5s; animation-delay: 1s; --drift: -15px; --end-scale: 0.8; }
+        .bubble:nth-child(5) { left: 45%; width: 14px; height: 14px; animation-duration: 6.5s; animation-delay: 0.3s; --drift: 12px; --end-scale: 0.6; }
+        .bubble:nth-child(6) { left: 55%; width: 9px; height: 9px; animation-duration: 5s; animation-delay: 0.8s; --drift: -8px; --end-scale: 0.9; }
+        .bubble:nth-child(7) { left: 65%; width: 15px; height: 15px; animation-duration: 7.5s; animation-delay: 0.1s; --drift: 18px; --end-scale: 0.5; }
+        .bubble:nth-child(8) { left: 75%; width: 6px; height: 6px; animation-duration: 4.5s; animation-delay: 1.2s; --drift: -12px; --end-scale: 0.7; }
+        .bubble:nth-child(9) { left: 85%; width: 16px; height: 16px; animation-duration: 6s; animation-delay: 0.6s; --drift: 10px; --end-scale: 0.6; }
+        .bubble:nth-child(10) { left: 95%; width: 11px; height: 11px; animation-duration: 5.2s; animation-delay: 0.4s; --drift: -18px; --end-scale: 0.8; }
+        .bubble:nth-child(11) { left: 10%; width: 7px; height: 7px; animation-duration: 6.8s; animation-delay: 1.5s; --drift: 8px; --end-scale: 0.7; }
+        .bubble:nth-child(12) { left: 30%; width: 5px; height: 5px; animation-duration: 4.8s; animation-delay: 0.9s; --drift: -20px; --end-scale: 0.9; }
+        .bubble:nth-child(13) { left: 50%; width: 20px; height: 20px; animation-duration: 8s; animation-delay: 0.2s; --drift: 15px; --end-scale: 0.4; }
+        .bubble:nth-child(14) { left: 70%; width: 8px; height: 8px; animation-duration: 5.8s; animation-delay: 1.1s; --drift: -10px; --end-scale: 0.8; }
+        .bubble:nth-child(15) { left: 90%; width: 13px; height: 13px; animation-duration: 6.2s; animation-delay: 0.7s; --drift: 12px; --end-scale: 0.6; }
 
         /* Dark red glow overlay */
         .games-glow {
@@ -1022,10 +1024,22 @@
     <!-- Games Transition Screen -->
     <div id="games-transition">
         <div class="games-glow"></div>
-        <div class="games-waves">
-            <div class="games-wave"></div>
-            <div class="games-wave"></div>
-            <div class="games-wave"></div>
+        <div class="games-bubbles">
+            <div class="bubble"></div>
+            <div class="bubble"></div>
+            <div class="bubble"></div>
+            <div class="bubble"></div>
+            <div class="bubble"></div>
+            <div class="bubble"></div>
+            <div class="bubble"></div>
+            <div class="bubble"></div>
+            <div class="bubble"></div>
+            <div class="bubble"></div>
+            <div class="bubble"></div>
+            <div class="bubble"></div>
+            <div class="bubble"></div>
+            <div class="bubble"></div>
+            <div class="bubble"></div>
         </div>
     </div>
 
