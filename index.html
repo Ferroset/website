@@ -1550,6 +1550,16 @@
             // Initialize splash screen animation
             showSplashScreen();
 
+            // === AUDIO VOLUME INITIALIZATION ===
+            // Set all audio to maximum browser volume (1.0 = 100%)
+            const backgroundMusic = document.getElementById('background-music');
+            const sfxClick = document.getElementById('sfx-click');
+            const sfxHover = document.getElementById('sfx-hover');
+            
+            if (backgroundMusic) backgroundMusic.volume = 1.0;
+            if (sfxClick) sfxClick.volume = 1.0;
+            if (sfxHover) sfxHover.volume = 1.0;
+
             // Add hover effects to cards
             const cards = document.querySelectorAll('.card');
             cards.forEach(card => {
