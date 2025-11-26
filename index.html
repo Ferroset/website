@@ -57,6 +57,94 @@
             100% { transform: scale(1); opacity: 1; }
         }
 
+        /* === GAMES TRANSITION SCREEN === */
+        #games-transition {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #1a0a0a;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 10001;
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+        }
+
+        #games-transition.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        #games-transition.fade-out {
+            opacity: 0;
+        }
+
+        /* Flowing waves container */
+        .games-waves {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        /* Individual wave layers */
+        .games-wave {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 200%;
+            height: 100%;
+            background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 320'%3E%3Cpath fill='%238B0000' fill-opacity='0.4' d='M0,160L48,176C96,192,192,224,288,213.3C384,203,480,149,576,138.7C672,128,768,160,864,186.7C960,213,1056,235,1152,224C1248,213,1344,171,1392,149.3L1440,128L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z'%3E%3C/path%3E%3C/svg%3E") repeat-x;
+            background-size: 50% 100%;
+            animation: gamesWaveFlow 8s linear infinite;
+        }
+
+        .games-wave:nth-child(1) {
+            opacity: 0.7;
+            animation-duration: 8s;
+            bottom: 0;
+        }
+
+        .games-wave:nth-child(2) {
+            opacity: 0.5;
+            animation-duration: 10s;
+            animation-delay: -2s;
+            bottom: 10px;
+            background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 320'%3E%3Cpath fill='%23660000' fill-opacity='0.5' d='M0,64L48,80C96,96,192,128,288,128C384,128,480,96,576,106.7C672,117,768,171,864,181.3C960,192,1056,160,1152,138.7C1248,117,1344,107,1392,101.3L1440,96L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z'%3E%3C/path%3E%3C/svg%3E") repeat-x;
+            background-size: 50% 100%;
+        }
+
+        .games-wave:nth-child(3) {
+            opacity: 0.3;
+            animation-duration: 12s;
+            animation-delay: -4s;
+            bottom: 20px;
+            background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 320'%3E%3Cpath fill='%23440000' fill-opacity='0.6' d='M0,224L48,213.3C96,203,192,181,288,181.3C384,181,480,203,576,218.7C672,235,768,245,864,234.7C960,224,1056,192,1152,181.3C1248,171,1344,181,1392,186.7L1440,192L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z'%3E%3C/path%3E%3C/svg%3E") repeat-x;
+            background-size: 50% 100%;
+        }
+
+        @keyframes gamesWaveFlow {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+
+        /* Dark red glow overlay */
+        .games-glow {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(ellipse at center, rgba(139, 0, 0, 0.3) 0%, transparent 70%);
+            animation: gamesGlowPulse 3s ease-in-out infinite;
+        }
+
+        @keyframes gamesGlowPulse {
+            0%, 100% { opacity: 0.5; transform: scale(1); }
+            50% { opacity: 0.8; transform: scale(1.1); }
+        }
+
         /* === RESET STYLES === */
         * {
             margin: 0;
@@ -931,6 +1019,16 @@
         </div>
     </div>
 
+    <!-- Games Transition Screen -->
+    <div id="games-transition">
+        <div class="games-glow"></div>
+        <div class="games-waves">
+            <div class="games-wave"></div>
+            <div class="games-wave"></div>
+            <div class="games-wave"></div>
+        </div>
+    </div>
+
     <!-- Background Music -->
     <audio id="background-music" loop>
         <source src="/audio/Ferroserver.mp3" type="audio/mpeg">
@@ -970,7 +1068,7 @@
                     <a href="#music" class="nav-link">Music</a>
                 </div>
                 <!-- Games Navigation -->
-                <div class="nav-item games-nav" onclick="window.location.href='/games.html'">
+                <div class="nav-item games-nav" onclick="transitionToGames(event)">
                     <a href="/games.html" class="nav-link">Games</a>
                 </div>
                 <!-- Resume Navigation -->
@@ -1352,6 +1450,44 @@
                 section.classList.remove('active');
             });
             currentSection = null; // Clear current section tracking
+        }
+
+        // === GAMES PAGE TRANSITION ===
+        function transitionToGames(event) {
+            // Prevent default navigation
+            if (event) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
+
+            const gamesTransition = document.getElementById('games-transition');
+            const backgroundMusic = document.getElementById('background-music');
+
+            // Show the transition screen
+            gamesTransition.style.display = 'flex';
+            // Trigger reflow for animation
+            gamesTransition.offsetHeight;
+            gamesTransition.classList.add('active');
+
+            // Fade out background music over 2 seconds
+            if (backgroundMusic && !backgroundMusic.paused) {
+                let currentVolume = backgroundMusic.volume;
+                const fadeInterval = setInterval(() => {
+                    currentVolume -= 0.05;
+                    if (currentVolume <= 0) {
+                        backgroundMusic.volume = 0;
+                        backgroundMusic.pause();
+                        clearInterval(fadeInterval);
+                    } else {
+                        backgroundMusic.volume = currentVolume;
+                    }
+                }, 100); // Fade over ~2 seconds (20 steps * 100ms)
+            }
+
+            // After transition animation, navigate to games page
+            setTimeout(() => {
+                window.location.href = '/games.html';
+            }, 2500); // Wait 2.5 seconds before redirecting
         }
 
         // === FORM SUBMISSION HANDLER ===
