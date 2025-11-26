@@ -936,6 +936,14 @@
         <source src="/audio/Ferroserver.mp3" type="audio/mpeg">
     </audio>
 
+    <!-- Button Sound Effects -->
+    <audio id="sfx-click" preload="auto">
+        <source src="/audio/Select.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="sfx-hover" preload="auto">
+        <source src="/audio/Scrolly.mp3" type="audio/mpeg">
+    </audio>
+
     <!-- Animated Background Effects -->
     <div class="bg-container">
         <div class="bg-gradient"></div>
@@ -1443,6 +1451,57 @@
                 console.log(`Page Load Time: ${pageLoadTime}ms`);
             }
         });
+
+        // === BUTTON SOUND EFFECTS ===
+        // Sound effect system for interactive buttons (not display cards)
+        (function initButtonSoundEffects() {
+            const sfxClick = document.getElementById('sfx-click');
+            const sfxHover = document.getElementById('sfx-hover');
+
+            // Selectors for clickable buttons only (excludes non-clickable cards)
+            const buttonSelectors = [
+                '.nav-item',           // Navigation buttons
+                '.btn',                // Action buttons (primary, secondary)
+                '.close-btn',          // Close buttons
+                '.music-card',         // Music platform cards (clickable links)
+                '.social-link',        // Social media links
+                'footer a'             // Footer links
+            ].join(', ');
+
+            // Function to play click sound
+            function playClickSound() {
+                if (sfxClick) {
+                    sfxClick.currentTime = 0;
+                    sfxClick.play().catch(() => {});
+                }
+            }
+
+            // Function to play hover sound
+            function playHoverSound() {
+                if (sfxHover) {
+                    sfxHover.currentTime = 0;
+                    sfxHover.play().catch(() => {});
+                }
+            }
+
+            // Add event listeners to all buttons
+            document.querySelectorAll(buttonSelectors).forEach(button => {
+                // Click sound
+                button.addEventListener('click', playClickSound);
+                
+                // Hover sound (mouseenter for better UX)
+                button.addEventListener('mouseenter', playHoverSound);
+            });
+
+            // Also handle dynamically shown elements by using event delegation
+            document.addEventListener('click', (e) => {
+                if (e.target.closest(buttonSelectors)) {
+                    playClickSound();
+                }
+            }, true);
+
+            console.log('%c Button Sound Effects Initialized ', 'background: #4CAF50; color: white; font-size: 12px;');
+        })();
     </script>
 </body>
 </html>
